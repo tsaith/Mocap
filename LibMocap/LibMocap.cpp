@@ -5,6 +5,7 @@
 
 static Mocap *pInst = nullptr;
 float mHeadTransformArray[10];
+float mSkelTransformArray[10];
 
 void MocapInit(int FrameWidth, int FrameHeight) {
 
@@ -17,7 +18,7 @@ void MocapFinalize() {
 
     if (!pInst) {
         delete pInst;
-        pInst = NULL;
+        pInst = nullptr;
     }
 
 }
@@ -39,24 +40,48 @@ float* MocapGetBlendshapes() {
 float* MocapGetHeadTransform() {
 
     FTransform transform = pInst->GetHeadTransform();
-    FVector translation = transform.Translation;
     FQuat rotation = transform.Rotation;
+    FVector translation = transform.Translation;
     FVector scale3D = transform.Scale3D;
 
-    mHeadTransformArray[0] = translation.X;
-    mHeadTransformArray[1] = translation.Y;
-    mHeadTransformArray[2] = translation.Z;
+    mHeadTransformArray[0] = rotation.X;
+    mHeadTransformArray[1] = rotation.Y;
+    mHeadTransformArray[2] = rotation.Z;
+    mHeadTransformArray[3] = rotation.W;
 
-    mHeadTransformArray[3] = rotation.X;
-    mHeadTransformArray[4] = rotation.Y;
-    mHeadTransformArray[5] = rotation.Z;
-    mHeadTransformArray[6] = rotation.W;
+    mHeadTransformArray[4] = translation.X;
+    mHeadTransformArray[5] = translation.Y;
+    mHeadTransformArray[6] = translation.Z;
 
     mHeadTransformArray[7] = scale3D.X;
     mHeadTransformArray[8] = scale3D.Y;
     mHeadTransformArray[9] = scale3D.Z;
 
-    return mHeadTransformArray;
+    return mHeadTransformArray; 
     //return &mHeadTransformArray[0];
 }
+ 
+float* MocapGetSkelTransform(int Index) {
+
+    FTransform transform = pInst->GetSkelTransform(Index);
+    FQuat rotation = transform.Rotation;
+    FVector translation = transform.Translation;
+    FVector scale3D = transform.Scale3D;
+
+    mSkelTransformArray[0] = rotation.X;
+    mSkelTransformArray[1] = rotation.Y;
+    mSkelTransformArray[2] = rotation.Z;
+    mSkelTransformArray[3] = rotation.W;
+
+    mSkelTransformArray[4] = translation.X;
+    mSkelTransformArray[5] = translation.Y;
+    mSkelTransformArray[6] = translation.Z;
+
+    mSkelTransformArray[7] = scale3D.X;
+    mSkelTransformArray[8] = scale3D.Y;
+    mSkelTransformArray[9] = scale3D.Z;
+
+    return mSkelTransformArray; 
+}
+
 

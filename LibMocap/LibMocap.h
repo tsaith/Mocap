@@ -15,4 +15,5 @@ extern "C" LIBMOCAP_API void MocapDetect(cv::Mat& Image);
 extern "C" LIBMOCAP_API bool MocapIsFaceDetected();
 extern "C" LIBMOCAP_API float* MocapGetBlendshapes();
 extern "C" LIBMOCAP_API float* MocapGetHeadTransform();
+extern "C" LIBMOCAP_API float* MocapGetSkelTransform(int Index);
 

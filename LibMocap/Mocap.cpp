@@ -10,19 +10,24 @@ Mocap::Mocap() {
     mBlendshapes.assign(mNumBlendshapes, 0);
 
     FTransform boneTransform;
-    mBoneTransforms.assign(mNumBones, boneTransform);
+    mSkelTransforms.assign(mNumBones, boneTransform);
 
 }
 
 Mocap::~Mocap() {
 
     FacialExpressionFinalize();
+    MocapMpFinalize();
 
 }
 
 void Mocap::Init(int ImageWidth, int ImageHeight) {
 
+    // Facial expression
     FacialExpressionInit(ImageWidth, ImageHeight);
+
+    // MocapMp
+    MocapMpInit(ImageWidth, ImageHeight);
 
 }
 
@@ -42,22 +47,23 @@ void Mocap::Detect(Mat& Image) {
     }
 
     // Head transform
+    FQuat headRotation;
     FVector headTranslation;
-    FQuat headQuat;
+
+    p = FacialExpressionGetHeadQuat();
+    headRotation.X = p[0];
+    headRotation.Y = p[1];
+    headRotation.Z = p[2];
+    headRotation.W = p[3];
 
     p = FacialExpressionGetHeadTranslation();
     headTranslation.X = p[0];
     headTranslation.Y = p[1];
     headTranslation.Z = p[2];
+    mHeadTransform = MakeTransform(headRotation, headTranslation);
 
-    p = FacialExpressionGetHeadQuat();
-    headQuat.X = p[0];
-    headQuat.Y = p[1];
-    headQuat.Z = p[2];
-    headQuat.W = p[3];
-
-    mHeadTransform = MakeTransform(headTranslation, headQuat);
-
+    // MocapMp
+    MocapMpDetect(Image);
 
 
 }
@@ -74,8 +80,30 @@ FTransform Mocap::GetHeadTransform() {
     return mHeadTransform;
 }
 
+
+FTransform Mocap::GetSkelTransform(int Index) {
+
+    FTransform transform;
+
+    float* pQuat;
+    float* pBone;
+    pQuat = MocapMpGetQuat(Index);
+    pBone = MocapMpGetBone(Index);
+
+    transform.Rotation.X = pQuat[1];
+    transform.Rotation.Y = pQuat[2];
+    transform.Rotation.Z = pQuat[3];
+    transform.Rotation.W = pQuat[0];
+
+    transform.Translation.X = pBone[0];
+    transform.Translation.Y = pBone[1];
+    transform.Translation.Z = pBone[2];
+
+    return transform;
+}
+
 // Private methods
-FTransform Mocap::MakeTransform(FVector Translation, FQuat Rotation) {
+FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation) {
 
     FTransform transform;
 
