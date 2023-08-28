@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "TypeDef.h"
+#include "SkelConverter/holistic.hpp"
+#include "SkelConverter/SkelConverter.h"
 
 
 #include "opencv2/opencv.hpp"
@@ -27,6 +29,8 @@ public:
 private:
 
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
+    void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
+    void UpdateHolistic(Holistic& Data);
 
     bool mIsFaceDetected = false;
     const int mNumBlendshapes = 52;
@@ -36,5 +40,8 @@ private:
     const int mNumBones = 68;
     vector<FTransform> mSkelTransforms;
 
+    Holistic mHolistic;
+
+    SkelConverter mSkelConverter;
 
 };

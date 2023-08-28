@@ -1,4 +1,4 @@
-#include "pch.h" // use stdafx.h in Visual Studio 2017 and earlier
+#include "pch.h"
 
 #include "LibMocap.h"
 #include "Mocap.h"
@@ -61,8 +61,8 @@ float* MocapGetHeadTransform() {
     //return &mHeadTransformArray[0];
 }
  
-float* MocapGetSkelTransform(int Index) {
-
+float* MocapGetSkelTransform(int Index) { 
+  
     FTransform transform = pInst->GetSkelTransform(Index);
     FQuat rotation = transform.Rotation;
     FVector translation = transform.Translation;

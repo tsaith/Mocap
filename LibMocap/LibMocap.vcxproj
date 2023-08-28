@@ -141,7 +141,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\mocap_mp\include;C:\Users\andrew\projects\FacialExpression\LibFacialExpression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\eigen;C:\opt\MocapLive\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,8 +149,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\mocap_mp\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world3410.lib;LibFacialExpression.lib;libmocap_mp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\MocapLive\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world3410.lib;LibFacialExpression.lib;libmediapipe.lib;libmocap_mp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d ".\LibMocap.h" "C:\opt\MocapLive\include"
@@ -162,6 +162,20 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
     <ClInclude Include="LibMocap.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SkelConverter\db_utils.h" />
+    <ClInclude Include="SkelConverter\hand_stabilizer.h" />
+    <ClInclude Include="SkelConverter\head_stabilizer.h" />
+    <ClInclude Include="SkelConverter\holistic.hpp" />
+    <ClInclude Include="SkelConverter\holistic_correction.h" />
+    <ClInclude Include="SkelConverter\key_utils.h" />
+    <ClInclude Include="SkelConverter\libplot.h" />
+    <ClInclude Include="SkelConverter\math_utils.h" />
+    <ClInclude Include="SkelConverter\pose_utils.h" />
+    <ClInclude Include="SkelConverter\quat_smoother.h" />
+    <ClInclude Include="SkelConverter\signal_analyzer.h" />
+    <ClInclude Include="SkelConverter\SkelConverter.h" />
+    <ClInclude Include="SkelConverter\skeleton_factory.h" />
+    <ClInclude Include="SkelConverter\skeleton_plotter.h" />
     <ClInclude Include="TypeDef.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +188,19 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SkelConverter\db_utils.cc" />
+    <ClCompile Include="SkelConverter\hand_stabilizer.cc" />
+    <ClCompile Include="SkelConverter\head_stabilizer.cc" />
+    <ClCompile Include="SkelConverter\holistic_correction.cc" />
+    <ClCompile Include="SkelConverter\key_utils.cc" />
+    <ClCompile Include="SkelConverter\libplot.cpp" />
+    <ClCompile Include="SkelConverter\math_utils.cpp" />
+    <ClCompile Include="SkelConverter\pose_utils.cpp" />
+    <ClCompile Include="SkelConverter\quat_smoother.cc" />
+    <ClCompile Include="SkelConverter\signal_analyzer.cc" />
+    <ClCompile Include="SkelConverter\SkelConverter.cpp" />
+    <ClCompile Include="SkelConverter\skeleton_factory.cpp" />
+    <ClCompile Include="SkelConverter\skeleton_plotter.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

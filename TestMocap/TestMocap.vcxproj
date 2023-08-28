@@ -145,6 +145,9 @@
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TextPlotter.hpp" />
+    <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="TimeUtils.hpp" />
     <ClInclude Include="VideoPlayer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

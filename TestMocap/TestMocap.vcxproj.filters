@@ -23,5 +23,14 @@
     <ClInclude Include="VideoPlayer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="TextPlotter.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeUtils.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

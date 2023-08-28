@@ -1,8 +1,11 @@
 #include "pch.h"
 
 #include "Mocap.h"
-#include "LibFacialExpression.h"
+#include "LibFacialExpression.h" 
+#include "libmediapipe.h"
 #include "libmocap_mp.h"
+ 
+
 
 
 Mocap::Mocap() {
@@ -17,6 +20,7 @@ Mocap::Mocap() {
 Mocap::~Mocap() {
 
     FacialExpressionFinalize();
+    MediapipeFinalize();
     MocapMpFinalize();
 
 }
@@ -25,6 +29,12 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
     // Facial expression
     FacialExpressionInit(ImageWidth, ImageHeight);
+
+    // Mediapipe 
+    MediapipeInit(); 
+
+    // Skeleton converter
+    mSkelConverter.Init(ImageWidth, ImageHeight);
 
     // MocapMp
     MocapMpInit(ImageWidth, ImageHeight);
@@ -61,6 +71,12 @@ void Mocap::Detect(Mat& Image) {
     headTranslation.Y = p[1];
     headTranslation.Z = p[2];
     mHeadTransform = MakeTransform(headRotation, headTranslation);
+
+    // Mediapipe
+    MediapipeDetect(Image);
+    UpdateHolistic(mHolistic);
+
+    mSkelConverter.Process(mHolistic);
 
     // MocapMp
     MocapMpDetect(Image);
@@ -111,4 +127,50 @@ FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation) {
     transform.Rotation = Rotation;
 
     return transform;
+}
+
+void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
+
+    int num = Rows * Cols;
+    memcpy(Dest, Src, num);
+
+}
+
+void Mocap::UpdateHolistic(Holistic& Data) {
+
+    float* pFacemesh;
+    MediapipeGetFacemesh(Data.HasFacemesh, pFacemesh);
+
+    CopyArray2D(pFacemesh, &(Data.facemesh[0][0]),
+        Data.FACEMESH_LANDMARK_NUM,
+        Data.DIMENSIONS);
+
+    float* pPose;
+    MediapipeGetPose(Data.HasPose, pPose);
+
+    CopyArray2D(pPose, &(Data.pose[0][0]),
+        Data.POSE_LANDMARK_NUM,
+        Data.DIMENSIONS);
+
+    float* pLeftHand;
+    MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);
+
+    CopyArray2D(pLeftHand, &(Data.LeftHand[0][0]),
+        Data.HAND_LANDMARK_NUM,
+        Data.DIMENSIONS);
+
+    //cout << "HasLeftHand: " << Data.HasLeftHand << endl;
+    //cout << "LeftHand[0][0]: " << Data.LeftHand[0][0] << endl;
+
+    float* pRightHand;
+    MediapipeGetRightHand(Data.HasRightHand, pRightHand);
+
+    CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
+        Data.HAND_LANDMARK_NUM,
+        Data.DIMENSIONS);
+
+    //cout << "HasRightHand: " << Data.HasRightHand << endl;
+    //cout << "RightHand[0][0]: " << Data.RightHand[0][0] << endl;
+
+
 }
