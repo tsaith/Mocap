@@ -5,9 +5,6 @@
 #include "libmediapipe.h"
 #include "libmocap_mp.h"
  
-
-
-
 Mocap::Mocap() {
 
     mBlendshapes.assign(mNumBlendshapes, 0);
@@ -21,7 +18,7 @@ Mocap::~Mocap() {
 
     FacialExpressionFinalize();
     MediapipeFinalize();
-    MocapMpFinalize();
+    //MocapMpFinalize();
 
 }
 
@@ -35,9 +32,6 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);
-
-    // MocapMp
-    MocapMpInit(ImageWidth, ImageHeight);
 
 }
 
@@ -76,11 +70,8 @@ void Mocap::Detect(Mat& Image) {
     MediapipeDetect(Image);
     UpdateHolistic(mHolistic);
 
+    // Skeleton converter
     mSkelConverter.Process(mHolistic);
-
-    // MocapMp
-    MocapMpDetect(Image);
-
 
 }
 
@@ -103,8 +94,9 @@ FTransform Mocap::GetSkelTransform(int Index) {
 
     float* pQuat;
     float* pBone;
-    pQuat = MocapMpGetQuat(Index);
-    pBone = MocapMpGetBone(Index);
+
+    pQuat = mSkelConverter.GetQuat(Index);
+    pBone = mSkelConverter.GetBone(Index);
 
     transform.Rotation.X = pQuat[1];
     transform.Rotation.Y = pQuat[2];
@@ -132,7 +124,7 @@ FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation) {
 void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
     int num = Rows * Cols;
-    memcpy(Dest, Src, num);
+    memcpy(Dest, Src, sizeof(float)*num);
 
 }
 
@@ -159,18 +151,11 @@ void Mocap::UpdateHolistic(Holistic& Data) {
         Data.HAND_LANDMARK_NUM,
         Data.DIMENSIONS);
 
-    //cout << "HasLeftHand: " << Data.HasLeftHand << endl;
-    //cout << "LeftHand[0][0]: " << Data.LeftHand[0][0] << endl;
-
     float* pRightHand;
     MediapipeGetRightHand(Data.HasRightHand, pRightHand);
 
     CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
         Data.HAND_LANDMARK_NUM,
         Data.DIMENSIONS);
-
-    //cout << "HasRightHand: " << Data.HasRightHand << endl;
-    //cout << "RightHand[0][0]: " << Data.RightHand[0][0] << endl;
-
 
 }

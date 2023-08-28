@@ -110,8 +110,13 @@ int main()
             blendshapes[i] = p[i];
         }
 
-        //cout << "isFaceDetected: " << isFaceDetected << endl;
+        p = MocapGetSkelTransform(5);
 
+        cout << "RightHand qx: " << p[0] << endl;
+        cout << "RightHand x: " << p[4] << endl;
+        cout << "RightHand y: " << p[5] << endl;
+        cout << "RightHand z: " << p[6] << endl;
+  
         // Draw messages
         textPlotter.ResetPosition();
         msg = "fps: " + to_string(int(fps));

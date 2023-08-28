@@ -150,7 +150,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\MocapLive\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world3410.lib;LibFacialExpression.lib;libmediapipe.lib;libmocap_mp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world3410.lib;LibFacialExpression.lib;libmediapipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d ".\LibMocap.h" "C:\opt\MocapLive\include"
@@ -162,20 +162,34 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
     <ClInclude Include="LibMocap.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SkelConverter\bone_stabilizer.hpp" />
+    <ClInclude Include="SkelConverter\calibration.hpp" />
+    <ClInclude Include="SkelConverter\camera.hpp" />
     <ClInclude Include="SkelConverter\db_utils.h" />
+    <ClInclude Include="SkelConverter\gesture.hpp" />
+    <ClInclude Include="SkelConverter\gesture_detector.hpp" />
     <ClInclude Include="SkelConverter\hand_stabilizer.h" />
     <ClInclude Include="SkelConverter\head_stabilizer.h" />
     <ClInclude Include="SkelConverter\holistic.hpp" />
     <ClInclude Include="SkelConverter\holistic_correction.h" />
+    <ClInclude Include="SkelConverter\image_exporter.hpp" />
+    <ClInclude Include="SkelConverter\kalman1d.hpp" />
+    <ClInclude Include="SkelConverter\kalman_filter.hpp" />
     <ClInclude Include="SkelConverter\key_utils.h" />
     <ClInclude Include="SkelConverter\libplot.h" />
     <ClInclude Include="SkelConverter\math_utils.h" />
+    <ClInclude Include="SkelConverter\one_euro_filter.hpp" />
     <ClInclude Include="SkelConverter\pose_utils.h" />
     <ClInclude Include="SkelConverter\quat_smoother.h" />
+    <ClInclude Include="SkelConverter\quat_stabilizer.hpp" />
     <ClInclude Include="SkelConverter\signal_analyzer.h" />
     <ClInclude Include="SkelConverter\SkelConverter.h" />
     <ClInclude Include="SkelConverter\skeleton_factory.h" />
     <ClInclude Include="SkelConverter\skeleton_plotter.h" />
+    <ClInclude Include="SkelConverter\text_plotter.hpp" />
+    <ClInclude Include="SkelConverter\timer.hpp" />
+    <ClInclude Include="SkelConverter\time_utils.hpp" />
+    <ClInclude Include="SkelConverter\video_player.hpp" />
     <ClInclude Include="TypeDef.h" />
   </ItemGroup>
   <ItemGroup>

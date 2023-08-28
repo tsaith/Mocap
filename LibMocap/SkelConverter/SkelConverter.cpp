@@ -67,6 +67,18 @@ void SkelConverter::Process(Holistic& Data ) {
     // Holistic
     mHolisticMP = Data;
 
+    /*
+    cout << "In RightHand x: " << Data.pose[16][0] << endl;
+    cout << "In RightHand y: " << Data.pose[16][1] << endl;
+    cout << "In RightHand z: " << Data.pose[16][2] << endl;
+    */
+
+   /*
+    cout << "In RightHand x: " << mHolisticMP.pose[16][0] << endl;
+    cout << "In RightHand y: " << mHolisticMP.pose[16][1] << endl;
+    cout << "In RightHand z: " << mHolisticMP.pose[16][2] << endl;
+   */
+
     mHolistic = mCorrection->Process(mHolisticMP);
     mDepth = mCorrection->GetDepth();
     mIsShortDistance = mCorrection->IsShortDistance();
@@ -174,20 +186,6 @@ Skeleton SkelConverter::GetSkeletonPhys(void) {
 Gesture SkelConverter::GetGesture(void) {
     return mGesture;
 }
-
-/*
-Expression SkelConverter::GetExpression(void) {
-    return mExpression;
-}
-
-int SkelConverter::GetNumFacialCtrlParams(void) {
-    return mExpression.GetNumCtrlParams();
-}
-
-float* SkelConverter::GetFacialCtrlParams(void) {
-    return mExpression.GetCtrlParams();
-}
-*/
 
 int SkelConverter::GetLeftEye(void) {
     return mLeftBlinkEye;
