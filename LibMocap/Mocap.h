@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "TypeDef.h"
+#include "PoseUtils.h"
+#include "MHFormer/mhformer.h"
 #include "SkelConverter/holistic.hpp"
 #include "SkelConverter/SkelConverter.h"
 
@@ -13,6 +15,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace pose_utils;
 
 class Mocap {
 public:
@@ -31,6 +34,10 @@ private:
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
     void UpdateHolistic(Holistic& Data);
+    void RefinePoseDepthWithMHFormer(Holistic& Data);
+
+    int mImageWidth;
+    int mImageHeight;
 
     bool mIsFaceDetected = false;
     const int mNumBlendshapes = 52;
@@ -41,6 +48,8 @@ private:
     vector<FTransform> mSkelTransforms;
 
     Holistic mHolistic;
+
+    MHFormer mMHFormer;
 
     SkelConverter mSkelConverter;
 

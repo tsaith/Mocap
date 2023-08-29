@@ -114,6 +114,15 @@
     <ClInclude Include="SkelConverter\gesture_detector.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="MHFormer\mhformer.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="MHFormer\mhformer_utils.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="PoseUtils.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -165,6 +174,15 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="SkelConverter\db_utils.cc">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="MHFormer\mhformer.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="MHFormer\mhformer_utils.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="PoseUtils.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

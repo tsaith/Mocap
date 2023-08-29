@@ -110,7 +110,7 @@ int main()
             blendshapes[i] = p[i];
         }
 
-        p = MocapGetSkelTransform(5);
+        p = MocapGetSkelTransform(15);
 
         cout << "RightHand qx: " << p[0] << endl;
         cout << "RightHand x: " << p[4] << endl;

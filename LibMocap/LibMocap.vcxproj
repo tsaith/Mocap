@@ -137,11 +137,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;LIBMOCAP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;NOMINMAX;LIBMOCAP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\eigen;C:\opt\MocapLive\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\eigen;C:\opt\libtorch_cpu\include\torch\csrc\api\include;C:\opt\libtorch_cpu\include;C:\opt\MocapLive\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,8 +149,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\MocapLive\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world3410.lib;LibFacialExpression.lib;libmediapipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\libtorch_cpu\lib;C:\opt\MocapLive\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world3410.lib;torch_cpu.lib;c10.lib;LibFacialExpression.lib;libmediapipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d ".\LibMocap.h" "C:\opt\MocapLive\include"
@@ -160,8 +160,11 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="LibMocap.h" />
+    <ClInclude Include="MHFormer\mhformer.h" />
+    <ClInclude Include="MHFormer\mhformer_utils.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PoseUtils.h" />
     <ClInclude Include="SkelConverter\bone_stabilizer.hpp" />
     <ClInclude Include="SkelConverter\calibration.hpp" />
     <ClInclude Include="SkelConverter\camera.hpp" />
@@ -195,6 +198,8 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LibMocap.cpp" />
+    <ClCompile Include="MHFormer\mhformer.cpp" />
+    <ClCompile Include="MHFormer\mhformer_utils.cpp" />
     <ClCompile Include="Mocap.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -202,6 +207,7 @@ xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PoseUtils.cpp" />
     <ClCompile Include="SkelConverter\db_utils.cc" />
     <ClCompile Include="SkelConverter\hand_stabilizer.cc" />
     <ClCompile Include="SkelConverter\head_stabilizer.cc" />

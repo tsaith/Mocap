@@ -24,11 +24,24 @@ Mocap::~Mocap() {
 
 void Mocap::Init(int ImageWidth, int ImageHeight) {
 
+    mImageWidth = ImageWidth;
+    mImageHeight = ImageHeight;
+
     // Facial expression
     FacialExpressionInit(ImageWidth, ImageHeight);
 
     // Mediapipe 
     MediapipeInit(); 
+
+    String modelPath = "torchscript_model_traced.pth";
+
+    mMHFormer.Init(ImageWidth, ImageHeight);
+    mMHFormer.UseGpu(false);
+    mMHFormer.LoadModel(modelPath);
+
+    // Set angle used to rotate pose around x-axis
+    float angleX = -10.0;
+    mMHFormer.SetAngleAroundX(angleX);
 
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);
@@ -69,6 +82,9 @@ void Mocap::Detect(Mat& Image) {
     // Mediapipe
     MediapipeDetect(Image);
     UpdateHolistic(mHolistic);
+
+    // Refine depth with MHFormer  
+    RefinePoseDepthWithMHFormer(mHolistic);
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
@@ -159,3 +175,73 @@ void Mocap::UpdateHolistic(Holistic& Data) {
         Data.DIMENSIONS);
 
 }
+
+void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
+
+    int imageWidth = mImageWidth;
+    int imageHeight = mImageHeight;
+
+    vector<vector<float>> poseMp, pose2d, pose3d;
+
+    pose2d = InitPose2d();
+
+    // Create a vector pose from Mediapipe 
+    poseMp = CreateVectorPoseMp(&Data.pose[0][0], Data.POSE_LANDMARK_NUM, Data.DIMENSIONS);
+
+    // Convert to pixel space
+    poseMp = pose_utils::ToPixelSpace(poseMp, imageWidth, imageHeight);
+
+    // Prepare 2d pose
+    ConvertPoseMpToPose2d(poseMp, pose2d);
+
+    // Predict the depth
+    pose3d = mMHFormer.Predict(pose2d);
+
+    // Normalize pose
+    int numJoints = pose3d.size();
+    for (int i = 0; i < numJoints; i++) {
+        pose3d[i][0] /= imageWidth;
+        pose3d[i][1] /= imageHeight;
+        pose3d[i][2] /= imageWidth;
+    }
+
+    /* Update depth of Holistic data */
+
+    // Left shoulder
+    Data.pose[11][2] = pose3d[11][2];
+
+    // Right shoulder
+    Data.pose[12][2] = pose3d[14][2];
+
+    // Left elbow
+    Data.pose[13][2] = pose3d[12][2];
+
+    // Right elbow
+    Data.pose[14][2] = pose3d[15][2];
+
+    // Left wrist
+    Data.pose[15][2] = pose3d[13][2];
+
+    // Right wrist
+    Data.pose[16][2] = pose3d[16][2];
+
+    // Left hip
+    Data.pose[23][2] = pose3d[4][2];
+
+    // Right hip
+    Data.pose[24][2] = pose3d[1][2];
+
+    // Left knee
+    Data.pose[25][2] = pose3d[5][2];
+
+    // Right knee
+    Data.pose[26][2] = pose3d[2][2];
+
+    // Left ankle
+    Data.pose[27][2] = pose3d[6][2];
+
+    // Right ankle
+    Data.pose[28][2] = pose3d[3][2];
+
+}
+
