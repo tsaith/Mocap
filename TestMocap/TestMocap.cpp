@@ -102,6 +102,7 @@ int main()
 
 
         isFaceDetected = MocapIsFaceDetected();
+        cout << "isFaceDetected: " << isFaceDetected << endl;
 
         float* p; 
         p = MocapGetBlendshapes();
@@ -109,6 +110,12 @@ int main()
         for (int i = 0; i < numBlendshapes; i++) {
             blendshapes[i] = p[i];
         }
+
+        p = MocapGetHeadTransform();
+        cout << "Head qx: " << p[0] << endl;
+        cout << "Head qy: " << p[1] << endl;
+        cout << "Head qz: " << p[2] << endl;
+        cout << "Head w: " << p[3] << endl;
 
         p = MocapGetSkelTransform(15);
 

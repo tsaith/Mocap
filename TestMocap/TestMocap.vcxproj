@@ -24,6 +24,7 @@
     <ProjectGuid>{b92aec38-6351-4000-ad7d-7f76e62e5b60}</ProjectGuid>
     <RootNamespace>TestMocap</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>TestMocap</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

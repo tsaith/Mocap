@@ -7,8 +7,8 @@
 #include "math_utils.h"
 #include "holistic_correction.h"
 #include "skeleton_factory.h"
-#include "gesture_detector.hpp"
-#include "gesture.hpp"
+//#include "gesture_detector.hpp"
+//#include "gesture.hpp"
 
 static const double Radian2Angle = 57.29577951308232087684;
 
@@ -39,7 +39,7 @@ public:
     Skeleton GetSkeleton(void);
     Skeleton GetSkeletonCali(void);
     Skeleton GetSkeletonPhys(void);
-    Gesture GetGesture(void);
+    //Gesture GetGesture(void);
 
     int GetLeftEye(void);
     int GetRightEye(void);
@@ -90,8 +90,8 @@ private:
     SkeletonFactory mSkeletonFactory;
 
     // Gestures
-    gd::GestureDetector mLeftGestureDetector;
-    gd::GestureDetector mRightGestureDetector;
+    //gd::GestureDetector mLeftGestureDetector;
+    //gd::GestureDetector mRightGestureDetector;
 
     //string mEngineName = "mediapipe"; // Name of game engine;
     string mEngineName = "unreal"; // Name of game engine;
@@ -100,8 +100,7 @@ private:
     Holistic mHolisticMP;   // Mediapipe holistic raw data
     Holistic mHolistic;     // Corrected holistic raw data
     Skeleton mSkeleton;     // Skeleton
-    Gesture mGesture;       // Gesture data
-    //Expression mExpression; // Expression data
+    //Gesture mGesture;       // Gesture data
 
     int mLeftBlinkEye = 0;
     int mRightBlinkEye = 0;

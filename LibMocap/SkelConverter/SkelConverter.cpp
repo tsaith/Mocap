@@ -39,45 +39,29 @@ void SkelConverter::PostProcess() {
         // Facemesh
         float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
 
+        /*
         // Left gestures
-    #if defined (LC_MODIFY_GESTURE)
         mLeftGestureDetector.Detect(mHolistic.LeftHand, mHolistic.HasLeftHand);
-    #else
-        mLeftGestureDetector.Detect(mHolistic.LeftHand);
-    #endif
+
         mGesture.LeftStaticGesture = mLeftGestureDetector.GetStaticGesture();
         mGesture.LeftStaticGestureIdx = mLeftGestureDetector.GetStaticGestureIndex();
         mGesture.LeftDynamicGesture = mLeftGestureDetector.GetDynamicGesture();
         mGesture.LeftDynamicGestureIdx = mLeftGestureDetector.GetDynamicGestureIndex();
 
-        // Right gestures
-    #if defined (LC_MODIFY_GESTURE)
         mRightGestureDetector.Detect(mHolistic.RightHand, mHolistic.HasRightHand);
-    #else
         mRightGestureDetector.Detect(mHolistic.RightHand);
-    #endif
+
         mGesture.RightStaticGesture =  mRightGestureDetector.GetStaticGesture();
         mGesture.RightStaticGestureIdx =  mRightGestureDetector.GetStaticGestureIndex();
         mGesture.RightDynamicGesture = mRightGestureDetector.GetDynamicGesture();
         mGesture.RightDynamicGestureIdx = mRightGestureDetector.GetDynamicGestureIndex();
+        */
 }
 
 void SkelConverter::Process(Holistic& Data ) {
 
     // Holistic
     mHolisticMP = Data;
-
-    /*
-    cout << "In RightHand x: " << Data.pose[16][0] << endl;
-    cout << "In RightHand y: " << Data.pose[16][1] << endl;
-    cout << "In RightHand z: " << Data.pose[16][2] << endl;
-    */
-
-   /*
-    cout << "In RightHand x: " << mHolisticMP.pose[16][0] << endl;
-    cout << "In RightHand y: " << mHolisticMP.pose[16][1] << endl;
-    cout << "In RightHand z: " << mHolisticMP.pose[16][2] << endl;
-   */
 
     mHolistic = mCorrection->Process(mHolisticMP);
     mDepth = mCorrection->GetDepth();
@@ -95,6 +79,7 @@ void SkelConverter::Process(Holistic& Data ) {
     // Facemesh
     float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
 
+    /*
     // Left gestures
     mLeftGestureDetector.Detect(mHolistic.LeftHand, mHolistic.HasLeftHand);
 
@@ -110,6 +95,7 @@ void SkelConverter::Process(Holistic& Data ) {
     mGesture.RightStaticGestureIdx =  mRightGestureDetector.GetStaticGestureIndex();
     mGesture.RightDynamicGesture = mRightGestureDetector.GetDynamicGesture();
     mGesture.RightDynamicGestureIdx = mRightGestureDetector.GetDynamicGestureIndex();
+    */
 
 }
 
@@ -183,9 +169,11 @@ Skeleton SkelConverter::GetSkeletonPhys(void) {
     return mSkeletonPhys;
 }
 
+/*
 Gesture SkelConverter::GetGesture(void) {
     return mGesture;
 }
+*/
 
 int SkelConverter::GetLeftEye(void) {
     return mLeftBlinkEye;

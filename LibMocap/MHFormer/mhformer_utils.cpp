@@ -1,437 +1,442 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 #include "mhformer_utils.h"
 
-
 namespace mhformer_utils {
 
-    Vector2d GetMockKeypoints() {
+#define M_PI 3.14159265359
 
-        Vector2d keypoints{
+	Vector2d GetMockKeypoints() {
 
-            {640.0000, 360.0000},
-            {605.3012, 349.5903},
-            {598.3614, 498.7952},
-            {501.2048, 526.5542},
-            {674.6988, 370.4096},
-            {657.3494, 540.4338},
-            {660.8193, 696.5783},
-            {662.5542, 273.2530},
-            {643.4699, 180.7229},
-            {626.1205, 155.2771},
-            {623.5180, 120.5783},
-            {716.3374, 186.5060},
-            {771.8554, 252.4337},
-            {709.3976, 294.0723},
-            {598.3614, 186.5060},
-            {539.3735, 231.6144},
-            {598.3614, 294.0723}
+		Vector2d keypoints{
 
-        };
+			{640.0000f, 360.0000f},
+			{605.3012f, 349.5903f},
+			{598.3614f, 498.7952f},
+			{501.2048f, 526.5542f},
+			{674.6988f, 370.4096f},
+			{657.3494f, 540.4338f},
+			{660.8193f, 696.5783f},
+			{662.5542f, 273.2530f},
+			{643.4699f, 180.7229f},
+			{626.1205f, 155.2771f},
+			{623.5180f, 120.5783f},
+			{716.3374f, 186.5060f},
+			{771.8554f, 252.4337f},
+			{709.3976f, 294.0723f},
+			{598.3614f, 186.5060f},
+			{539.3735f, 231.6144f},
+			{598.3614f, 294.0723f}
 
-        return keypoints;
+		};
 
-    }
+		return keypoints;
 
-    Vector2d InitVec2d(int Rows, int Cols) {
-        Vector2d vec2d(Rows, vector<float>(Cols, 0.0));
-        return vec2d;
-    }
+	}
 
-    Vector3d InitVec3d(int Nt, int Rows, int Cols) {
+	Vector2d InitVec2d(int Rows, int Cols) {
+		Vector2d vec2d(Rows, vector<float>(Cols, 0.0));
+		return vec2d;
+	}
 
-        Vector3d vec3d;
-        for (int i = 0; i < Nt; i++) {
-            vec3d.push_back(InitVec2d(Rows, Cols));
-        }
+	Vector3d InitVec3d(int Nt, int Rows, int Cols) {
 
-        return vec3d;
+		Vector3d vec3d;
+		for (int i = 0; i < Nt; i++) {
+			vec3d.push_back(InitVec2d(Rows, Cols));
+		}
 
-    }
+		return vec3d;
 
-    Vector4d InitVec4d(int BatchSize, int Nt, int Rows, int Cols) {
+	}
 
-        Vector4d vec4d;
-        for (int i = 0; i < BatchSize; i++) {
-            vec4d.push_back(InitVec3d(Nt, Rows, Cols));
-        }
+	Vector4d InitVec4d(int BatchSize, int Nt, int Rows, int Cols) {
 
-        return vec4d;
+		Vector4d vec4d;
+		for (int i = 0; i < BatchSize; i++) {
+			vec4d.push_back(InitVec3d(Nt, Rows, Cols));
+		}
 
-    }
+		return vec4d;
 
-    Vector2d AllocatePose2d() {
+	}
 
-        const int numJoints = 17;
-        const int dims = 2;
+	Vector2d AllocatePose2d() {
 
-        Vector2d pose = InitVec2d(numJoints, dims);
+		const int numJoints = 17;
+		const int dims = 2;
 
-        return pose;
+		Vector2d pose = InitVec2d(numJoints, dims);
 
-    }
+		return pose;
 
+	}
 
-    Vector2d RescaleAndShiftPose2d(Vector2d& Pose2d, int FrameWidth, int FrameHeight) {
 
-        Vector2d pose2d = Pose2d;
-        int numJoints = pose2d.size();
+	Vector2d RescaleAndShiftPose2d(Vector2d& Pose2d, int FrameWidth, int FrameHeight) {
 
+		Vector2d pose2d = Pose2d;
+		size_t numJoints = pose2d.size();
 
-        // Resale
-        float xMin, xMax;
-        float yMin, yMax;
-        float dx, dy;
 
-        GetPoseMinMax(xMin, xMax, pose2d, 0);
-        GetPoseMinMax(yMin, yMax, pose2d, 1);
+		// Resale
+		float xMin, xMax;
+		float yMin, yMax;
+		float dx, dy;
 
-        dx = xMax - xMin;
-        dy = yMax - yMin;
+		GetPoseMinMax(xMin, xMax, pose2d, 0);
+		GetPoseMinMax(yMin, yMax, pose2d, 1);
 
-        float ratioTarget = 0.8;
-        float dyTarget = ratioTarget * FrameHeight;
-        float ratioY = dyTarget / dy;
+		dx = xMax - xMin;
+		dy = yMax - yMin;
 
-        for (int i = 0; i < numJoints; i++) {
-            pose2d[i][0] *= ratioY;
-            pose2d[i][1] *= ratioY;
-        }
+		float ratioTarget = 0.8f;
+		float dyTarget = ratioTarget * FrameHeight;
+		float ratioY = dyTarget / dy;
 
-        // Shift
-        float xCenter = 0.5 * FrameWidth;
-        float yCenter = 0.5 * FrameHeight;
+		for (int i = 0; i < numJoints; i++) {
+			pose2d[i][0] *= ratioY;
+			pose2d[i][1] *= ratioY;
+		}
 
-        vector<float> center = { xCenter, yCenter };
-        vector<float> pelvis = pose2d[0];
-        vector<float> shift(2, 0.0);
+		// Shift
+		float xCenter = 0.5f * FrameWidth;
+		float yCenter = 0.5f * FrameHeight;
 
-        shift[0] = center[0] - pelvis[0];
-        shift[1] = center[1] - pelvis[1];
+		vector<float> center = { xCenter, yCenter };
+		vector<float> pelvis = pose2d[0];
+		vector<float> shift(2, 0.0);
 
-        for (int i = 0; i < numJoints; i++) {
-            for (int j = 0; j < 2; j++) {
-                pose2d[i][j] += shift[j];
-            }
-        }
+		shift[0] = center[0] - pelvis[0];
+		shift[1] = center[1] - pelvis[1];
 
-        return pose2d;
+		for (int i = 0; i < numJoints; i++) {
+			for (int j = 0; j < 2; j++) {
+				pose2d[i][j] += shift[j];
+			}
+		}
 
-    }
+		return pose2d;
 
+	}
 
-    Vector2d NormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
-        Vector2d keypoints = Keypoints;
+	Vector2d NormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
-        int numJoints = Keypoints.size();
-        int dim2d = Keypoints[0].size();
+		Vector2d keypoints = Keypoints;
 
-        for (int i = 0; i < numJoints; i++) {
+		size_t numJoints = Keypoints.size();
+		size_t dim2d = Keypoints[0].size();
 
-            keypoints[i][0] = 2.0 * keypoints[i][0] / FrameWidth - 1.0;
-            keypoints[i][1] = 2.0 * keypoints[i][1] / FrameWidth - 1.0 * FrameHeight / FrameWidth;
+		for (int i = 0; i < numJoints; i++) {
 
-        }
+			keypoints[i][0] = 2.0f * keypoints[i][0] / FrameWidth - 1.0f;
+			keypoints[i][1] = 2.0f * keypoints[i][1] / FrameWidth - 1.0f * FrameHeight / FrameWidth;
 
-        return keypoints;
+		}
 
-    }
+		return keypoints;
 
-    Vector2d UnnormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
+	}
 
-        Vector2d keypoints = Keypoints;
+	Vector2d UnnormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
-        int numJoints = Keypoints.size();
-        int dim2d = Keypoints[0].size();
+		Vector2d keypoints = Keypoints;
 
-        for (int i = 0; i < numJoints; i++) {
+		size_t numJoints = Keypoints.size();
+		size_t dim2d = Keypoints[0].size();
 
-            keypoints[i][0] = (keypoints[i][0] + 1.0) * 0.5 * FrameWidth;
-            keypoints[i][1] = (keypoints[i][1] + 1.0 * FrameHeight / FrameWidth) * 0.5 * FrameWidth;
+		for (int i = 0; i < numJoints; i++) {
 
-        }
+			keypoints[i][0] = (keypoints[i][0] + 1.0f) * 0.5f * FrameWidth;
+			keypoints[i][1] = (keypoints[i][1] + 1.0f * FrameHeight / FrameWidth) * 0.5f * FrameWidth;
 
-        return keypoints;
+		}
 
-    }
+		return keypoints;
 
-    Vector2d NormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
+	}
 
-        Vector2d keypoints = Keypoints;
+	Vector2d NormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
-        int numJoints = Keypoints.size();
-        for (int i = 0; i < numJoints; i++) {
+		Vector2d keypoints = Keypoints;
 
-            keypoints[i][0] = 2.0 * keypoints[i][0] / FrameWidth - 1.0;
-            keypoints[i][1] = 2.0 * keypoints[i][1] / FrameWidth - 1.0 * FrameHeight / FrameWidth;
-            keypoints[i][2] = 2.0 * keypoints[i][2] / FrameWidth - 1.0;
+		size_t numJoints = Keypoints.size();
+		for (int i = 0; i < numJoints; i++) {
 
-        }
+			keypoints[i][0] = 2.0f * keypoints[i][0] / FrameWidth - 1.0f;
+			keypoints[i][1] = 2.0f * keypoints[i][1] / FrameWidth - 1.0f * FrameHeight / FrameWidth;
+			keypoints[i][2] = 2.0f * keypoints[i][2] / FrameWidth - 1.0f;
 
-        return keypoints;
+		}
 
-    }
+		return keypoints;
 
-    Vector2d UnnormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
+	}
 
-        Vector2d keypoints = Keypoints;
+	Vector2d UnnormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
-        int numJoints = Keypoints.size();
-        for (int i = 0; i < numJoints; i++) {
+		Vector2d keypoints = Keypoints;
 
-            keypoints[i][0] = (keypoints[i][0] + 1.0) * 0.5 * FrameWidth;
-            keypoints[i][1] = (keypoints[i][1] + 1.0 * FrameHeight / FrameWidth) * 0.5 * FrameWidth;
-            keypoints[i][2] = (keypoints[i][2] + 1.0) * 0.5 * FrameWidth;
+		size_t numJoints = Keypoints.size();
+		for (int i = 0; i < numJoints; i++) {
 
-        }
+			keypoints[i][0] = (float)((keypoints[i][0] + 1.0) * 0.5 * FrameWidth);
+			keypoints[i][1] = (float)((keypoints[i][1] + 1.0 * FrameHeight / FrameWidth) * 0.5 * FrameWidth);
+			keypoints[i][2] = (float)((keypoints[i][2] + 1.0) * 0.5 * FrameWidth);
 
-        return keypoints;
+		}
 
-    }
+		return keypoints;
 
-    vector<float> InterpVec1d(vector<float>& InputVec, int OutputSize) {
+	}
 
-        int inputSize = InputVec.size();
-        std::vector<float> outputVec(OutputSize);
+	vector<float> InterpVec1d(vector<float>& InputVec, int OutputSize) {
 
-        for (int i = 0; i < OutputSize; ++i) {
+		int inputSize = (int)InputVec.size();
+		std::vector<float> outputVec(OutputSize);
 
-            float index = static_cast<float>(i * (inputSize - 1)) / static_cast<float>(OutputSize - 1);
-            int index_int = static_cast<int>(index);
-            float t = index - index_int;
+		for (int i = 0; i < OutputSize; ++i) {
 
-            outputVec[i] = (1.0f - t) * InputVec[index_int] + t * InputVec[std::min(index_int + 1, inputSize - 1)];
-        }
+			float index = static_cast<float>(i * (inputSize - 1)) / static_cast<float>(OutputSize - 1);
+			int index_int = static_cast<int>(index);
+			float t = index - index_int;
 
-        return outputVec;
-    }
+			outputVec[i] = (1.0f - t) * InputVec[index_int] + t * InputVec[std::min(index_int + 1, inputSize - 1)];
+		}
 
-    void InterpInputVec(Vector2d& InputVec, int NumFramesOut) {
+		return outputVec;
+	}
 
+	void InterpInputVec(Vector2d& InputVec, int NumFramesOut) {
 
 
-    }
 
+	}
 
-    Vector4d ConvertKeypointsToInputVec(Vector2d& Keypoints, int BatchSize, int NumFrames) {
 
-        Vector2d keypoints = Keypoints;
+	Vector4d ConvertKeypointsToInputVec(Vector2d& Keypoints, int BatchSize, int NumFrames) {
 
-        int numJoints = Keypoints.size();
-        int dim2d = Keypoints[0].size();
+		Vector2d keypoints = Keypoints;
 
-        Vector4d inputVec = InitVec4d(BatchSize, NumFrames, numJoints, dim2d);
+		int numJoints = (int)Keypoints.size();
+		int dim2d = (int)Keypoints[0].size();
 
-        for (int ib = 0; ib < BatchSize; ib++) {
-            for (int i = 0; i < NumFrames; i++) {
-                for (int j = 0; j < numJoints; j++) {
-                    for (int k = 0; k < dim2d; k++) {
-                        inputVec[ib][i][j][k] = Keypoints[j][k];
-                    }
-                }
-            }
-        }
+		Vector4d inputVec = InitVec4d(BatchSize, NumFrames, numJoints, dim2d);
 
-        return inputVec;
+		for (int ib = 0; ib < BatchSize; ib++) {
+			for (int i = 0; i < NumFrames; i++) {
+				for (int j = 0; j < numJoints; j++) {
+					for (int k = 0; k < dim2d; k++) {
+						inputVec[ib][i][j][k] = Keypoints[j][k];
+					}
+				}
+			}
+		}
 
-    }
+		return inputVec;
 
-    Vector4d CreateInputVec(Vector3d& TemporalData, int BatchSize, int NumFramesOut) {
+	}
 
-        int numFramesIn = TemporalData.size();
-        int numJoints = TemporalData[0].size();
-        int dim2d = TemporalData[0][0].size();
+	Vector4d CreateInputVec(Vector3d& TemporalData, int BatchSize, int NumFramesOut) {
 
-        Vector4d inputVec = InitVec4d(BatchSize, NumFramesOut, numJoints, dim2d);
+		int numFramesIn = (int)TemporalData.size();
+		int numJoints = (int)TemporalData[0].size();
+		int dim2d = (int)TemporalData[0][0].size();
 
-        Vector3d data = InitVec3d(numJoints, dim2d, numFramesIn);
-        Vector3d dataInterp = InitVec3d(numJoints, dim2d, NumFramesOut);
+		Vector4d inputVec = InitVec4d(BatchSize, NumFramesOut, numJoints, dim2d);
 
-        // Prepare data for interpolation
-        for (int i = 0; i < numFramesIn; i++) {
-            for (int j = 0; j < numJoints; j++) {
-                for (int k = 0; k < dim2d; k++) {
-                    data[j][k][i] = TemporalData[i][j][k];
-                }
-            }
-        }
+		Vector3d data = InitVec3d(numJoints, dim2d, numFramesIn);
+		Vector3d dataInterp = InitVec3d(numJoints, dim2d, NumFramesOut);
 
-        for (int j = 0; j < numJoints; j++) {
-            for (int k = 0; k < dim2d; k++) {
-                dataInterp[j][k] = InterpVec1d(data[j][k], NumFramesOut);
-            }
-        }
+		// Prepare data for interpolation
+		for (int i = 0; i < numFramesIn; i++) {
+			for (int j = 0; j < numJoints; j++) {
+				for (int k = 0; k < dim2d; k++) {
+					data[j][k][i] = TemporalData[i][j][k];
+				}
+			}
+		}
 
-        // Input vector
-        for (int ib = 0; ib < BatchSize; ib++) {
-            for (int i = 0; i < NumFramesOut; i++) {
-                for (int j = 0; j < numJoints; j++) {
-                    for (int k = 0; k < dim2d; k++) {
-                        inputVec[ib][i][j][k] = dataInterp[j][k][i];
-                    }
-                }
-            }
-        }
+		for (int j = 0; j < numJoints; j++) {
+			for (int k = 0; k < dim2d; k++) {
+				dataInterp[j][k] = InterpVec1d(data[j][k], NumFramesOut);
+			}
+		}
 
-        return inputVec;
+		// Input vector
+		for (int ib = 0; ib < BatchSize; ib++) {
+			for (int i = 0; i < NumFramesOut; i++) {
+				for (int j = 0; j < numJoints; j++) {
+					for (int k = 0; k < dim2d; k++) {
+						inputVec[ib][i][j][k] = dataInterp[j][k][i];
+					}
+				}
+			}
+		}
 
-    }
+		return inputVec;
 
-    torch::Tensor CreateInputTensor(Vector4d& InputVec) {
+	}
 
-        int batchSize = InputVec.size();
-        int numFrames = InputVec[0].size();
-        int numJoints = InputVec[0][0].size();
-        int dim2d = InputVec[0][0][0].size();
+	Ort::Value CreateTensor(Vector4d& Vec, vector<float>& Buffer, Ort::MemoryInfo& Info) {
 
-        torch::Tensor inputTensor = torch::zeros({ batchSize, numFrames, numJoints, dim2d },
-            torch::kFloat);
+		int64_t batchSize = Vec.size();
+		int64_t numFrames = Vec[0].size();
+		int64_t numJoints = Vec[0][0].size();
+		int64_t dims = Vec[0][0][0].size();
 
-        for (int ib = 0; ib < batchSize; ib++) {
-            for (int i = 0; i < numFrames; i++) {
-                for (int j = 0; j < numJoints; j++) {
-                    for (int k = 0; k < dim2d; k++) {
-                        inputTensor[ib][i][j][k] = InputVec[ib][i][j][k];
-                    }
-                }
-            }
-        }
+		int index = 0;
+		for (int ib = 0; ib < batchSize; ib++) {
+			for (int i = 0; i < numFrames; i++) {
+				for (int j = 0; j < numJoints; j++) {
+					for (int k = 0; k < dims; k++) {
+						Buffer[index] = Vec[ib][i][j][k];
+						index++;
+					}
+				}
+			}
+		}
 
-        return inputTensor;
+		const std::array<int64_t, 4> Shape = { 1, numFrames, numJoints, dims };
 
-    }
+		Ort::Value Tensor = Ort::Value::CreateTensor<float>(Info, Buffer.data(),
+			Buffer.size(), Shape.data(), Shape.size());
 
-    Vector2d ConvertOutputTensorToPose3d(torch::Tensor& Outputs) {
+		return Tensor;
 
-        int numJoints = Outputs.size(2);
-        int dims = 3;
+	}
 
-        Vector2d pose = InitVec2d(numJoints, dims);
-        for (int i = 0; i < numJoints; i++) {
-            for (int j = 0; j < dims; j++) {
-                pose[i][j] = Outputs[0][0][i][j].item<float>();
-            }
-        }
+	Vector2d ConvertOutputTensorToPose3d(Ort::Value& Outputs) {
 
-        return pose;
+		int numJoints = 17;
+		int dims = 3;
 
-    }
+		Vector2d pose = InitVec2d(numJoints, dims);
+		for (int i = 0; i < numJoints; i++) {
+			for (int j = 0; j < dims; j++) {
+				pose[i][j] = Outputs.At<float>({ 0, 0, i, j });
+			}
+		}
 
-    void GetPoseMinMax(float& Min, float& Max, Vector2d& PoseIn, int Direct) {
+		return pose;
 
-        int numJoints = PoseIn.size();
+	}
 
-        vector<float> data;
-        for (int i = 0; i < numJoints; i++) {
-            data.push_back(PoseIn[i][Direct]);
-        }
+	void GetPoseMinMax(float& Min, float& Max, Vector2d& PoseIn, int Direct) {
 
-        auto it = std::minmax_element(data.begin(), data.end());
-        Min = *it.first;
-        Max = *it.second;
+		size_t numJoints = PoseIn.size();
 
-    }
+		vector<float> data;
+		for (int i = 0; i < numJoints; i++) {
+			data.push_back(PoseIn[i][Direct]);
+		}
 
-    Vector2d RescaleAndShiftPose3d(Vector2d& Pose3d, Vector2d& Pose2d) {
+		auto it = std::minmax_element(data.begin(), data.end());
+		Min = *it.first;
+		Max = *it.second;
 
-        Vector2d pose3d = Pose3d;
+	}
 
-        int numJoints = pose3d.size();
-        int dims = 3;
+	Vector2d RescaleAndShiftPose3d(Vector2d& Pose3d, Vector2d& Pose2d) {
 
-        float yMinP2d, yMaxP2d;
-        float yMinP3d, yMaxP3d;
+		Vector2d pose3d = Pose3d;
 
-        GetPoseMinMax(yMinP2d, yMaxP2d, Pose2d, 1);
-        GetPoseMinMax(yMinP3d, yMaxP3d, Pose3d, 1);
+		size_t numJoints = pose3d.size();
+		int dims = 3;
 
-        float dyP2d, dyP3d;
-        dyP2d = yMaxP2d - yMinP2d;
-        dyP3d = yMaxP3d - yMinP3d;
+		float yMinP2d, yMaxP2d;
+		float yMinP3d, yMaxP3d;
 
-        float ratioY;
-        ratioY = dyP2d / dyP3d;
+		GetPoseMinMax(yMinP2d, yMaxP2d, Pose2d, 1);
+		GetPoseMinMax(yMinP3d, yMaxP3d, Pose3d, 1);
 
-        for (int i = 0; i < numJoints; i++) {
-            pose3d[i][0] *= ratioY;
-            pose3d[i][1] *= ratioY;
-            pose3d[i][2] *= ratioY;
-        }
+		float dyP2d, dyP3d;
+		dyP2d = yMaxP2d - yMinP2d;
+		dyP3d = yMaxP3d - yMinP3d;
 
-        // Shift pose
-        float targetPelvisX = Pose2d[0][0];
-        float targetPelvisY = Pose2d[0][1];
-        float targetPelvisZ = targetPelvisX;
+		float ratioY;
+		ratioY = dyP2d / dyP3d;
 
-        float shiftX = targetPelvisX - pose3d[0][0];
-        float shiftY = targetPelvisY - pose3d[0][1];
-        float shiftZ = targetPelvisZ - pose3d[0][2];
-        for (int i = 0; i < numJoints; i++) {
+		for (int i = 0; i < numJoints; i++) {
+			pose3d[i][0] *= ratioY;
+			pose3d[i][1] *= ratioY;
+			pose3d[i][2] *= ratioY;
+		}
 
-            pose3d[i][0] += shiftX;
-            pose3d[i][1] += shiftY;
-            pose3d[i][2] += shiftZ;
+		// Shift pose
+		float targetPelvisX = Pose2d[0][0];
+		float targetPelvisY = Pose2d[0][1];
+		float targetPelvisZ = targetPelvisX;
 
-        }
+		float shiftX = targetPelvisX - pose3d[0][0];
+		float shiftY = targetPelvisY - pose3d[0][1];
+		float shiftZ = targetPelvisZ - pose3d[0][2];
+		for (int i = 0; i < numJoints; i++) {
 
-        return pose3d;
+			pose3d[i][0] += shiftX;
+			pose3d[i][1] += shiftY;
+			pose3d[i][2] += shiftZ;
 
-    }
+		}
 
-    Vector2d RotatePose3dAroundX(Vector2d& Pose3d, float AngleDeg) {
+		return pose3d;
 
-        Vector2d pose3d = Pose3d;
-        int numJoints = pose3d.size();
+	}
 
-        for (int i = 0; i < numJoints; i++) {
-            pose3d[i] = RotateAroundX(pose3d[i], AngleDeg);
-        }
+	Vector2d RotatePose3dAroundX(Vector2d& Pose3d, float AngleDeg) {
 
-        return pose3d;
+		Vector2d pose3d = Pose3d;
+		size_t numJoints = pose3d.size();
 
-    }
+		for (int i = 0; i < numJoints; i++) {
+			pose3d[i] = RotateAroundX(pose3d[i], AngleDeg);
+		}
 
-    vector<float> RotateAroundX(vector<float>& Vec, float AngleDeg) {
+		return pose3d;
 
-        std::vector<float> result(3);
-        float rad = AngleDeg * M_PI / 180;  // 將角度轉換為弧度
+	}
 
-        result[0] = Vec[0];  // x 座標不變
-        result[1] = Vec[1] * std::cos(rad) - Vec[2] * std::sin(rad);  // y' = y*cos(θ) - z*sin(θ)
-        result[2] = Vec[1] * std::sin(rad) + Vec[2] * std::cos(rad);  // z' = y*sin(θ) + z*cos(θ)
+	vector<float> RotateAroundX(vector<float>& Vec, float AngleDeg) {
 
-        return result;
+		std::vector<float> result(3);
+		float rad = (float)(AngleDeg * M_PI / 180);  // 將角度轉換為弧度
 
-    }
-    Vector2d ToPixelSpace(Vector2d& PoseIn, int Width, int Height) {
+		result[0] = Vec[0];  // x 座標不變
+		result[1] = Vec[1] * std::cos(rad) - Vec[2] * std::sin(rad);  // y' = y*cos(θ) - z*sin(θ)
+		result[2] = Vec[1] * std::sin(rad) + Vec[2] * std::cos(rad);  // z' = y*sin(θ) + z*cos(θ)
 
-        Vector2d pose = PoseIn;
+		return result;
 
-        int numJoints = pose.size();
-        int dims = 3;
+	}
+	Vector2d ToPixelSpace(Vector2d& PoseIn, int Width, int Height) {
 
-        for (int i = 0; i < numJoints; i++) {
-            pose[i][0] *= Width;
-            pose[i][1] *= Height;
-            pose[i][2] *= Width;
-        }
+		Vector2d pose = PoseIn;
 
-        return pose;
+		size_t numJoints = pose.size();
+		int dims = 3;
 
-    }
+		for (int i = 0; i < numJoints; i++) {
+			pose[i][0] *= Width;
+			pose[i][1] *= Height;
+			pose[i][2] *= Width;
+		}
 
-    void PrintPoint(string Msg, vector<float>& Point, int Dims) {
+		return pose;
 
-        string outMsg = "";
-        outMsg += Msg;
-        outMsg += ": ";
-        for (int i = 0; i < Dims; i++) {
-            outMsg += "[" + std::to_string(Point[i]) + "]";
-        }
+	}
 
-        cout << outMsg << endl;
+	void PrintPoint(string Msg, vector<float>& Point, int Dims) {
 
-    }
+		string outMsg = "";
+		outMsg += Msg;
+		outMsg += ": ";
+		for (int i = 0; i < Dims; i++) {
+			outMsg += "[" + std::to_string(Point[i]) + "]";
+		}
+
+		cout << outMsg << endl;
+
+	}
 
 } // Namespace

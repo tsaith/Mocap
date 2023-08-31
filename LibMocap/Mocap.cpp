@@ -3,9 +3,9 @@
 #include "Mocap.h"
 #include "LibFacialExpression.h" 
 #include "libmediapipe.h"
-#include "libmocap_mp.h"
  
-Mocap::Mocap() {
+
+Mocap::Mocap() { 
 
     mBlendshapes.assign(mNumBlendshapes, 0);
 
@@ -18,7 +18,6 @@ Mocap::~Mocap() {
 
     FacialExpressionFinalize();
     MediapipeFinalize();
-    //MocapMpFinalize();
 
 }
 
@@ -33,10 +32,13 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     // Mediapipe 
     MediapipeInit(); 
 
-    String modelPath = "torchscript_model_traced.pth";
+    String modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
+    //String modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
+    //String modelPath = "TrainedModels/mhformer.onnx";
 
     mMHFormer.Init(ImageWidth, ImageHeight);
-    mMHFormer.UseGpu(false);
+    //mMHFormer.UseGpu(false);
+    mMHFormer.UseGpu(true);
     mMHFormer.LoadModel(modelPath);
 
     // Set angle used to rotate pose around x-axis
@@ -206,7 +208,8 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
     }
 
     /* Update depth of Holistic data */
-
+ 
+    /*
     // Left shoulder
     Data.pose[11][2] = pose3d[11][2];
 
@@ -242,6 +245,7 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
 
     // Right ankle
     Data.pose[28][2] = pose3d[3][2];
+    */
 
 }
 

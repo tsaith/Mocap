@@ -1,27 +1,24 @@
 #pragma once
 
-#include <torch/torch.h>
-#include <torch/script.h>
+#include <onnxruntime_cxx_api.h>
+#include <dml_provider_factory.h>
 
 #include <vector>
 #include <cmath>
 #include <stdio.h>
 #include <iostream>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
-
 
 namespace mhformer_utils {
 
 	typedef vector<vector<float>> Vector2d;
 	typedef vector<Vector2d> Vector3d;
 	typedef vector<Vector3d> Vector4d;
+
 
 	Vector2d GetMockKeypoints();
 	Vector2d InitVec2d(int Rows, int Cols);
@@ -39,9 +36,8 @@ namespace mhformer_utils {
 
 	Vector4d ConvertKeypointsToInputVec(Vector2d& Keypoints, int BatchSize, int NumFrames);
 	Vector4d CreateInputVec(Vector3d& TemporalData, int BatchSize, int NumFrames);
-	torch::Tensor CreateInputTensor(Vector4d& InputVec);
-
-	Vector2d ConvertOutputTensorToPose3d(torch::Tensor& Outputs);
+	Ort::Value CreateTensor(Vector4d& Vec, vector<float>& Buffer, Ort::MemoryInfo& Info);
+	Vector2d ConvertOutputTensorToPose3d(Ort::Value& Outputs);
 
 	void GetPoseMinMax(float& Min, float& Max, Vector2d& PoseIn, int Direct);
 	Vector2d RescaleAndShiftPose3d(Vector2d& Pose3d, Vector2d& Pose2d);

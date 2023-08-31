@@ -17,7 +17,7 @@ using namespace std;
 using namespace cv;
 using namespace pose_utils;
 
-class Mocap {
+class Mocap { 
 public:
 
     Mocap();
