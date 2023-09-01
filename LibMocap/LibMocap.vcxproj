@@ -144,6 +144,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\eigen;C:\opt\libtorch_cpu\include\torch\csrc\api\include;C:\opt\libtorch_cpu\include;C:\opt\MocapLive\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

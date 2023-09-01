@@ -7,11 +7,10 @@
 
 //using namespace cv;
 using namespace std;
-using namespace mhformer_utils;
+using namespace mhf;
 
 class MHFormer
 {
-
 public:
     
     MHFormer();
@@ -25,7 +24,7 @@ public:
     void Infer(Ort::Value& InputTensor, Ort::Value& OutputTensor);
 
     void SetAngleAroundX(float AngleDeg);
-    Vector2d GetPose3dPixelUnnorm();
+    mhf::Vector2d GetPose3dPixelUnnorm();
 
 
 private:
@@ -59,8 +58,8 @@ private:
     const int mDim3d = 3;
 
 
-    Vector3d mTemporalData;
-    Vector4d mInputVec;
+    mhf::Vector3d mTemporalData;
+    mhf::Vector4d mInputVec;
 
     int mInputBufferSize = mBatchSize * mNumFramesModel * mNumJoints * mDim2d;
     vector<float> mInputBuffer;
@@ -68,7 +67,7 @@ private:
     int mOutputBufferSize = mBatchSize * mNumFramesModel * mNumJoints * mDim3d;
     vector<float> mOutputBuffer;
 
-    Vector2d mPose3dPixelUnnorm;
+    mhf::Vector2d mPose3dPixelUnnorm;
     
     // Rotational angle around x-axis
     float mAngleAroundX = -10.0;

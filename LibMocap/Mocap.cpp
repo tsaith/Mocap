@@ -125,7 +125,7 @@ FTransform Mocap::GetSkelTransform(int Index) {
     transform.Translation.Y = pBone[1];
     transform.Translation.Z = pBone[2];
 
-    return transform;
+    return transform; 
 }
 
 // Private methods

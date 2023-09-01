@@ -53,7 +53,9 @@ bool MHFormer::LoadModel(string ModelPath) {
     }
     catch (std::exception& e) {
         cout << "Error: failed to create Ort session." << endl;
+        cout << "Error: " << e.what() << endl;
         cout << "Please check the model path: " << ModelPath << endl;
+        
     }
 
     return bStatus;

@@ -1,5 +1,5 @@
 #pragma once
-
+ 
 #include <onnxruntime_cxx_api.h>
 #include <dml_provider_factory.h>
 
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace cv;
 
-namespace mhformer_utils {
+namespace mhf {
 
 	typedef vector<vector<float>> Vector2d;
 	typedef vector<Vector2d> Vector3d;

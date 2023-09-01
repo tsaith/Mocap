@@ -2,9 +2,9 @@
 
 #include "mhformer_utils.h"
 
-namespace mhformer_utils {
+namespace mhf {
 
-#define M_PI 3.14159265359
+#define M_PI 3.14159265359 
 
 	Vector2d GetMockKeypoints() {
 

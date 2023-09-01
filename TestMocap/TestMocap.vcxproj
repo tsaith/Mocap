@@ -143,9 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Diag.cpp" />
+    <ClCompile Include="PlotUtils.cpp" />
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Diag.h" />
+    <ClInclude Include="PlotUtils.h" />
     <ClInclude Include="TextPlotter.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TimeUtils.hpp" />

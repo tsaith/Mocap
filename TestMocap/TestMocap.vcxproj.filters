@@ -18,6 +18,12 @@
     <ClCompile Include="TestMocap.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="PlotUtils.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Diag.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoPlayer.hpp">
@@ -30,6 +36,12 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Timer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotUtils.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Diag.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
