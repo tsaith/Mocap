@@ -23,8 +23,8 @@ int main()
     int imageWidth = 640;
     int imageHeight = 480;
 
-    bool useVideo = true;
-    //bool useVideo = false;
+    //bool useVideo = true;
+    bool useVideo = false;
     //string videoPath = "Webcam.mp4";
     string videoPath = "C:\\Users\\andrew\\Videos\\AvatarCam\\Test Videos\\MouthOpenClose.mp4";
     //string videoPath = "/home/andrew/projects/MHFormer/demo/video/TurnUpperBody.mp4";
@@ -71,11 +71,14 @@ int main()
 
     // Diagnostic
     float dt, fps;
+    Diag diag;
+    diag.Init(imageWidth, imageHeight);
+
     string msg;
     Timer timer;
     TextPlotter textPlotter;
 
-    int i, j;
+    int i;
     const int numSkelJoints = 68;
     FVector2D skelBones;
     FVector2D skelQuats;
@@ -83,8 +86,6 @@ int main()
     skelBones = InitVec2D(numSkelJoints, 3);
     skelQuats = InitVec2D(numSkelJoints, 4);
 
-    Diag diag;
-    diag.Init(imageWidth, imageHeight);
 
     int keyCode = -1;
     int frameIndex = -1;
@@ -124,7 +125,6 @@ int main()
         dt = timer.GetElapsedTime();
         fps = timer.GetFPS();
 
-
         isFaceDetected = MocapIsFaceDetected();
         cout << "isFaceDetected: " << isFaceDetected << endl;
 
@@ -163,14 +163,13 @@ int main()
 
         // Diagostics
         diag.SetInputImage(frame);
+        diag.SetFps(fps);
+        diag.SetSkeleton(skelQuats, skelBones);
+        diag.Process();
 
+        Mat diagImage = diag.GetDiagImage();
 
-        // Draw messages
-        textPlotter.ResetPosition();
-        msg = "fps: " + to_string(int(fps));
-        textPlotter.putText(frame, msg);
-
-        imshow("Input", frame);
+        imshow("Diag", diagImage);
 
         // Quit
         keyCode = waitKey(1);
