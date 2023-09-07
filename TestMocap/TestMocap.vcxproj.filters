@@ -21,7 +21,10 @@
     <ClCompile Include="PlotUtils.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Diag.cpp">
+    <ClCompile Include="TestDiag.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LibMocap\Core.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +44,10 @@
     <ClInclude Include="PlotUtils.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Diag.h">
+    <ClInclude Include="TestDiag.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\Core.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

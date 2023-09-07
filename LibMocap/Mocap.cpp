@@ -12,6 +12,8 @@ Mocap::Mocap() {
     FTransform boneTransform;
     mSkelTransforms.assign(mNumBones, boneTransform);
 
+
+
 }
 
 Mocap::~Mocap() {
@@ -48,10 +50,16 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);
 
+    // Diagnostics
+    mDiag.Init(ImageWidth, ImageHeight);
+
 }
 
 
-void Mocap::Detect(Mat& Image) {
+void Mocap::Detect(Mat& Image)
+{
+
+    mImage = Image.clone();
 
     float* p;
 
@@ -86,11 +94,44 @@ void Mocap::Detect(Mat& Image) {
     UpdateHolistic(mHolistic);
 
     // Refine depth with MHFormer  
-    RefinePoseDepthWithMHFormer(mHolistic);
+    //RefinePoseDepthWithMHFormer(mHolistic);
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
 
+}
+
+void Mocap::Diagnose()
+{
+
+    FVector2f skelQuats = InitVector2f(mNumBones, 4);
+    FVector2f skelBones = InitVector2f(mNumBones, 3);
+
+    FTransform transform;
+
+    int i;
+    for (i = 0; i < mNumBones; i++) {
+
+        transform = mSkelTransforms[i];
+
+        skelQuats[i][0] = transform.Rotation.X;
+        skelQuats[i][1] = transform.Rotation.Y;
+        skelQuats[i][2] = transform.Rotation.Z;
+        skelQuats[i][3] = transform.Rotation.W;
+
+        skelBones[i][0] = transform.Translation.X;
+        skelBones[i][1] = transform.Translation.Y;
+        skelBones[i][2] = transform.Translation.Z;
+
+    }
+
+    mDiag.SetInputImage(mImage);
+    mDiag.SetSkeleton(skelQuats, skelBones);
+    mDiag.Process();
+
+    Mat diagImage = mDiag.GetDiagImage();
+
+    imshow("Diag", diagImage);
 }
 
 bool Mocap::IsFaceDetected() {
@@ -200,7 +241,7 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
     pose3d = mMHFormer.Predict(pose2d);
 
     // Normalize pose
-    int numJoints = pose3d.size();
+    int numJoints = static_cast<int>(pose3d.size());
     for (int i = 0; i < numJoints; i++) {
         pose3d[i][0] /= imageWidth;
         pose3d[i][1] /= imageHeight;

@@ -165,12 +165,14 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Diag.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="LibMocap.h" />
     <ClInclude Include="MHFormer\mhformer.h" />
     <ClInclude Include="MHFormer\mhformer_utils.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PlotUtils.h" />
     <ClInclude Include="PoseUtils.h" />
     <ClInclude Include="SkelConverter\bone_stabilizer.hpp" />
     <ClInclude Include="SkelConverter\calibration.hpp" />
@@ -200,9 +202,15 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     <ClInclude Include="SkelConverter\timer.hpp" />
     <ClInclude Include="SkelConverter\time_utils.hpp" />
     <ClInclude Include="SkelConverter\video_player.hpp" />
+    <ClInclude Include="TextPlotter.hpp" />
+    <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="TimeUtils.hpp" />
     <ClInclude Include="TypeDef.h" />
+    <ClInclude Include="Core.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Diag.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LibMocap.cpp" />
     <ClCompile Include="MHFormer\mhformer.cpp" />
@@ -214,6 +222,7 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PlotUtils.cpp" />
     <ClCompile Include="PoseUtils.cpp" />
     <ClCompile Include="SkelConverter\db_utils.cc" />
     <ClCompile Include="SkelConverter\hand_stabilizer.cc" />

@@ -24,9 +24,11 @@ void MocapFinalize() {
 }
 
 void MocapDetect(cv::Mat& Image) {
-
     pInst->Detect(Image);
+} 
 
+void MocapDiagnose() {
+    pInst->Diagnose();
 } 
 
 bool MocapIsFaceDetected() {

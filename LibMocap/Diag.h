@@ -1,13 +1,12 @@
 #pragma once
 
+#include "Core.h"
 #include "TextPlotter.hpp" 
 
-typedef vector<vector<float>> FVector2f;
-typedef vector<vector<int>> FVector2i;
 
-using namespace std;
+using namespace core;
 
-namespace dg {
+namespace diag {
 
 
     class Diag {
@@ -21,6 +20,7 @@ namespace dg {
 
         void SetInputImage(cv::Mat& Image);
         void SetFps(float Fps);
+        void SetPoseLandmarks(FVector2f& PoseLandmarks);
 	    void SetSkeleton(
             FVector2f& Quats,
             FVector2f& Bones);
@@ -33,19 +33,21 @@ namespace dg {
 
     private:
 
-        vector<int> GetPoseIndexes(); 
-        vector<vector<int>> GetPoseConnect();
+        vector<int> GetSkelPoseIndexes(); 
+        vector<vector<int>> GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,
              vector<float> Bone, int IntFlag);
-        void PlotPose2D(cv::Mat& Image,
+        void PlotSkelBones(cv::Mat& Image,
             FVector2f& SkelBones, int IntFlag);
         cv::Mat CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
             cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut);
         FVector2f ToPixelSpace(FVector2f& SkelBones, int Width, int Height);
 
-
         int mImageWidth = 1280;
         int mImageHeight = 720;
+
+        int mNumPoseLandmarks = 33;
+        FVector2f mPoseLandmarks;
 
         int mNumSkelKeypoints = 68;
         FVector2f mSkelQuats;
@@ -59,8 +61,8 @@ namespace dg {
 
         float mFps = 0.0f;
 
-        vector<int> mPoseIndexes;
-        vector<vector<int>> mPoseConnet;
+        vector<int> mSkelPoseIndexes;
+        FVector2i mSkelPoseConnet;
         //FVector2i mPoseConnet;
         //vector<int> mPoseIndexes = GetPoseIndexes();
         //FVector2i mPoseConnet = GetPoseConnect();

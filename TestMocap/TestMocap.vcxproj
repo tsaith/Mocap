@@ -144,12 +144,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Diag.cpp" />
+    <ClCompile Include="..\LibMocap\Core.cpp" />
+    <ClCompile Include="TestDiag.cpp" />
     <ClCompile Include="PlotUtils.cpp" />
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Diag.h" />
+    <ClInclude Include="..\LibMocap\Core.h" />
+    <ClInclude Include="TestDiag.h" />
     <ClInclude Include="PlotUtils.h" />
     <ClInclude Include="TextPlotter.hpp" />
     <ClInclude Include="Timer.hpp" />

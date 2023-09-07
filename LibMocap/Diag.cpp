@@ -3,15 +3,17 @@
 #include "Diag.h"
 #include "PlotUtils.h"
 
-namespace dg {
+namespace diag {
 
     using namespace plot_utils;
 
     Diag::Diag()
     {
 
-        mPoseIndexes = GetPoseIndexes();
-        mPoseConnet = GetPoseConnect();
+        mPoseLandmarks = InitVector2f(mNumPoseLandmarks, 4);
+
+        mSkelPoseIndexes = GetSkelPoseIndexes();
+        mSkelPoseConnet = GetSkelPoseConnect();
 
     }
 
@@ -63,9 +65,9 @@ namespace dg {
             CV_8UC3, cv::Scalar(255, 255, 255));
 
         // Cross-section
-        PlotPose2D(frontView, bonesPixel, 0);
-        PlotPose2D(sideView, bonesPixel, 1);
-        PlotPose2D(topView, bonesPixel, 2);
+        PlotSkelBones(frontView, bonesPixel, 0);
+        PlotSkelBones(sideView, bonesPixel, 1);
+        PlotSkelBones(topView, bonesPixel, 2);
 
 
         // Write message 
@@ -90,7 +92,7 @@ namespace dg {
         return mSkelImage;
     }
 
-    vector<int> Diag::GetPoseIndexes()
+    vector<int> Diag::GetSkelPoseIndexes()
     {
         vector<int> indexes
         {
@@ -104,7 +106,7 @@ namespace dg {
         return indexes;
     }
 
-    vector<vector<int>> Diag::GetPoseConnect()
+    FVector2i Diag::GetSkelPoseConnect()
     {
 
         vector<vector<int>> connect
@@ -146,9 +148,15 @@ namespace dg {
     }
 
 
-    void Diag::PlotPose2D(cv::Mat& Image,
+    void Diag::PlotSkelBones(cv::Mat& Image,
         FVector2f& SkelBones, int IntFlag)
     {
+        /*
+        IntFlag: Flag of view angle
+            0: x-y 
+            1: z-y
+            2: x-z
+        */
 
         // Plot connection lines
         int indexStart, indexEnd;
@@ -167,8 +175,8 @@ namespace dg {
             GetBone2D(x1, y1, SkelBones[indexStart], IntFlag);
             GetBone2D(x2, y2, SkelBones[indexEnd], IntFlag);
 
-            p1 = cv::Point(x1, y1);
-            p2 = cv::Point(x2, y2);
+            p1 = cv::Point(int(x1), int(y1));
+            p2 = cv::Point(int(x2), int(y2));
 
             line(Image, p1, p2, lineColor, lineThickness, cv::LINE_8);
         }

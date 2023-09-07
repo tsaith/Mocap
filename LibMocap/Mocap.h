@@ -4,18 +4,19 @@
 #include <string>
 #include <iostream>
 
-#include "TypeDef.h"
+#include "Core.h"
 #include "PoseUtils.h"
 #include "MHFormer/mhformer.h"
 #include "SkelConverter/holistic.hpp"
 #include "SkelConverter/SkelConverter.h"
 
+#include "Diag.h"
 
 #include "opencv2/opencv.hpp"
 
 using namespace std;
-using namespace cv;
 using namespace pose_utils;
+using namespace diag;
 
 class Mocap { 
 public:
@@ -24,6 +25,7 @@ public:
     ~Mocap();
     void Init(int ImageWidth, int ImageHeight);
     void Detect(Mat& Image);
+    void Diagnose();
     bool IsFaceDetected();
     vector<float> GetBlendshapes();
     FTransform GetHeadTransform();
@@ -38,6 +40,8 @@ private:
 
     int mImageWidth;
     int mImageHeight;
+    Mat mImage;
+
 
     bool mIsFaceDetected = false;
     const int mNumBlendshapes = 52;
@@ -53,4 +57,7 @@ private:
 
     SkelConverter mSkelConverter;
 
+    // Diagnostics
+    bool mIsDiag = true;
+    Diag mDiag;
 };

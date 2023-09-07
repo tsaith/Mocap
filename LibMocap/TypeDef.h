@@ -1,5 +1,10 @@
 #pragma once
 
+using namespace std;
+
+typedef vector<vector<float>> FVector2f;
+typedef vector<vector<int>> FVector2i;
+
 typedef struct FVector {
 
 	float X = 0.0f;
@@ -24,4 +29,6 @@ typedef struct FTransform {
 	FVector Scale3D {1.0, 1.0, 1.0};
 
 } FTransform;
+
+
 

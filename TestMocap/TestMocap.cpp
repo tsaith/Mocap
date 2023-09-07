@@ -2,13 +2,13 @@
 #include <iostream>
  
 #include "LibMocap.h"
-#include "Diag.h"
+#include "TestDiag.h"
 
 #include "VideoPlayer.hpp" 
 #include "TextPlotter.hpp" 
 #include "Timer.hpp" 
 
-using namespace dg;
+using namespace diag;
 
 typedef vector<vector<float>> FVector2D;
 
@@ -122,6 +122,8 @@ int main()
         MocapDetect(frame);
         timer.Toc();
 
+        MocapDiagnose();
+
         dt = timer.GetElapsedTime();
         fps = timer.GetFPS();
 
@@ -169,7 +171,7 @@ int main()
 
         Mat diagImage = diag.GetDiagImage();
 
-        imshow("Diag", diagImage);
+        imshow("Win", diagImage);
 
         // Quit
         keyCode = waitKey(1);
