@@ -38,7 +38,7 @@ public:
     void ToUnityAxes(float* p);
     void ToUnityQuat(float* q);
     void ToUnityDirection(float* Dvec);
-    void Produce(Holistic &data , Skeleton* pSkel, string engineName);
+    void Produce(Holistic &data , Skeleton* pSkel);
     void SetIsShortDistance(bool Value);
     bool IsShortDistance();
 

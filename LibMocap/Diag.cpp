@@ -1,11 +1,11 @@
 #include "pch.h"
 
 #include "Diag.h"
-#include "PlotUtils.h"
+//#include "PlotUtils.h"
 
 namespace diag {
 
-    using namespace plot_utils;
+    //using namespace plot_utils;
 
     Diag::Diag()
     {
@@ -47,12 +47,10 @@ namespace diag {
 
     }
 
-
     void Diag::Process()
     {
 
         mDiagImage = mInputImage.clone();
-
 
         FVector2f bonesPixel = ToPixelSpace(mSkelBones,
             mImageWidth, mImageHeight);
@@ -167,7 +165,7 @@ namespace diag {
         cv::Point p1, p2;
         cv::Scalar lineColor = cv::Scalar(255, 0, 0);
         int lineThickness = 3;
-        for (auto& connect : GetPoseConnect()) {
+        for (auto& connect : GetSkelPoseConnect()) {
 
             indexStart = connect[0];
             indexEnd = connect[1];

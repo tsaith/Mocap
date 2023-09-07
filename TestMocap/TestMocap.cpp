@@ -23,15 +23,9 @@ int main()
     int imageWidth = 640;
     int imageHeight = 480;
 
-    //bool useVideo = true;
-    bool useVideo = false;
-    //string videoPath = "Webcam.mp4";
-    string videoPath = "C:\\Users\\andrew\\Videos\\AvatarCam\\Test Videos\\MouthOpenClose.mp4";
-    //string videoPath = "/home/andrew/projects/MHFormer/demo/video/TurnUpperBody.mp4";
-    //string videoPath = "/home/andrew/projects/MHFormer/demo/video/SquatDown.mp4";
-    //string videoPath = "/home/andrew/projects/MHFormer/demo/video/Dance1.mp4";
-    //string videoPath = "/home/andrew/projects/MHFormer/demo/video/Dance2.mp4";
-    //string videoPath = "/home/andrew/projects/MHFormer/demo/video/PosesMediapipeCanntSupport.mp4";
+    bool useVideo = true;
+    //bool useVideo = false;
+    string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead.mp4";
 
     VideoPlayer videoPlayer;
     VideoCapture capture;

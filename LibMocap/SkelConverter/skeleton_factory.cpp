@@ -790,12 +790,10 @@ void SkeletonFactory::ToUnitySkeleton() {
 }
 
 
-void SkeletonFactory::Produce( Holistic &data  ,Skeleton *pSkel, string engineName) {
+void SkeletonFactory::Produce(Holistic& data, Skeleton* pSkel) {
     /* 
     Produce skeleton.
     pSkel: pointer of skeleton.
-    engineName: Engine name. 
-        e.g. 'unreal', 'unity', 'mediapipe' 
     */
 
     mSkelP = pSkel;
@@ -808,18 +806,6 @@ void SkeletonFactory::Produce( Holistic &data  ,Skeleton *pSkel, string engineNa
 
     // Apply constraints on quaternion
     ConfineMpQuats();
-
-    /*
-    if (engineName == "unreal") {
-        ToUnrealSkeleton();
-    } else {
-        if (engineName == "unity") {
-            ToUnitySkeleton();
-        } else {
-            cout << "Warning: Use Mediapipe as the core engine." << endl;
-        }
-    }
-    */
 
 }
 

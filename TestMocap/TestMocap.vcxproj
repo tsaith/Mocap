@@ -145,18 +145,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LibMocap\Core.cpp" />
+    <ClCompile Include="..\LibMocap\PlotUtils.cpp" />
     <ClCompile Include="TestDiag.cpp" />
-    <ClCompile Include="PlotUtils.cpp" />
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LibMocap\Core.h" />
+    <ClInclude Include="..\LibMocap\PlotUtils.h" />
+    <ClInclude Include="..\LibMocap\TextPlotter.hpp" />
+    <ClInclude Include="..\LibMocap\Timer.hpp" />
+    <ClInclude Include="..\LibMocap\TimeUtils.hpp" />
+    <ClInclude Include="..\LibMocap\VideoPlayer.hpp" />
     <ClInclude Include="TestDiag.h" />
-    <ClInclude Include="PlotUtils.h" />
-    <ClInclude Include="TextPlotter.hpp" />
-    <ClInclude Include="Timer.hpp" />
-    <ClInclude Include="TimeUtils.hpp" />
-    <ClInclude Include="VideoPlayer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

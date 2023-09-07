@@ -98,6 +98,28 @@ void Mocap::Detect(Mat& Image)
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
+    
+    FTransform transform;
+    float* pQuat;
+    float* pBone;
+    for (int i = 0; i < mNumBones; i++) {
+
+        pQuat = mSkelConverter.GetQuat(i);
+        pBone = mSkelConverter.GetBone(i);
+
+        transform.Rotation.X = pQuat[1];
+        transform.Rotation.Y = pQuat[2];
+        transform.Rotation.Z = pQuat[3];
+        transform.Rotation.W = pQuat[0];
+
+        transform.Translation.X = pBone[0];
+        transform.Translation.Y = pBone[1];
+        transform.Translation.Z = pBone[2];
+
+        mSkelTransforms[i] = transform;
+
+    }
+
 
 }
 
@@ -112,7 +134,7 @@ void Mocap::Diagnose()
     int i;
     for (i = 0; i < mNumBones; i++) {
 
-        transform = mSkelTransforms[i];
+        transform = GetSkelTransform(i);
 
         skelQuats[i][0] = transform.Rotation.X;
         skelQuats[i][1] = transform.Rotation.Y;
@@ -146,27 +168,14 @@ FTransform Mocap::GetHeadTransform() {
     return mHeadTransform;
 }
 
+vector<FTransform> Mocap::GetSkelTransforms()
+{
+    return mSkelTransforms;
+}
 
-FTransform Mocap::GetSkelTransform(int Index) {
-
-    FTransform transform;
-
-    float* pQuat;
-    float* pBone;
-
-    pQuat = mSkelConverter.GetQuat(Index);
-    pBone = mSkelConverter.GetBone(Index);
-
-    transform.Rotation.X = pQuat[1];
-    transform.Rotation.Y = pQuat[2];
-    transform.Rotation.Z = pQuat[3];
-    transform.Rotation.W = pQuat[0];
-
-    transform.Translation.X = pBone[0];
-    transform.Translation.Y = pBone[1];
-    transform.Translation.Z = pBone[2];
-
-    return transform; 
+FTransform Mocap::GetSkelTransform(int Index)
+{
+    return mSkelTransforms[Index];
 }
 
 // Private methods

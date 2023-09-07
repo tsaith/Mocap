@@ -29,6 +29,7 @@ public:
     bool IsFaceDetected();
     vector<float> GetBlendshapes();
     FTransform GetHeadTransform();
+    vector<FTransform> GetSkelTransforms();
     FTransform GetSkelTransform(int Index);
 
 private:

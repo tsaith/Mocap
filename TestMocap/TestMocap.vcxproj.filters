@@ -18,36 +18,36 @@
     <ClCompile Include="TestMocap.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="PlotUtils.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="TestDiag.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="..\LibMocap\Core.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="..\LibMocap\PlotUtils.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VideoPlayer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="TextPlotter.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="TimeUtils.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="PlotUtils.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="TestDiag.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="..\LibMocap\Core.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\PlotUtils.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\TextPlotter.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\Timer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\TimeUtils.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\VideoPlayer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

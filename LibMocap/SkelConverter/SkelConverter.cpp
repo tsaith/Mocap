@@ -31,7 +31,7 @@ void SkelConverter::PostProcess() {
 
         // Skeleton
         mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
-        mSkeletonFactory.Produce(mHolisticMP , &mSkeleton, mEngineName);
+        mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
 
         // Data for calibration 
         CreateDataForCalibration();
@@ -71,7 +71,7 @@ void SkelConverter::Process(Holistic& Data ) {
     mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
     mSkeletonFactory.LoadImageSize(mImageWidth , mImageHeight);
     mSkeletonFactory.SetWeightingFactor(mRotationValue);
-    mSkeletonFactory.Produce(mHolisticMP , &mSkeleton, mEngineName);
+    mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
 
     // Data for calibration 
     CreateDataForCalibration();

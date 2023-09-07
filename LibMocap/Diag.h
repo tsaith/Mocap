@@ -3,8 +3,10 @@
 #include "Core.h"
 #include "TextPlotter.hpp" 
 
+#include <opencv2/opencv.hpp>
 
 using namespace core;
+using namespace cv;
 
 namespace diag {
 
