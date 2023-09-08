@@ -1,10 +1,8 @@
 #include "pch.h"
 
 #include "Core.h"
-
 #include <vector>
 
-using namespace std;
 
 namespace core {
 

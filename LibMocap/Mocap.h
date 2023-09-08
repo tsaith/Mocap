@@ -5,8 +5,8 @@
 #include <iostream>
 
 #include "Core.h"
-#include "PoseUtils.h"
 #include "MHFormer/mhformer.h"
+#include "PoseUtils.h"
 #include "SkelConverter/holistic.hpp"
 #include "SkelConverter/SkelConverter.h"
 

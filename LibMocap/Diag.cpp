@@ -1,11 +1,16 @@
 #include "pch.h"
 
 #include "Diag.h"
-//#include "PlotUtils.h"
+
+#include "PlotLib.h"
+#include <matplot/matplot.h>
+
 
 namespace diag {
 
     //using namespace plot_utils;
+    using namespace plotlib;
+    using namespace matplot;
 
     Diag::Diag()
     {
@@ -49,6 +54,32 @@ namespace diag {
 
     void Diag::Process()
     {
+
+
+        //vector<float> iVec{ 1, 2, 3 };
+        auto iVec = linspace(1, 3, 3);
+        //vector<float> xVec{ 1, 2, 3 };
+        //vector<float> yVec{ 1, 2, 3 };
+        vector<double> xVec{ 1, 2, 3 };
+        vector<double> yVec{ 1, 2, 3 };
+        vector<float> dataX{ 1, 2, 3 };
+        vector<float> dataY{ 1, 2, 3 };
+
+        //auto figH = figure();
+        //auto ax = figH->current_axes();
+        //auto ax = subplot(1, 1, 0);
+        auto ax = Subplot(1, 1, 0);
+
+        //figH->ioff();
+        Scatter(ax, dataX, dataY);
+        //scatter(ax, xVec, yVec);
+        //ax->scatter(xVec, yVec);
+        auto figH = gcf();
+
+        Mat mat;
+        ConvertFigureToMat(figH, mat);
+
+        cv::imshow("mywindow", mat);
 
         mDiagImage = mInputImage.clone();
 
@@ -176,7 +207,7 @@ namespace diag {
             p1 = cv::Point(int(x1), int(y1));
             p2 = cv::Point(int(x2), int(y2));
 
-            line(Image, p1, p2, lineColor, lineThickness, cv::LINE_8);
+            cv::line(Image, p1, p2, lineColor, lineThickness, cv::LINE_8);
         }
 
         // Plot keypoints

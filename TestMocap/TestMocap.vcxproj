@@ -131,8 +131,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;..\LibMocap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opt\Matplot++_1.2.0\include;C:\opt\opencv\build\include;..\LibMocap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,13 +146,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\LibMocap\Core.cpp" />
-    <ClCompile Include="..\LibMocap\PlotUtils.cpp" />
     <ClCompile Include="TestDiag.cpp" />
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\LibMocap\Core.h" />
-    <ClInclude Include="..\LibMocap\PlotUtils.h" />
     <ClInclude Include="..\LibMocap\TextPlotter.hpp" />
     <ClInclude Include="..\LibMocap\Timer.hpp" />
     <ClInclude Include="..\LibMocap\TimeUtils.hpp" />

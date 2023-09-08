@@ -107,7 +107,7 @@ namespace pose_utils {
 
         vector<vector<float>> pose = PoseIn;
 
-        int numJoints = static_cast<int>(pose.size());
+        int numJoints = pose.size();
         int dims = 3;
 
         for (int i = 0; i < numJoints; i++) {

@@ -4,6 +4,7 @@
 #include "TextPlotter.hpp" 
 
 #include <opencv2/opencv.hpp>
+#include "matplot/matplot.h"
 
 using namespace core;
 using namespace cv;
