@@ -4,13 +4,14 @@
 #include "TextPlotter.hpp" 
 
 #include <opencv2/opencv.hpp>
-#include "matplot/matplot.h"
+#include "PlotLib.h"
 
 using namespace core;
 using namespace cv;
 
 namespace diag {
 
+    using namespace plotlib;
 
     class Diag {
 
@@ -40,6 +41,8 @@ namespace diag {
         vector<vector<int>> GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,
              vector<float> Bone, int IntFlag);
+        void PlotSkelBonesV1(axes_handle& Ax,
+            FVector2f& SkelBones, int ViewFlag);
         void PlotSkelBones(cv::Mat& Image,
             FVector2f& SkelBones, int IntFlag);
         cv::Mat CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,

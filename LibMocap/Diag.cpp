@@ -2,8 +2,6 @@
 
 #include "Diag.h"
 
-#include "PlotLib.h"
-#include <matplot/matplot.h>
 
 
 namespace diag {
@@ -55,31 +53,11 @@ namespace diag {
     void Diag::Process()
     {
 
-
-        //vector<float> iVec{ 1, 2, 3 };
-        auto iVec = linspace(1, 3, 3);
-        //vector<float> xVec{ 1, 2, 3 };
-        //vector<float> yVec{ 1, 2, 3 };
-        vector<double> xVec{ 1, 2, 3 };
-        vector<double> yVec{ 1, 2, 3 };
-        vector<float> dataX{ 1, 2, 3 };
-        vector<float> dataY{ 1, 2, 3 };
-
-        //auto figH = figure();
-        //auto ax = figH->current_axes();
-        //auto ax = subplot(1, 1, 0);
-        auto ax = Subplot(1, 1, 0);
-
-        //figH->ioff();
-        Scatter(ax, dataX, dataY);
-        //scatter(ax, xVec, yVec);
-        //ax->scatter(xVec, yVec);
         auto figH = gcf();
+        figH->ioff();
+        figH->size(800, 600);
+        //figH->size(1280, 720);
 
-        Mat mat;
-        ConvertFigureToMat(figH, mat);
-
-        cv::imshow("mywindow", mat);
 
         mDiagImage = mInputImage.clone();
 
@@ -94,10 +72,24 @@ namespace diag {
             CV_8UC3, cv::Scalar(255, 255, 255));
 
         // Cross-section
-        PlotSkelBones(frontView, bonesPixel, 0);
-        PlotSkelBones(sideView, bonesPixel, 1);
-        PlotSkelBones(topView, bonesPixel, 2);
+        auto ax0 = subplot(figH, 2, 2, 0);
+        hold(ax0, false);
+        PlotSkelBonesV1(ax0, bonesPixel, 0);
 
+        auto ax1 = subplot(figH, 2, 2, 1);
+        hold(ax1, false);
+        PlotSkelBonesV1(ax1, bonesPixel, 1);
+
+        auto ax2 = subplot(figH, 2, 2, 2);
+        hold(ax2, false);
+        PlotSkelBonesV1(ax2, bonesPixel, 2);
+
+
+        //figH->draw();
+
+        Mat mat;
+        ConvertFigureToMat(figH, mat);
+        cv::imshow("mywindow", mat);
 
         // Write message 
         mTextPlotter.ResetPosition();
@@ -176,6 +168,76 @@ namespace diag {
 
     }
 
+
+    void Diag::PlotSkelBonesV1(axes_handle& Ax,
+        FVector2f& SkelBones, int ViewFlag)
+    {
+        /*
+        ViewFlag: Flag of view angle
+            0: x-y 
+            1: z-y
+            2: x-z
+        */
+
+        // Plot connection lines
+        int indexStart, indexEnd;
+        float x1 = 0.0f;
+        float y1 = 0.0f;
+        float x2 = 0.0f;
+        float y2 = 0.0f;
+
+        vector<float> lineX {0.f, 0.f};
+        vector<float> lineY {0.f, 0.f};
+        int lineThickness = 3;
+        for (auto& connect : GetSkelPoseConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, SkelBones[indexStart], ViewFlag);
+            GetBone2D(x2, y2, SkelBones[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineX[1] = x2;
+
+            lineY[0] = y1;
+            lineY[1] = y2;
+
+            Plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
+
+        // Plot keypoints
+        vector<float> pX;
+        vector<float> pY;
+        float x = 0.0f;
+        float y = 0.0f;
+        for (auto& bone : SkelBones) {
+
+            GetBone2D(x, y, bone, ViewFlag);
+            pX.push_back(x);
+            pY.push_back(y);
+        }
+
+        hold(Ax, true);
+        Scatter(Ax, pX, pY);
+
+        if (ViewFlag == 0) {
+            Ax->xlim({0, 640});
+            Ax->ylim({0, 480*2});
+            Ax->y_axis().reverse(true);
+        }
+        else if (ViewFlag == 1) {
+            Ax->xlim({-320, 320});
+            Ax->ylim({0, 480*2});
+            Ax->y_axis().reverse(true);
+        }
+        else {
+            Ax->xlim({0, 640});
+            Ax->ylim({-320, 320});
+        }
+
+    }
 
     void Diag::PlotSkelBones(cv::Mat& Image,
         FVector2f& SkelBones, int IntFlag)

@@ -34,7 +34,7 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     // Mediapipe 
     MediapipeInit(); 
 
-    String modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
+    string modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
     //String modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
     //String modelPath = "TrainedModels/mhformer.onnx";
 
@@ -153,7 +153,7 @@ void Mocap::Diagnose()
 
     Mat diagImage = mDiag.GetDiagImage();
 
-    imshow("Diag", diagImage);
+    cv::imshow("Diag", diagImage);
 }
 
 bool Mocap::IsFaceDetected() {
