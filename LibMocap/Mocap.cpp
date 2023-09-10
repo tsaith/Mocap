@@ -94,7 +94,7 @@ void Mocap::Detect(Mat& Image)
     UpdateHolistic(mHolistic);
 
     // Refine depth with MHFormer  
-    //RefinePoseDepthWithMHFormer(mHolistic);
+    RefinePoseDepthWithMHFormer(mHolistic);
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
@@ -126,13 +126,23 @@ void Mocap::Detect(Mat& Image)
 void Mocap::Diagnose()
 {
 
+    // Input image
+    mDiag.SetInputImage(mImage);
+
+    // Pose landmarks
+    int NumPoseLandmarks = mHolistic.GetPoseLandmarkNum();
+    FVector2f poseLandmarks = InitVector2f(NumPoseLandmarks, 4);
+
+    float* pPose = &mHolistic.pose[0][0];
+    ArrayToVector(pPose, poseLandmarks, NumPoseLandmarks, 4);
+    mDiag.SetPoseLandmarks(poseLandmarks);
+
+    // Skeleton
     FVector2f skelQuats = InitVector2f(mNumBones, 4);
     FVector2f skelBones = InitVector2f(mNumBones, 3);
 
     FTransform transform;
-
-    int i;
-    for (i = 0; i < mNumBones; i++) {
+    for (int i = 0; i < mNumBones; i++) {
 
         transform = GetSkelTransform(i);
 
@@ -147,13 +157,14 @@ void Mocap::Diagnose()
 
     }
 
-    mDiag.SetInputImage(mImage);
     mDiag.SetSkeleton(skelQuats, skelBones);
+
+    // Process
     mDiag.Process();
 
-    Mat diagImage = mDiag.GetDiagImage();
-
-    cv::imshow("Diag", diagImage);
+    
+    //Mat diagImage = mDiag.GetDiagImage();
+    //cv::imshow("Diag", diagImage);
 }
 
 bool Mocap::IsFaceDetected() {
@@ -259,7 +270,6 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
 
     /* Update depth of Holistic data */
  
-    /*
     // Left shoulder
     Data.pose[11][2] = pose3d[11][2];
 
@@ -295,7 +305,6 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
 
     // Right ankle
     Data.pose[28][2] = pose3d[3][2];
-    */
 
 }
 

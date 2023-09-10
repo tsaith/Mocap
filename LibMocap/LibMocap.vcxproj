@@ -166,6 +166,7 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\VectorUtils.h" />
     <ClInclude Include="Diag.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="LibMocap.h" />
@@ -197,8 +198,11 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     <ClInclude Include="SkelConverter\quat_stabilizer.hpp" />
     <ClInclude Include="SkelConverter\signal_analyzer.h" />
     <ClInclude Include="SkelConverter\SkelConverter.h" />
+    <ClInclude Include="SkelConverter\skeleton.hpp" />
     <ClInclude Include="SkelConverter\skeleton_factory.h" />
     <ClInclude Include="SkelConverter\skeleton_plotter.h" />
+    <ClInclude Include="SkelConverter\stable_point.hpp" />
+    <ClInclude Include="SkelConverter\stable_value.hpp" />
     <ClInclude Include="SkelConverter\text_plotter.hpp" />
     <ClInclude Include="SkelConverter\timer.hpp" />
     <ClInclude Include="SkelConverter\time_utils.hpp" />
@@ -206,12 +210,13 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     <ClInclude Include="TextPlotter.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TimeUtils.hpp" />
-    <ClInclude Include="TypeDef.h" />
-    <ClInclude Include="Core.h" />
+    <ClInclude Include="Core\TypeDef.h" />
+    <ClInclude Include="Core\Core.h" />
     <ClInclude Include="VideoPlayer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Core\Core.cpp" />
+    <ClCompile Include="Core\VectorUtils.cpp" />
     <ClCompile Include="Diag.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LibMocap.cpp" />

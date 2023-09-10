@@ -1,7 +1,5 @@
 #pragma once
 
-//#include <vector>
-
 #include "TypeDef.h"
 
 namespace core {

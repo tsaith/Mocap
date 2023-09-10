@@ -21,15 +21,12 @@
     <ClCompile Include="TestDiag.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="..\LibMocap\Core.cpp">
+    <ClCompile Include="..\LibMocap\Core\Core.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestDiag.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="..\LibMocap\Core.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="..\LibMocap\TextPlotter.hpp">
@@ -42,6 +39,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="..\LibMocap\VideoPlayer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LibMocap\Core\Core.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

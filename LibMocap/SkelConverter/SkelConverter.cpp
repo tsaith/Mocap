@@ -22,9 +22,6 @@ void SkelConverter::Init(int ImageWidth, int ImageHeight) {
 
 void SkelConverter::PostProcess() {
 
-        // Holistic
-        //mHolisticMP = mDetector.GetHolistic();
-
         mHolistic = mCorrection->Process(mHolisticMP);
         mDepth = mCorrection->GetDepth();
         mIsShortDistance = mCorrection->IsShortDistance();

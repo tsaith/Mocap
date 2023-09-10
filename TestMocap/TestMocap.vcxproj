@@ -145,12 +145,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\LibMocap\Core.cpp" />
+    <ClCompile Include="..\LibMocap\Core\Core.cpp" />
     <ClCompile Include="TestDiag.cpp" />
     <ClCompile Include="TestMocap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\LibMocap\Core.h" />
+    <ClInclude Include="..\LibMocap\Core\Core.h" />
     <ClInclude Include="..\LibMocap\TextPlotter.hpp" />
     <ClInclude Include="..\LibMocap\Timer.hpp" />
     <ClInclude Include="..\LibMocap\TimeUtils.hpp" />

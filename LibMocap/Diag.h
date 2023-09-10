@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Core.h"
+#include <opencv2/opencv.hpp>
+
+#include "Core/Core.h"
+#include "PlotLib.h"
 #include "TextPlotter.hpp" 
 
-#include <opencv2/opencv.hpp>
-#include "PlotLib.h"
-
-using namespace core;
-using namespace cv;
 
 namespace diag {
 
+    using namespace core;
+    using namespace cv;
     using namespace plotlib;
 
     class Diag {
@@ -37,10 +37,15 @@ namespace diag {
 
     private:
 
+        vector<int> GetMpPoseIndexes(); 
+        FVector2i GetMpPoseConnect(); 
         vector<int> GetSkelPoseIndexes(); 
-        vector<vector<int>> GetSkelPoseConnect();
+        FVector2i GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,
              vector<float> Bone, int IntFlag);
+        void PlotPoseLandmarks(Mat& Image, FVector2f& Landmarks);
+        void PlotPoseLandmarksCore(axes_handle& Ax,
+            FVector2f& Landmarks, int ViewFlag);
         void PlotSkelBones(Mat& Image, FVector2f& Bones);
         void PlotSkelBonesCore(axes_handle& Ax,
             FVector2f& Bones, int ViewFlag);
@@ -61,6 +66,7 @@ namespace diag {
 
         cv::Mat mInputImage;
         cv::Mat mDiagImage;
+        cv::Mat mPoseImage;
         cv::Mat mSkelImage;
 
         TextPlotter mTextPlotter;

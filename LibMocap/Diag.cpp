@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "Diag.h"
 
 
@@ -38,9 +39,14 @@ namespace diag {
         mFps = Fps;
     }
 
+    void Diag::SetPoseLandmarks(FVector2f& PoseLandmarks) 
+    {
+        mPoseLandmarks = PoseLandmarks;
+    }
+
     void Diag::SetSkeleton(
-        vector<vector<float>>& Quats,
-        vector<vector<float>>& Bones)
+        FVector2f& Quats,
+        FVector2f& Bones)
     {
 
         mSkelQuats = Quats;
@@ -54,34 +60,17 @@ namespace diag {
         mDiagImage = mInputImage.clone();
 
 
-        // Make skeleton plot
+        // Plot pose
+        FVector2f posePixel = ToPixelSpace(mPoseLandmarks,
+            mImageWidth, mImageHeight);
+        PlotPoseLandmarks(mPoseImage, posePixel);
+        cv::imshow("PoseImage", mPoseImage);
+
+        // Plot skeleton
         FVector2f bonesPixel = ToPixelSpace(mSkelBones,
             mImageWidth, mImageHeight);
         PlotSkelBones(mSkelImage, bonesPixel);
-        /*
-        auto figH = figure(true);
-        figH->size(mDiagImageWidth, mDiagImageHeight);
 
-        FVector2f bonesPixel = ToPixelSpace(mSkelBones,
-            mImageWidth, mImageHeight);
-
-        // Cross-section
-        auto ax0 = subplot(figH, 2, 2, 0);
-        hold(ax0, false);
-        PlotSkelBones(ax0, bonesPixel, 0);
-
-        auto ax1 = subplot(figH, 2, 2, 1);
-        hold(ax1, false);
-        PlotSkelBones(ax1, bonesPixel, 1);
-
-        auto ax2 = subplot(figH, 2, 2, 2);
-        hold(ax2, false);
-        PlotSkelBones(ax2, bonesPixel, 2);
-
-        //figH->draw();
-
-        ConvertFigureToMat(figH, mSkelImage);
-        */
         cv::imshow("SkelImage", mSkelImage);
 
         // Write message 
@@ -100,6 +89,35 @@ namespace diag {
     cv::Mat Diag::GetSkelImage()
     {
         return mSkelImage;
+    }
+
+    vector<int> Diag::GetMpPoseIndexes()
+    {
+
+        vector<int> indexes;
+        for (int i = 0; i < mPoseLandmarks.size(); i++) {
+            indexes.push_back(i);
+        }
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetMpPoseConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {0, 1}, {1, 2}, {2,3}, {3, 7},
+            {0, 4}, {4, 5}, {5, 6}, {6, 8},
+            {9, 10},
+            {11, 12}, {12, 24}, {24, 23}, {23, 11},
+            {11, 13}, {13, 15}, {15, 21}, {15, 19}, {15, 17}, {17, 19},
+            {12, 14}, {14, 16}, {16, 22}, {16, 20}, {16, 18}, {18, 20},
+            {23, 25}, {25, 27}, {27, 29}, {27, 31}, {29, 31},
+            {24, 26}, {26, 28}, {28, 30}, {28, 32}, {30, 32}
+        };
+
+        return connect;
     }
 
     vector<int> Diag::GetSkelPoseIndexes()
@@ -157,10 +175,143 @@ namespace diag {
 
     }
 
+    void Diag::PlotPoseLandmarks(Mat& Image, FVector2f& Landmarks) {
+
+        auto figH = gcf(true);
+        figH->size(mDiagImageWidth, mDiagImageHeight);
+
+        // Cross-section
+        auto ax0 = subplot(figH, 2, 2, 0);
+        hold(ax0, false);
+        PlotPoseLandmarksCore(ax0, Landmarks, 0);
+
+        auto ax1 = subplot(figH, 2, 2, 1);
+        hold(ax1, false);
+        PlotPoseLandmarksCore(ax1, Landmarks, 1);
+
+        auto ax2 = subplot(figH, 2, 2, 2);
+        hold(ax2, false);
+        PlotPoseLandmarksCore(ax2, Landmarks, 2);
+
+        ConvertFigureToMat(figH, Image);
+
+        // Clear axes
+        cla();
+    }
+
+    void Diag::PlotPoseLandmarksCore(axes_handle& Ax,
+        FVector2f& Landmarks, int ViewFlag)
+    {
+        /*
+        ViewFlag: Flag of view angle
+            0: x-y 
+            1: z-y
+            2: x-z
+        */
+
+        float imageWidth = 640;
+        float imageHeight = 480;
+
+        double xMarginRatio = 0.25;
+        double yMarginRatio = 0.25;
+
+        float xLength = 1.0f*imageWidth * (1.0 + 2.0 * xMarginRatio);
+        float yLength = 1.0f*imageHeight * (1.0 + 2.0 * yMarginRatio);
+
+        // Plot connection lines
+        int indexStart, indexEnd;
+        float x1, y1, x2, y2;
+
+        vector<double> lineX {0.f, 0.f};
+        vector<double> lineY {0.f, 0.f};
+        int lineThickness = 3;
+        for (auto& connect : GetMpPoseConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, Landmarks[indexStart], ViewFlag);
+            GetBone2D(x2, y2, Landmarks[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineY[0] = y1;
+            lineX[1] = x2;
+            lineY[1] = y2;
+
+            plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
+
+        // Plot keypoints
+        vector<double> pX;
+        vector<double> pY;
+        float x = 0.0f;
+        float y = 0.0f;
+        for (auto& bone : Landmarks) {
+
+            GetBone2D(x, y, bone, ViewFlag);
+            pX.push_back(x);
+            pY.push_back(y);
+        }
+
+        hold(Ax, true);
+        scatter(Ax, pX, pY);
+
+        float xMin, xMax, yMin, yMax;
+        if (ViewFlag == 0) {
+
+            xMin = -xMarginRatio * imageWidth;
+            xMax = xMin + xLength;
+            yMin = -yMarginRatio * imageHeight;
+            yMax = yMin + yLength;
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
+            Ax->y_axis().reverse(true);
+
+            Ax->xlabel("x");
+            Ax->ylabel("y");
+            Ax->title("x-y");
+
+        }
+        else if (ViewFlag == 1) {
+
+            xMin = -0.5 * xLength;
+            xMax = xMin + xLength;
+            yMin = -yMarginRatio * imageHeight;
+            yMax = yMin + yLength;
+
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
+            Ax->y_axis().reverse(true);
+
+            Ax->xlabel("z");
+            Ax->ylabel("y");
+            Ax->title("z-y");
+
+        }
+        else {
+
+            xMin = -xMarginRatio * imageWidth;
+            xMax = xMin + xLength;
+            yMin = -0.5 * xLength;
+            yMax = yMin + xLength;
+
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
+
+            Ax->xlabel("x");
+            Ax->ylabel("z");
+            Ax->title("x-z");
+
+        }
+
+    }
+
+
     void Diag::PlotSkelBones(Mat& Image, FVector2f& Bones)
     {
 
-        auto figH = figure(true);
+        auto figH = gcf(true);
         figH->size(mDiagImageWidth, mDiagImageHeight);
 
         // Cross-section
@@ -178,6 +329,8 @@ namespace diag {
 
         ConvertFigureToMat(figH, Image);
 
+        // Clear axes
+        cla();
     }
 
     void Diag::PlotSkelBonesCore(axes_handle& Ax,

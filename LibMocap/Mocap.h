@@ -4,7 +4,8 @@
 #include <string>
 #include <iostream>
 
-#include "Core.h"
+#include "Core/Core.h"
+#include "Core/VectorUtils.h"
 #include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
 #include "SkelConverter/holistic.hpp"
@@ -15,6 +16,7 @@
 #include "opencv2/opencv.hpp"
 
 using namespace std;
+using namespace core;
 using namespace pose_utils;
 using namespace diag;
 
