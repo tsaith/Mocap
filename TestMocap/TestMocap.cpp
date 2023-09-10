@@ -8,7 +8,7 @@
 #include "TextPlotter.hpp" 
 #include "Timer.hpp" 
 
-using namespace diag;
+using namespace test_diag;
 
 typedef vector<vector<float>> FVector2D;
 
@@ -26,6 +26,9 @@ int main()
     bool useVideo = true;
     //bool useVideo = false;
     string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead.mp4";
+
+    // Diagnostics
+    int numDiagInterval = 4;
 
     VideoPlayer videoPlayer;
     VideoCapture capture;
@@ -65,7 +68,7 @@ int main()
 
     // Diagnostic
     float dt, fps;
-    Diag diag;
+    TestDiag diag;
     diag.Init(imageWidth, imageHeight);
 
     string msg;
@@ -116,7 +119,9 @@ int main()
         MocapDetect(frame);
         timer.Toc();
 
-        MocapDiagnose();
+        if (frameIndex % numDiagInterval == 0) {
+            MocapDiagnose();
+        }
 
         dt = timer.GetElapsedTime();
         fps = timer.GetFPS();
@@ -160,7 +165,6 @@ int main()
         // Diagostics
         diag.SetInputImage(frame);
         diag.SetFps(fps);
-        diag.SetSkeleton(skelQuats, skelBones);
         diag.Process();
 
         Mat diagImage = diag.GetDiagImage();

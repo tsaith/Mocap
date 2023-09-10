@@ -86,4 +86,27 @@ namespace plotlib {
         return vecOut;
     }
 
+    cv::Mat CvCombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
+        cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut)
+    {
+
+        // Resize the images to the final size / 2
+        cv::Mat resized1, resized2, resized3, resized4;
+        cv::resize(Img1, resized1, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
+        cv::resize(Img2, resized2, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
+        cv::resize(Img3, resized3, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
+        cv::resize(Img4, resized4, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
+
+        // Create the final image
+        cv::Mat imageOut(SizeOut, Img1.type());
+
+        // Insert the images
+        resized1.copyTo(imageOut(cv::Rect(0, 0, SizeOut.width / 2, SizeOut.height / 2)));
+        resized2.copyTo(imageOut(cv::Rect(SizeOut.width / 2, 0, SizeOut.width / 2, SizeOut.height / 2)));
+        resized3.copyTo(imageOut(cv::Rect(0, SizeOut.height / 2, SizeOut.width / 2, SizeOut.height / 2)));
+        resized4.copyTo(imageOut(cv::Rect(SizeOut.width / 2, SizeOut.height / 2, SizeOut.width / 2, SizeOut.height / 2)));
+
+        return imageOut;
+    }
+
 }

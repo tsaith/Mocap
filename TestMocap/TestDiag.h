@@ -7,44 +7,27 @@
 //using namespace std;
 using namespace core;
 
-namespace diag {
+namespace test_diag {
 
 
-    class Diag {
+    class TestDiag {
 
     public:
 
-        Diag();
-        ~Diag();
+        TestDiag();
+        ~TestDiag();
 
         void Init(int ImageWidth, int ImageHeight);
 
         void SetInputImage(cv::Mat& Image);
         void SetFps(float Fps);
-        void SetPoseLandmarks(FVector2f& PoseLandmarks);
-	    void SetSkeleton(
-            FVector2f& Quats,
-            FVector2f& Bones);
 
 	    void Process();
 
         cv::Mat GetDiagImage();
-        cv::Mat GetSkelImage();
 
 
     private:
-
-        /*
-        vector<int> GetSkelPoseIndexes(); 
-        vector<vector<int>> GetSkelPoseConnect();
-        void GetBone2D(float& Out1, float& Out2,
-             vector<float> Bone, int IntFlag);
-        void PlotSkelBones(cv::Mat& Image,
-            FVector2f& SkelBones, int IntFlag);
-        cv::Mat CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
-            cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut);
-        FVector2f ToPixelSpace(FVector2f& SkelBones, int Width, int Height);
-        */
 
         int mImageWidth = 1280;
         int mImageHeight = 720;
@@ -63,10 +46,6 @@ namespace diag {
         TextPlotter mTextPlotter;
 
         float mFps = 0.0f;
-
-        vector<int> mSkelPoseIndexes;
-        FVector2i mSkelPoseConnet;
-
 
     };
 

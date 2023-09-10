@@ -1,7 +1,5 @@
 #include "pch.h"
-
 #include "Diag.h"
-
 
 
 namespace diag {
@@ -53,43 +51,38 @@ namespace diag {
     void Diag::Process()
     {
 
-        auto figH = gcf();
-        figH->ioff();
-        figH->size(800, 600);
-        //figH->size(1280, 720);
-
-
         mDiagImage = mInputImage.clone();
+
+
+        // Make skeleton plot
+        FVector2f bonesPixel = ToPixelSpace(mSkelBones,
+            mImageWidth, mImageHeight);
+        PlotSkelBones(mSkelImage, bonesPixel);
+        /*
+        auto figH = figure(true);
+        figH->size(mDiagImageWidth, mDiagImageHeight);
 
         FVector2f bonesPixel = ToPixelSpace(mSkelBones,
             mImageWidth, mImageHeight);
 
-        cv::Mat frontView = cv::Mat(mImageHeight, mImageWidth,
-            CV_8UC3, cv::Scalar(255, 255, 255));
-        cv::Mat sideView = Mat(mImageHeight, mImageWidth,
-            CV_8UC3, cv::Scalar(255, 255, 255));
-        cv::Mat topView = Mat(mImageHeight, mImageWidth,
-            CV_8UC3, cv::Scalar(255, 255, 255));
-
         // Cross-section
         auto ax0 = subplot(figH, 2, 2, 0);
         hold(ax0, false);
-        PlotSkelBonesV1(ax0, bonesPixel, 0);
+        PlotSkelBones(ax0, bonesPixel, 0);
 
         auto ax1 = subplot(figH, 2, 2, 1);
         hold(ax1, false);
-        PlotSkelBonesV1(ax1, bonesPixel, 1);
+        PlotSkelBones(ax1, bonesPixel, 1);
 
         auto ax2 = subplot(figH, 2, 2, 2);
         hold(ax2, false);
-        PlotSkelBonesV1(ax2, bonesPixel, 2);
-
+        PlotSkelBones(ax2, bonesPixel, 2);
 
         //figH->draw();
 
-        Mat mat;
-        ConvertFigureToMat(figH, mat);
-        cv::imshow("mywindow", mat);
+        ConvertFigureToMat(figH, mSkelImage);
+        */
+        cv::imshow("SkelImage", mSkelImage);
 
         // Write message 
         mTextPlotter.ResetPosition();
@@ -97,10 +90,6 @@ namespace diag {
         string  msg;
         msg = "fps: " + to_string(int(mFps + 0.5));
         mTextPlotter.putText(mDiagImage, msg);
-
-        Size size(mImageWidth, mImageHeight);
-        mDiagImage = CombineImages2x2(mDiagImage, frontView,
-            sideView, topView, size);
 
     }
     cv::Mat Diag::GetDiagImage()
@@ -168,9 +157,31 @@ namespace diag {
 
     }
 
+    void Diag::PlotSkelBones(Mat& Image, FVector2f& Bones)
+    {
 
-    void Diag::PlotSkelBonesV1(axes_handle& Ax,
-        FVector2f& SkelBones, int ViewFlag)
+        auto figH = figure(true);
+        figH->size(mDiagImageWidth, mDiagImageHeight);
+
+        // Cross-section
+        auto ax0 = subplot(figH, 2, 2, 0);
+        hold(ax0, false);
+        PlotSkelBonesCore(ax0, Bones, 0);
+
+        auto ax1 = subplot(figH, 2, 2, 1);
+        hold(ax1, false);
+        PlotSkelBonesCore(ax1, Bones, 1);
+
+        auto ax2 = subplot(figH, 2, 2, 2);
+        hold(ax2, false);
+        PlotSkelBonesCore(ax2, Bones, 2);
+
+        ConvertFigureToMat(figH, Image);
+
+    }
+
+    void Diag::PlotSkelBonesCore(axes_handle& Ax,
+        FVector2f& Bones, int ViewFlag)
     {
         /*
         ViewFlag: Flag of view angle
@@ -179,40 +190,45 @@ namespace diag {
             2: x-z
         */
 
+        float imageWidth = 640;
+        float imageHeight = 480;
+
+        double xMarginRatio = 0.25;
+        double yMarginRatio = 0.25;
+
+        float xLength = 1.0f*imageWidth * (1.0 + 2.0 * xMarginRatio);
+        float yLength = 1.0f*imageHeight * (1.0 + 2.0 * yMarginRatio);
+
         // Plot connection lines
         int indexStart, indexEnd;
-        float x1 = 0.0f;
-        float y1 = 0.0f;
-        float x2 = 0.0f;
-        float y2 = 0.0f;
+        float x1, y1, x2, y2;
 
-        vector<float> lineX {0.f, 0.f};
-        vector<float> lineY {0.f, 0.f};
+        vector<double> lineX {0.f, 0.f};
+        vector<double> lineY {0.f, 0.f};
         int lineThickness = 3;
         for (auto& connect : GetSkelPoseConnect()) {
 
             indexStart = connect[0];
             indexEnd = connect[1];
  
-            GetBone2D(x1, y1, SkelBones[indexStart], ViewFlag);
-            GetBone2D(x2, y2, SkelBones[indexEnd], ViewFlag);
+            GetBone2D(x1, y1, Bones[indexStart], ViewFlag);
+            GetBone2D(x2, y2, Bones[indexEnd], ViewFlag);
 
             lineX[0] = x1;
-            lineX[1] = x2;
-
             lineY[0] = y1;
+            lineX[1] = x2;
             lineY[1] = y2;
 
-            Plot(Ax, lineX, lineY);
+            plot(Ax, lineX, lineY);
             hold(Ax, true);
         }
 
         // Plot keypoints
-        vector<float> pX;
-        vector<float> pY;
+        vector<double> pX;
+        vector<double> pY;
         float x = 0.0f;
         float y = 0.0f;
-        for (auto& bone : SkelBones) {
+        for (auto& bone : Bones) {
 
             GetBone2D(x, y, bone, ViewFlag);
             pX.push_back(x);
@@ -220,95 +236,56 @@ namespace diag {
         }
 
         hold(Ax, true);
-        Scatter(Ax, pX, pY);
+        scatter(Ax, pX, pY);
 
+        float xMin, xMax, yMin, yMax;
         if (ViewFlag == 0) {
-            Ax->xlim({0, 640});
-            Ax->ylim({0, 480*2});
+
+            xMin = -xMarginRatio * imageWidth;
+            xMax = xMin + xLength;
+            yMin = -yMarginRatio * imageHeight;
+            yMax = yMin + yLength;
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
             Ax->y_axis().reverse(true);
+
+            Ax->xlabel("x");
+            Ax->ylabel("y");
+            Ax->title("x-y");
+
         }
         else if (ViewFlag == 1) {
-            Ax->xlim({-320, 320});
-            Ax->ylim({0, 480*2});
+
+            xMin = -0.5 * xLength;
+            xMax = xMin + xLength;
+            yMin = -yMarginRatio * imageHeight;
+            yMax = yMin + yLength;
+
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
             Ax->y_axis().reverse(true);
+
+            Ax->xlabel("z");
+            Ax->ylabel("y");
+            Ax->title("z-y");
+
         }
         else {
-            Ax->xlim({0, 640});
-            Ax->ylim({-320, 320});
-        }
 
-    }
+            xMin = -xMarginRatio * imageWidth;
+            xMax = xMin + xLength;
+            yMin = -0.5 * xLength;
+            yMax = yMin + xLength;
 
-    void Diag::PlotSkelBones(cv::Mat& Image,
-        FVector2f& SkelBones, int IntFlag)
-    {
-        /*
-        IntFlag: Flag of view angle
-            0: x-y 
-            1: z-y
-            2: x-z
-        */
+            Ax->xlim({xMin, xMax});
+            Ax->ylim({yMin, yMax});
 
-        // Plot connection lines
-        int indexStart, indexEnd;
-        float x1 = 0.0f;
-        float y1 = 0.0f;
-        float x2 = 0.0f;
-        float y2 = 0.0f;
-        cv::Point p1, p2;
-        cv::Scalar lineColor = cv::Scalar(255, 0, 0);
-        int lineThickness = 3;
-        for (auto& connect : GetSkelPoseConnect()) {
-
-            indexStart = connect[0];
-            indexEnd = connect[1];
- 
-            GetBone2D(x1, y1, SkelBones[indexStart], IntFlag);
-            GetBone2D(x2, y2, SkelBones[indexEnd], IntFlag);
-
-            p1 = cv::Point(int(x1), int(y1));
-            p2 = cv::Point(int(x2), int(y2));
-
-            cv::line(Image, p1, p2, lineColor, lineThickness, cv::LINE_8);
-        }
-
-        // Plot keypoints
-        cv::Point point;
-        float x = 0.0f;
-        float y = 0.0f;
-        for (auto& bone : SkelBones) {
-
-            GetBone2D(x, y, bone, IntFlag);
-            point.x = int(x);
-            point.y = int(y);
-
-            cv::circle(Image, point, 3, cv::Scalar(255, 0, 255), -1);
+            Ax->xlabel("x");
+            Ax->ylabel("z");
+            Ax->title("x-z");
 
         }
 
-    }
-
-    cv::Mat Diag::CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
-        cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut)
-    {
-
-        // Resize the images to the final size / 2
-        cv::Mat resized1, resized2, resized3, resized4;
-        cv::resize(Img1, resized1, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
-        cv::resize(Img2, resized2, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
-        cv::resize(Img3, resized3, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
-        cv::resize(Img4, resized4, cv::Size(SizeOut.width / 2, SizeOut.height / 2));
-
-        // Create the final image
-        cv::Mat imageOut(SizeOut, Img1.type());
-
-        // Insert the images
-        resized1.copyTo(imageOut(cv::Rect(0, 0, SizeOut.width / 2, SizeOut.height / 2)));
-        resized2.copyTo(imageOut(cv::Rect(SizeOut.width / 2, 0, SizeOut.width / 2, SizeOut.height / 2)));
-        resized3.copyTo(imageOut(cv::Rect(0, SizeOut.height / 2, SizeOut.width / 2, SizeOut.height / 2)));
-        resized4.copyTo(imageOut(cv::Rect(SizeOut.width / 2, SizeOut.height / 2, SizeOut.width / 2, SizeOut.height / 2)));
-
-        return imageOut;
     }
 
     FVector2f Diag::ToPixelSpace(FVector2f& SkelBones, int Width, int Height)

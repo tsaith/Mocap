@@ -28,4 +28,7 @@ namespace plotlib {
     void ConvertFigureToMat(figure_handle& FigHandle, Mat& Image);
     vector<double> ConvertVectorFloatToDouble(const std::vector<float>& VecIn);
 
+    cv::Mat CvCombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
+        cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut);
+
 } // Namespace

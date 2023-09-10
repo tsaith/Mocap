@@ -41,16 +41,16 @@ namespace diag {
         vector<vector<int>> GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,
              vector<float> Bone, int IntFlag);
-        void PlotSkelBonesV1(axes_handle& Ax,
-            FVector2f& SkelBones, int ViewFlag);
-        void PlotSkelBones(cv::Mat& Image,
-            FVector2f& SkelBones, int IntFlag);
-        cv::Mat CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2,
-            cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut);
+        void PlotSkelBones(Mat& Image, FVector2f& Bones);
+        void PlotSkelBonesCore(axes_handle& Ax,
+            FVector2f& Bones, int ViewFlag);
         FVector2f ToPixelSpace(FVector2f& SkelBones, int Width, int Height);
 
         int mImageWidth = 1280;
         int mImageHeight = 720;
+
+        int mDiagImageWidth = 1280;
+        int mDiagImageHeight = 720;
 
         int mNumPoseLandmarks = 33;
         FVector2f mPoseLandmarks;
@@ -60,8 +60,8 @@ namespace diag {
         FVector2f mSkelBones;
 
         cv::Mat mInputImage;
-        cv::Mat mSkelImage;
         cv::Mat mDiagImage;
+        cv::Mat mSkelImage;
 
         TextPlotter mTextPlotter;
 
