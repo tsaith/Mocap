@@ -25,6 +25,7 @@ int main()
 
     bool useVideo = true;
     //bool useVideo = false;
+    //string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead.mp4";
     string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead_720p.mp4";
 
     // Diagnostics

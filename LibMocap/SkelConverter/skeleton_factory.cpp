@@ -19,9 +19,6 @@ void SkeletonFactory::Preprocess(Holistic &data, bool IsShortDistance) {
     mIsShortDistance = IsShortDistance;
 
     float weight;
-    float length; 
-    float dvec1[mDims];
-    float vecTmp[mDims];
 
     mPose.SetHasFace(data.HasFacemesh);
     mPose.SetHasBody(data.HasPose);
@@ -73,16 +70,6 @@ void SkeletonFactory::Preprocess(Holistic &data, bool IsShortDistance) {
 
     // Head
     VecMean(mPose.GetHead(), mPose.GetEarL(), mPose.GetEarR());
-
-    /*
-    // Correct the depth of head
-    LengthFromTwoPoints(length, mPose.GetHead(), mPose.GetNeck01());
-    if (mPose.HasFace()) {
-        VecSubstractNorm(dvec1, data.facemesh[10], data.facemesh[152]);
-        VecMultiply(vecTmp, dvec1, length);
-        VecAdd(mPose.GetHead(), mPose.GetNeck01(), vecTmp);
-    }
-    */
 
     // Upper arm
     VecCopy(mPose.GetUpperarmL(), mPose.GetShoulderL(), mDims);
@@ -459,80 +446,15 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
     // Apply Kalman filter on Pelvis
     quat = mSkelP->GetQuat(mSkelP->GetIPelvis());
 
-    // 修正轉動角度 [lc add start]
-    float angleAxis[4];
-    ConvertQuatToAngleAxis(quat, angleAxis);
-    float angleDeg = RadianToDegree(angleAxis[0]);
-    // actual = 0~45
-    if (angleDeg <= 75.0) { //frame no = #114 for TurnBody.mp4
-        //angleDeg = (angleDeg - 15.0)*0.75 + 0.0;
-        angleDeg = (angleDeg - 15.0)*0.35 + 0.0;
-    } // actual = 45~90
-    else if (angleDeg <= 93.0) { //#125
-        angleDeg = (angleDeg - 75.0)*3.0 + 45.0;
-    } // actual = 90~135
-    else if (angleDeg <= 105.0) { //#136
-        angleDeg = (angleDeg - 93.0)*4.5 + 90.0;
-    } // actual = 135~180
-    //else if (angleDeg <= 150.0) { //#146
-    else {
-        angleDeg = (angleDeg - 105.0)*1.0 + 135.0;
-    }
-
-    angleAxis[0] = DegreeToRadian (angleDeg);
-    ConvertAngleAxisToQuat(angleAxis, quat);
-
-    // dbg
-    /*ConvertQuatToAngleAxis(quat, angleAxis);
-    angleDeg = RadianToDegree(angleAxis[0]);
-    cout << "Pelvis AngleAxis: " << angleDeg << ", " << angleAxis[1] << ", " << angleAxis[2] << ", " << angleAxis[3] << endl;  
-    */
-    // [lc add end]
-
-   
-    /*
-    mPelvisQuatSmoother.Update(quat);
-    mPelvisQuatSmoother.GetUpdatedQuat(quat);
-    */ 
-
     EstimateQuat(mSkelP->GetISpine01(), dvec1Init, dvec2Init);
-
-    /*
-    // Apply smoother on Spine01
-    quat = mSkelP->GetQuat(mSkelP->GetISpine01());
-    mSpine01QuatSmoother.Update(quat);
-    mSpine01QuatSmoother.GetUpdatedQuat(quat);
-    */
-
     EstimateQuat(mSkelP->GetISpine02(), dvec1Init, dvec2Init);
-
-    /*
-    // Apply smoother on Spine02
-    quat = mSkelP->GetQuat(mSkelP->GetISpine02());
-    mSpine02QuatSmoother.Update(quat);
-    mSpine02QuatSmoother.GetUpdatedQuat(quat);
-    */
-
     EstimateQuat(mSkelP->GetISpine03(), dvec1Init, dvec2Init);
-
-    /*
-    // Apply smoother on Spine03
-    quat = mSkelP->GetQuat(mSkelP->GetISpine03());
-    mSpine03QuatSmoother.Update(quat);
-    mSpine03QuatSmoother.GetUpdatedQuat(quat);
-    */
 
     // Neck
     quat = mSkelP->GetQuat(mSkelP->GetINeck01());
     VecCopy(quat, mSkelP->GetQuatPelvis(), 4);
     //EstimateQuat(mSkelP->GetINeck01(), dvec1Init, dvec2Init);
    
-    /*
-    // Apply smoother on Neck01
-    quat = mSkelP->GetQuat(mSkelP->GetINeck01());
-    mNeck01QuatSmoother.Update(quat);
-    mNeck01QuatSmoother.GetUpdatedQuat(quat);
-    */ 
 
     // Head
     bodyYaw = mSkelP->GetBodyYaw();
@@ -544,14 +466,6 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
         VecCopy(quat, mSkelP->GetQuatPelvis(), 4);
     }
     
-    // Apply smoother on Head
-    quat = mSkelP->GetQuat(mSkelP->GetIHead());
-    
-    WeightedHeadQuat(quat , data );
-
-    mHeadQuatSmoother.Update(quat);
-    mHeadQuatSmoother.GetUpdatedQuat(quat);
-
     // Left clavicle
     VecSet(dvec1Init, 1.0, 0.0, 0.0);
     VecSet(dvec2Init, 0.0, 0.0, -1.0);
@@ -878,180 +792,6 @@ void SkeletonFactory::DebugBonePosition(Skeleton* pSkel) {
             }
         }
     }
-
-}
-
-void SkeletonFactory::EstimateQuatFromPoseOnly(float* quat ,Holistic &data )
-{
-
-    //
-    // float dvec1[3];
-    // float dvec2[3];
-
-    // float vecEarREarL[3] = {0.0 , 0.0 , 0.0 };
-    // math_utils::VecSubstractNorm(vecEarREarL ,mSkelP->GetEarR() , mSkelP->GetEarL());
-    // float EarR_coor[3];
-    // float EarL_coor[3];
-    // math_utils::VecCopy(EarR_coor, mSkelP->GetEarR());
-    // math_utils::VecCopy(EarL_coor, mSkelP->GetEarL());
-    // float Ear_middle[3] = { (EarR_coor[0] + EarL_coor[0])*0.5 , 
-    //                         (EarR_coor[1] + EarL_coor[1])*0.5 , 
-    //                         (EarR_coor[2] + EarL_coor[2])*0.5  };
-
-    // float vecNoseHeadTemp[3] = {0.0 , 0.0 , 0.0 };
-    // math_utils::VecSubstractNorm(vecNoseHeadTemp ,mSkelP->GetNose() , Ear_middle);
-  
-    // float vecHeadNeck[3] = {0.0 , 0.0 , 0.0 };
-    // math_utils::VecCrossNorm(vecHeadNeck , vecEarREarL , vecNoseHeadTemp);
- 
-    // float vecNoseHead[3] = {0.0 , 0.0 , 0.0 };
-    // math_utils::VecCrossNorm(vecNoseHead , vecHeadNeck , vecEarREarL);
-
-    // math_utils::VecCopy(dvec1, vecHeadNeck);
-    // math_utils::VecCopy(dvec2, vecNoseHead);
-    //
-
-    //RAW DATA VEC RESULT
-    float Nose_Landmark[3] = {0,0,0} ;
-    float EarR_Landmark[3] = {0,0,0} ;
-    float EarL_Landmark[3] = {0,0,0} ;
-    math_utils::VecCopy(Nose_Landmark , data.pose[0] , 3);
-    math_utils::VecCopy(EarR_Landmark , data.pose[7] , 3);
-    math_utils::VecCopy(EarL_Landmark , data.pose[8] , 3);
-    Nose_Landmark[0] = Nose_Landmark[0] * Iwidth;
-    EarR_Landmark[0] = EarR_Landmark[0] * Iwidth;
-    EarL_Landmark[0] = EarL_Landmark[0] * Iwidth;
-    Nose_Landmark[1] = Nose_Landmark[1] * Iheight;
-    EarR_Landmark[1] = EarR_Landmark[1] * Iheight;
-    EarL_Landmark[1] = EarL_Landmark[1] * Iheight;
-    Nose_Landmark[2] = Nose_Landmark[2] * Iwidth;
-    EarR_Landmark[2] = EarR_Landmark[2] * Iwidth;
-    EarL_Landmark[2] = EarL_Landmark[2] * Iwidth;
-    // cout<<"Iwidth:"<<Iwidth<<endl;
-    // cout<<"Iheight:"<<Iheight<<endl;
-    // db_utils::DbPrintArray("Nose_Landmark" , Nose_Landmark , 3);
-    // db_utils::DbPrintArray("EarR_Landmark" , EarR_Landmark , 3);
-    // db_utils::DbPrintArray("EarL_Landmark" , EarL_Landmark , 3);
-    
-    float vecEarREarL_[3] = {0.0 , 0.0 , 0.0 };
-    math_utils::VecSubstractNorm(vecEarREarL_ ,EarL_Landmark , EarR_Landmark);
-    // db_utils::DbPrintArray("vecEarREarL_" , vecEarREarL_ , 3);
-    float EarLandmarkMiddle[3] = {  (EarL_Landmark[0] + EarR_Landmark[0]) * 0.5 , 
-                                    (EarL_Landmark[1] + EarR_Landmark[1]) * 0.5 ,
-                                    (EarL_Landmark[2] + EarL_Landmark[2]) *0.5 };
-    float vecNoseHeadTemp_[3] = {0.0 , 0.0 , 0.0 };
-    math_utils::VecSubstractNorm(vecNoseHeadTemp_ , EarLandmarkMiddle , Nose_Landmark );
-    float vecHeadNeck_[3] = {0.0 , 0.0 , 0.0};
-    math_utils::VecCrossNorm(vecHeadNeck_ , vecNoseHeadTemp_ , vecEarREarL_);
-    // db_utils::DbPrintArray("vecHeadNeck_" , vecHeadNeck_ , 3);
-
-    float vecNoseHead_[3] = {0.0 ,0.0 ,0.0};
-    math_utils::VecCrossNorm(vecNoseHead_ , vecHeadNeck_ ,vecEarREarL_  );
-    // db_utils::DbPrintArray("vecNoseHead_" , vecNoseHead_ , 3);
-
-    float dvec1[3];
-    float dvec2[3];
-    math_utils::VecCopy(dvec1, vecHeadNeck_);
-    math_utils::VecCopy(dvec2, vecNoseHead_);
-    //RAW DATA VEC RESULT
-
-
-
-
-
-
-    float Posedvec1Init[3];
-    float Posedvec2Init[3];
-    math_utils::VecSet(Posedvec1Init, 0.0, -1.0, 0.0);
-    math_utils::VecSet(Posedvec2Init, 0.0, 0.0, -1.0);
-
-    float dvec2InitRotated[3];
-    math_utils::VecSet(dvec2InitRotated, 0.0, 0.0, 0.0);
-    float q1[4] = {1.0 , 0.0 , 0.0 ,0.0 };
-    float q2[4] = {1.0 , 0.0 , 0.0 ,0.0 };
-    math_utils::EstimateQuatFromTwoVectors(q1, Posedvec1Init, dvec1);
-    math_utils::EstimateRotatedVector(dvec2InitRotated, Posedvec2Init, q1);
-    math_utils::EstimateQuatFromTwoVectors(q2, dvec2InitRotated, dvec2);
-    math_utils::EstimateQuatMultiply(quat, q2, q1);
-
-    // db_utils::DbPrintArray("Ref_Quat_in_func-" , quat , 4);
-    // cout<<"kk"<<endl;
-}
-  
-void SkeletonFactory::SlerpQuat(float* quat_1 , float* quat_2 ,float t1 , float t2)
-{
-    float cos_phi = (quat_1[0]*quat_2[0]) + (quat_1[1]*quat_2[1]) + (quat_1[2]*quat_2[2]) + (quat_1[3]*quat_2[3]);
-    // cout<<"cos_phi:"<<cos_phi<<endl;
-   
-    // cout<<"phi:"<<phi<<endl;
-    if(cos_phi > 1)
-    {
-        cos_phi = 1;
-        
-    }
-     float phi = acos(cos_phi);
-    //  cout<<"acos(1):"<<acos(1)<<endl;
-    // if (phi = 0)
-    // {
-    //     t1 = 0;
-    // }
-    // float s1 = sin((phi*(1-t1*t2)))/sin(phi);
-    // float s2 = sin(phi*t1*t2);
-    // for (int i=0 ; i <4 ; i ++)
-    // {
-    //     quat_1[i] = s1 * quat_1[i] + s2 * quat_2[i];
-    // }
-    if (phi > 0)
-    {
-        float s1 = sin((phi*(1-t1*t2)))/sin(phi);
-        float s2 = sin(phi*t1*t2);
-        for (int i=0 ; i <4 ; i ++)
-        {
-            quat_1[i] = s1 * quat_1[i] + s2 * quat_2[i];
-        }
-        // cout<<"slerp"<<endl;
-    }
-
-
-}
-
-void SkeletonFactory::WeightedHeadQuat(float* quat ,Holistic &data)
-{
-    float SlperEuler[3];
-    math_utils::QuatNorm(quat);
-    
-    math_utils::ConvertQuatToEulerXYZ(quat ,SlperEuler );
-
-    // float SlerpT1 = M_PI - ((abs(SlperEuler[1]))/M_PI); 
-
-    
-    float  QuatFromPose[4];
-    EstimateQuatFromPoseOnly(QuatFromPose , data);
-    math_utils::QuatNorm(QuatFromPose);
-
-
-    // float RollAxis[3] = {0, 0 , -1};
-    // math_utils::EstimateRotatedVector(RollAxis , RollAxis ,quat);
-    // float SlerpT1 = sqrt(RollAxis[0]*RollAxis[0] + RollAxis[1] *RollAxis[1]);
-    // float SlerpT1 = abs(RollAxis[0]); 
-
-    float PithchAxis[3] = { -1.0 , 0.0 , 0.0};
-    math_utils::EstimateRotatedVector(PithchAxis , PithchAxis , quat);
-    float SlerpT1 = sqrt(PithchAxis[0]*PithchAxis[0] + PithchAxis[1] *PithchAxis[1]);
-    SlerpT1 = 1.0 - SlerpT1;
-    if(SlerpT1 > S_Threshold)
-    {
-        SlerpT1 = 1.0;
-    }
-    // cout<<"S_Threshold:"<<S_Threshold<<endl;
-    // cout<<"====="<<endl;
-    // db_utils::DbPrintArray("Ori_Quat-" , quat , 4);
-    // db_utils::DbPrintArray("Ref_Quat-" , QuatFromPose , 4);
-    // cout<<"SlerpT1:"<<SlerpT1<<endl;
-
-    SlerpQuat(quat , QuatFromPose ,SlerpT1 , 1);
-    math_utils::QuatNorm(quat);
-    // db_utils::DbPrintArray("fin_Quat-" , quat , 4);
 
 }
 

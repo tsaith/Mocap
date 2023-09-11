@@ -44,9 +44,6 @@ public:
 
     void DebugBoneRotation(int boneIndex, float* dvec1Init, float* dvec2Init);
     void DebugBonePosition(Skeleton* pSkel);
-    void EstimateQuatFromPoseOnly(float* quat  , Holistic &data);
-    void SlerpQuat(float* quat_1 , float* quat_2 , float s , float t);
-    void WeightedHeadQuat(float* quat , Holistic &data);
     void LoadImageSize(float w , float h);
     void SetWeightingFactor(double s);
 private:

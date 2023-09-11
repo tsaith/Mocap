@@ -44,8 +44,7 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mMHFormer.LoadModel(modelPath);
 
     // Set angle used to rotate pose around x-axis
-    float angleX = -10.0;
-    mMHFormer.SetAngleAroundX(angleX);
+    mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
 
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);

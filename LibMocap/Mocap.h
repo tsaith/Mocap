@@ -57,6 +57,7 @@ private:
     Holistic mHolistic;
 
     MHFormer mMHFormer;
+    float mMHFAngleAroundX = -10.0;
 
     SkelConverter mSkelConverter;
 

@@ -166,7 +166,8 @@ namespace mhf {
 
 			keypoints[i][0] = 2.0f * keypoints[i][0] / FrameWidth - 1.0f;
 			keypoints[i][1] = 2.0f * keypoints[i][1] / FrameWidth - 1.0f * FrameHeight / FrameWidth;
-			keypoints[i][2] = 2.0f * keypoints[i][2] / FrameWidth - 1.0f;
+			keypoints[i][2] = keypoints[i][2] / FrameWidth;
+			//keypoints[i][2] = 2.0f * keypoints[i][2] / FrameWidth - 1.0f;
 
 		}
 
@@ -183,7 +184,8 @@ namespace mhf {
 
 			keypoints[i][0] = (float)((keypoints[i][0] + 1.0) * 0.5 * FrameWidth);
 			keypoints[i][1] = (float)((keypoints[i][1] + 1.0 * FrameHeight / FrameWidth) * 0.5 * FrameWidth);
-			keypoints[i][2] = (float)((keypoints[i][2] + 1.0) * 0.5 * FrameWidth);
+			keypoints[i][2] = (float)(keypoints[i][2] * 0.5 * FrameWidth);
+			//keypoints[i][2] = (float)((keypoints[i][2] + 1.0) * 0.5 * FrameWidth);
 
 		}
 
@@ -367,7 +369,8 @@ namespace mhf {
 		// Shift pose
 		float targetPelvisX = Pose2d[0][0];
 		float targetPelvisY = Pose2d[0][1];
-		float targetPelvisZ = targetPelvisX;
+		float targetPelvisZ = 0.0f;
+		//float targetPelvisZ = targetPelvisX;
 
 		float shiftX = targetPelvisX - pose3d[0][0];
 		float shiftY = targetPelvisY - pose3d[0][1];
@@ -400,7 +403,7 @@ namespace mhf {
 	vector<float> RotateAroundX(vector<float>& Vec, float AngleDeg) {
 
 		std::vector<float> result(3);
-		float rad = (float)(AngleDeg * M_PI / 180);  // 將角度轉換為弧度
+		float rad = (float)(AngleDeg * M_PI / 180.0);  // 將角度轉換為弧度
 
 		result[0] = Vec[0];  // x 座標不變
 		result[1] = Vec[1] * std::cos(rad) - Vec[2] * std::sin(rad);  // y' = y*cos(θ) - z*sin(θ)
