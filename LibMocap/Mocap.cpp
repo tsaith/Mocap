@@ -57,16 +57,18 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
 void Mocap::Detect(Mat& Image)
 {
+    // Update counter
+    mCounter++;
+    if (mCounter > mCounterMax) mCounter = 0;
 
-    mImage = Image.clone();
-
-    float* p;
 
     // Facial expression
-    FacialExpressionDetect(Image);
+    mImage = Image.clone();
 
+    FacialExpressionDetect(Image);
     mIsFaceDetected = FacialExpressionIsFaceDetected();
 
+    float* p;
     p = FacialExpressionGetBlendshapes();
     for (int i = 0; i < mNumBlendshapes; i++) {
         mBlendshapes[i] = p[i];
@@ -93,7 +95,7 @@ void Mocap::Detect(Mat& Image)
     UpdateHolistic(mHolistic);
 
     // Refine depth with MHFormer  
-    RefinePoseDepthWithMHFormer(mHolistic);
+    RefinePoseDepthWithMHFormer(mHolistic, mCounter);
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
@@ -238,7 +240,7 @@ void Mocap::UpdateHolistic(Holistic& Data) {
 
 }
 
-void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
+void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) {
 
     int imageWidth = mImageWidth;
     int imageHeight = mImageHeight;
@@ -268,42 +270,46 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data) {
     }
 
     /* Update depth of Holistic data */
- 
-    // Left shoulder
-    Data.pose[11][2] = pose3d[11][2];
+    int warmUpSteps = 5; // This could avoid Unreal crashes.
+    if (Counter > warmUpSteps) {
 
-    // Right shoulder
-    Data.pose[12][2] = pose3d[14][2];
+        // Left shoulder
+        Data.pose[11][2] = pose3d[11][2];
 
-    // Left elbow
-    Data.pose[13][2] = pose3d[12][2];
+        // Right shoulder
+        Data.pose[12][2] = pose3d[14][2];
 
-    // Right elbow
-    Data.pose[14][2] = pose3d[15][2];
+        // Left elbow
+        Data.pose[13][2] = pose3d[12][2];
 
-    // Left wrist
-    Data.pose[15][2] = pose3d[13][2];
+        // Right elbow
+        Data.pose[14][2] = pose3d[15][2];
 
-    // Right wrist
-    Data.pose[16][2] = pose3d[16][2];
+        // Left wrist
+        Data.pose[15][2] = pose3d[13][2];
 
-    // Left hip
-    Data.pose[23][2] = pose3d[4][2];
+        // Right wrist
+        Data.pose[16][2] = pose3d[16][2];
 
-    // Right hip
-    Data.pose[24][2] = pose3d[1][2];
+        // Left hip
+        Data.pose[23][2] = pose3d[4][2];
 
-    // Left knee
-    Data.pose[25][2] = pose3d[5][2];
+        // Right hip
+        Data.pose[24][2] = pose3d[1][2];
 
-    // Right knee
-    Data.pose[26][2] = pose3d[2][2];
+        // Left knee
+        Data.pose[25][2] = pose3d[5][2];
 
-    // Left ankle
-    Data.pose[27][2] = pose3d[6][2];
+        // Right knee
+        Data.pose[26][2] = pose3d[2][2];
 
-    // Right ankle
-    Data.pose[28][2] = pose3d[3][2];
+        // Left ankle
+        Data.pose[27][2] = pose3d[6][2];
+
+        // Right ankle
+        Data.pose[28][2] = pose3d[3][2];
+
+    }
 
 }
 

@@ -91,20 +91,14 @@ vector<vector<float>> MHFormer::Predict(vector<vector<float>>& Pose2d) {
     // Rotate pose around x-axis
     pose3d = RotatePose3dAroundX(pose3d, mAngleAroundX);
 
-    cout << "pelvis z: " << pose3d[0][2] << endl;
-
     // Unnormalize keypoints 3d
     Vector2d pose3dPixel = UnnormalizeKeypoints3d(pose3d, mFrameWidth, mFrameHeight);
-
-    cout << "pelvisPixel z: " << pose3dPixel[0][2] << endl;
 
     // Save unnormalized pose 3d
     mPose3dPixelUnnorm = pose3dPixel;
 
     // Rescale and rotate pose
     pose3dPixel = RescaleAndShiftPose3d(pose3dPixel, Pose2d);
-
-    cout << "Rescale pelvisPixel z: " << pose3dPixel[0][2] << endl;
 
     return pose3dPixel;
 

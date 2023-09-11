@@ -23,8 +23,8 @@ int main()
     int imageWidth = 640;
     int imageHeight = 480;
 
-    bool useVideo = true;
-    //bool useVideo = false;
+    //bool useVideo = true;
+    bool useVideo = false;
     //string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead.mp4";
     string videoPath = "C:/Users/andrew/Videos/MocapTestVideos/TurnHead_720p.mp4";
 

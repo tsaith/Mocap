@@ -39,7 +39,7 @@ private:
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
     void UpdateHolistic(Holistic& Data);
-    void RefinePoseDepthWithMHFormer(Holistic& Data);
+    void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 
     int mImageWidth;
     int mImageHeight;
@@ -64,4 +64,9 @@ private:
     // Diagnostics
     bool mIsDiag = true;
     Diag mDiag;
+
+    // Counter
+    int mCounter = 0;
+    int mCounterMax = 1000000;
+
 };
