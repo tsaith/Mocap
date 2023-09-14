@@ -3,8 +3,8 @@
 #include <opencv2/opencv.hpp>
 
 #include "Core/Core.h"
-#include "PlotLib.h"
-#include "TextPlotter.hpp" 
+#include "Utils/PlotLib.h"
+#include "Utils/TextPlotter.hpp" 
 
 
 namespace diag {

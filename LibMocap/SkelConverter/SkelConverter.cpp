@@ -145,7 +145,7 @@ void SkelConverter::ConvertPointNormToPhys(float* PointNorm, float* PointPhys) {
     float ratioPhysToPixel = mCorrection->GetRatioPhysToPixel();
     float fac = ratioPhysToPixel * mImageWidth;
 
-    math_utils::VecMultiply(PointPhys, PointNorm, fac);
+    zen_math::VecMultiply(PointPhys, PointNorm, fac);
 
 }
 

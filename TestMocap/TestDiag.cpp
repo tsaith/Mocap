@@ -4,8 +4,6 @@
 
 namespace test_diag {
 
-    //using namespace plot_utils;
-
     TestDiag::TestDiag()
     {
 

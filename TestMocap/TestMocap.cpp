@@ -4,9 +4,9 @@
 #include "LibMocap.h"
 #include "TestDiag.h"
 
-#include "VideoPlayer.hpp" 
-#include "TextPlotter.hpp" 
-#include "Timer.hpp" 
+#include "Utils/VideoPlayer.hpp" 
+#include "Utils/TextPlotter.hpp" 
+#include "Utils/Timer.hpp"  
 
 using namespace test_diag;
 

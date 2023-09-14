@@ -4,11 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "math_utils.h"
-#include "holistic_correction.h"
-#include "skeleton_factory.h"
-//#include "gesture_detector.hpp"
-//#include "gesture.hpp"
+#include "Core/Core.h"
+#include "HolisticCorrection.h"
+#include "SkeletonFactory.h"
 
 static const double Radian2Angle = 57.29577951308232087684;
 

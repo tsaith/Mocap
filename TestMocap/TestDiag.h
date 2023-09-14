@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
-#include "TextPlotter.hpp" 
-
+#include "Utils/TextPlotter.hpp" 
 
 //using namespace std;
 using namespace core;

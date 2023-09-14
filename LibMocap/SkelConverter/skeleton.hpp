@@ -1,11 +1,11 @@
 #ifndef SKELETON_H
 #define SKELETON_H
 
-#include "math_utils.h"
-#include "db_utils.h"
+#include "Core/Math/MathLib.h"
+#include "Utils/DebugUtils.h"
 
 using namespace std;
-using namespace math_utils;
+using namespace zen_math;
 using namespace db_utils;
 
 class Skeleton {

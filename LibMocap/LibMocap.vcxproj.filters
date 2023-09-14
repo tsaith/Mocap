@@ -30,88 +30,70 @@
     <ClInclude Include="pch.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\holistic.hpp">
+    <ClInclude Include="Holistic.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\math_utils.h">
+    <ClInclude Include="Core\Math\MathLib.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="SkelConverter\SkelConverter.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\skeleton_factory.h">
+    <ClInclude Include="SkelConverter\SkeletonFactory.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\holistic_correction.h">
+    <ClInclude Include="SkelConverter\HolisticCorrection.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\key_utils.h">
+    <ClInclude Include="Utils\CvPlot.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\libplot.h">
+    <ClInclude Include="SkelConverter\QuatSmoother.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\pose_utils.h">
+    <ClInclude Include="SkelConverter\SignalAnalyzer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\quat_smoother.h">
+    <ClInclude Include="Utils\SkeletonPlotter.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\signal_analyzer.h">
+    <ClInclude Include="SkelConverter\HeadStabilizer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\skeleton_plotter.h">
+    <ClInclude Include="SkelConverter\HandStabilizer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\head_stabilizer.h">
+    <ClInclude Include="Utils\DebugUtils.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\hand_stabilizer.h">
+    <ClInclude Include="SkelConverter\ImageExporter.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\db_utils.h">
+    <ClInclude Include="Core\Math\KalmanFilter.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\image_exporter.hpp">
+    <ClInclude Include="Core\Math\Kalman1d.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\kalman_filter.hpp">
+    <ClInclude Include="SkelConverter\OneEuroFilter.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\kalman1d.hpp">
+    <ClInclude Include="SkelConverter\QuatStabilizer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\one_euro_filter.hpp">
+    <ClInclude Include="SkelConverter\BoneStabilizer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\quat_stabilizer.hpp">
+    <ClInclude Include="SkelConverter\Calibration.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\text_plotter.hpp">
+    <ClInclude Include="Utils\Camera.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\time_utils.hpp">
+    <ClInclude Include="SkelConverter\Gesture.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\timer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\video_player.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\bone_stabilizer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\calibration.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\camera.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\gesture.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\gesture_detector.hpp">
+    <ClInclude Include="SkelConverter\GestureDetector.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="MHFormer\mhformer.h">
@@ -129,31 +111,31 @@
     <ClInclude Include="Diag.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="TextPlotter.hpp">
+    <ClInclude Include="Utils\TextPlotter.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.hpp">
+    <ClInclude Include="Utils\TimeUtils.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="TimeUtils.hpp">
+    <ClInclude Include="Utils\PlotLib.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="PlotLib.h">
+    <ClInclude Include="Utils\VideoPlayer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="VideoPlayer.hpp">
+    <ClInclude Include="SkelConverter\Skeleton.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\skeleton.hpp">
+    <ClInclude Include="SkelConverter\StablePoint.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\stable_point.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="SkelConverter\stable_value.hpp">
+    <ClInclude Include="SkelConverter\StableValue.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Core\VectorUtils.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Timer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,43 +152,37 @@
     <ClCompile Include="Mocap.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\math_utils.cpp">
+    <ClCompile Include="Core\Math\MathLib.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="SkelConverter\SkelConverter.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\skeleton_factory.cpp">
+    <ClCompile Include="SkelConverter\SkeletonFactory.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\holistic_correction.cc">
+    <ClCompile Include="SkelConverter\HolisticCorrection.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\key_utils.cc">
+    <ClCompile Include="Utils\CvPlot.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\libplot.cpp">
+    <ClCompile Include="SkelConverter\QuatSmoother.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\pose_utils.cpp">
+    <ClCompile Include="SkelConverter\SignalAnalyzer.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\quat_smoother.cc">
+    <ClCompile Include="Utils\SkeletonPlotter.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\signal_analyzer.cc">
+    <ClCompile Include="SkelConverter\HeadStabilizer.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\skeleton_plotter.cc">
+    <ClCompile Include="SkelConverter\HandStabilizer.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\head_stabilizer.cc">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="SkelConverter\hand_stabilizer.cc">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="SkelConverter\db_utils.cc">
+    <ClCompile Include="Utils\DebugUtils.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="MHFormer\mhformer.cpp">
@@ -224,7 +200,7 @@
     <ClCompile Include="Diag.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="PlotLib.cpp">
+    <ClCompile Include="Utils\PlotLib.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Core\VectorUtils.cpp">

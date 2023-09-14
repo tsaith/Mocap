@@ -29,20 +29,11 @@
     <ClInclude Include="TestDiag.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="..\LibMocap\TextPlotter.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="..\LibMocap\Timer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="..\LibMocap\TimeUtils.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="..\LibMocap\VideoPlayer.hpp">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="..\LibMocap\Core\Core.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

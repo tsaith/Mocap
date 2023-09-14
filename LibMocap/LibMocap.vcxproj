@@ -143,7 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\Matplot++_1.2.0\include;C:\opt\eigen;C:\opt\libtorch_cpu\include\torch\csrc\api\include;C:\opt\libtorch_cpu\include;C:\opt\MocapLive\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opt\opencv\build\include;C:\opt\Matplot++_1.2.0\include;C:\opt\libtorch_cpu\include\torch\csrc\api\include;C:\opt\libtorch_cpu\include;C:\opt\MocapLive\include;C:\Users\andrew\projects\Mocap\LibMocap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
@@ -175,45 +175,39 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     <ClInclude Include="MHFormer\mhformer_utils.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PlotLib.h" />
+    <ClInclude Include="Utils\PlotLib.h" />
     <ClInclude Include="PoseUtils.h" />
-    <ClInclude Include="SkelConverter\bone_stabilizer.hpp" />
-    <ClInclude Include="SkelConverter\calibration.hpp" />
-    <ClInclude Include="SkelConverter\camera.hpp" />
-    <ClInclude Include="SkelConverter\db_utils.h" />
-    <ClInclude Include="SkelConverter\gesture.hpp" />
-    <ClInclude Include="SkelConverter\gesture_detector.hpp" />
-    <ClInclude Include="SkelConverter\hand_stabilizer.h" />
-    <ClInclude Include="SkelConverter\head_stabilizer.h" />
-    <ClInclude Include="SkelConverter\holistic.hpp" />
-    <ClInclude Include="SkelConverter\holistic_correction.h" />
-    <ClInclude Include="SkelConverter\image_exporter.hpp" />
-    <ClInclude Include="SkelConverter\kalman1d.hpp" />
-    <ClInclude Include="SkelConverter\kalman_filter.hpp" />
-    <ClInclude Include="SkelConverter\key_utils.h" />
-    <ClInclude Include="SkelConverter\libplot.h" />
-    <ClInclude Include="SkelConverter\math_utils.h" />
-    <ClInclude Include="SkelConverter\one_euro_filter.hpp" />
-    <ClInclude Include="SkelConverter\pose_utils.h" />
-    <ClInclude Include="SkelConverter\quat_smoother.h" />
-    <ClInclude Include="SkelConverter\quat_stabilizer.hpp" />
-    <ClInclude Include="SkelConverter\signal_analyzer.h" />
+    <ClInclude Include="SkelConverter\BoneStabilizer.hpp" />
+    <ClInclude Include="SkelConverter\Calibration.hpp" />
+    <ClInclude Include="Utils\Camera.hpp" />
+    <ClInclude Include="Utils\DebugUtils.h" />
+    <ClInclude Include="SkelConverter\Gesture.hpp" />
+    <ClInclude Include="SkelConverter\GestureDetector.hpp" />
+    <ClInclude Include="SkelConverter\HandStabilizer.h" />
+    <ClInclude Include="SkelConverter\HeadStabilizer.h" />
+    <ClInclude Include="Holistic.hpp" />
+    <ClInclude Include="SkelConverter\HolisticCorrection.h" />
+    <ClInclude Include="SkelConverter\ImageExporter.hpp" />
+    <ClInclude Include="Core\Math\Kalman1d.hpp" />
+    <ClInclude Include="Core\Math\KalmanFilter.hpp" />
+    <ClInclude Include="Utils\CvPlot.h" />
+    <ClInclude Include="Core\Math\MathLib.h" />
+    <ClInclude Include="SkelConverter\OneEuroFilter.hpp" />
+    <ClInclude Include="SkelConverter\QuatSmoother.h" />
+    <ClInclude Include="SkelConverter\QuatStabilizer.hpp" />
+    <ClInclude Include="SkelConverter\SignalAnalyzer.h" />
     <ClInclude Include="SkelConverter\SkelConverter.h" />
-    <ClInclude Include="SkelConverter\skeleton.hpp" />
-    <ClInclude Include="SkelConverter\skeleton_factory.h" />
-    <ClInclude Include="SkelConverter\skeleton_plotter.h" />
-    <ClInclude Include="SkelConverter\stable_point.hpp" />
-    <ClInclude Include="SkelConverter\stable_value.hpp" />
-    <ClInclude Include="SkelConverter\text_plotter.hpp" />
-    <ClInclude Include="SkelConverter\timer.hpp" />
-    <ClInclude Include="SkelConverter\time_utils.hpp" />
-    <ClInclude Include="SkelConverter\video_player.hpp" />
-    <ClInclude Include="TextPlotter.hpp" />
-    <ClInclude Include="Timer.hpp" />
-    <ClInclude Include="TimeUtils.hpp" />
+    <ClInclude Include="SkelConverter\Skeleton.hpp" />
+    <ClInclude Include="SkelConverter\SkeletonFactory.h" />
+    <ClInclude Include="Utils\SkeletonPlotter.h" />
+    <ClInclude Include="SkelConverter\StablePoint.hpp" />
+    <ClInclude Include="SkelConverter\StableValue.hpp" />
+    <ClInclude Include="Utils\TextPlotter.hpp" />
+    <ClInclude Include="Utils\Timer.hpp" />
+    <ClInclude Include="Utils\TimeUtils.hpp" />
     <ClInclude Include="Core\TypeDef.h" />
     <ClInclude Include="Core\Core.h" />
-    <ClInclude Include="VideoPlayer.hpp" />
+    <ClInclude Include="Utils\VideoPlayer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Core.cpp" />
@@ -230,21 +224,19 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PlotLib.cpp" />
+    <ClCompile Include="Utils\PlotLib.cpp" />
     <ClCompile Include="PoseUtils.cpp" />
-    <ClCompile Include="SkelConverter\db_utils.cc" />
-    <ClCompile Include="SkelConverter\hand_stabilizer.cc" />
-    <ClCompile Include="SkelConverter\head_stabilizer.cc" />
-    <ClCompile Include="SkelConverter\holistic_correction.cc" />
-    <ClCompile Include="SkelConverter\key_utils.cc" />
-    <ClCompile Include="SkelConverter\libplot.cpp" />
-    <ClCompile Include="SkelConverter\math_utils.cpp" />
-    <ClCompile Include="SkelConverter\pose_utils.cpp" />
-    <ClCompile Include="SkelConverter\quat_smoother.cc" />
-    <ClCompile Include="SkelConverter\signal_analyzer.cc" />
+    <ClCompile Include="Utils\DebugUtils.cc" />
+    <ClCompile Include="SkelConverter\HandStabilizer.cc" />
+    <ClCompile Include="SkelConverter\HeadStabilizer.cc" />
+    <ClCompile Include="SkelConverter\HolisticCorrection.cc" />
+    <ClCompile Include="Utils\CvPlot.cpp" />
+    <ClCompile Include="Core\Math\MathLib.cpp" />
+    <ClCompile Include="SkelConverter\QuatSmoother.cc" />
+    <ClCompile Include="SkelConverter\SignalAnalyzer.cc" />
     <ClCompile Include="SkelConverter\SkelConverter.cpp" />
-    <ClCompile Include="SkelConverter\skeleton_factory.cpp" />
-    <ClCompile Include="SkelConverter\skeleton_plotter.cc" />
+    <ClCompile Include="SkelConverter\SkeletonFactory.cpp" />
+    <ClCompile Include="Utils\SkeletonPlotter.cc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -253,6 +245,7 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\Microsoft.AI.DirectML.1.12.0\build\Microsoft.AI.DirectML.targets" Condition="Exists('..\packages\Microsoft.AI.DirectML.1.12.0\build\Microsoft.AI.DirectML.targets')" />
     <Import Project="..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.targets" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.targets')" />
+    <Import Project="..\packages\Eigen3.3.3.9\build\native\Eigen3.targets" Condition="Exists('..\packages\Eigen3.3.3.9\build\native\Eigen3.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -262,5 +255,6 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
     <Error Condition="!Exists('..\packages\Microsoft.AI.DirectML.1.12.0\build\Microsoft.AI.DirectML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.AI.DirectML.1.12.0\build\Microsoft.AI.DirectML.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.DirectML.1.15.1\build\native\Microsoft.ML.OnnxRuntime.DirectML.targets'))" />
+    <Error Condition="!Exists('..\packages\Eigen3.3.3.9\build\native\Eigen3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Eigen3.3.3.9\build\native\Eigen3.targets'))" />
   </Target>
 </Project>

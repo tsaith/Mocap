@@ -8,7 +8,7 @@
 #include "Core/VectorUtils.h"
 #include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
-#include "SkelConverter/holistic.hpp"
+#include "Holistic.hpp"
 #include "SkelConverter/SkelConverter.h"
 
 #include "Diag.h"
