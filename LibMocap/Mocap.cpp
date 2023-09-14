@@ -92,7 +92,8 @@ void Mocap::Detect(Mat& Image)
 
     // Mediapipe
     MediapipeDetect(Image);
-    UpdateHolistic(mHolistic);
+    UpdateHolisticMp(mHolisticMp);
+    mHolistic = ReNormalizeHolistic(mHolisticMp); 
 
     // Refine depth with MHFormer  
     RefinePoseDepthWithMHFormer(mHolistic, mCounter);
@@ -208,7 +209,7 @@ void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
 }
 
-void Mocap::UpdateHolistic(Holistic& Data) {
+void Mocap::UpdateHolisticMp(Holistic& Data) {
 
     float* pFacemesh;
     MediapipeGetFacemesh(Data.HasFacemesh, pFacemesh);
@@ -240,7 +241,39 @@ void Mocap::UpdateHolistic(Holistic& Data) {
 
 }
 
-void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) {
+Holistic Mocap::ReNormalizeHolistic(Holistic& Data) 
+{
+    /*
+       y' = y * (ImageHeight/ImageWidth)
+       where y' is the customeized normalized value and
+       y is the Mediapipe normalized value
+    */
+
+    float NormRatio = 1.0f*mImageHeight/mImageWidth;
+    Holistic dataOut = Data;
+
+    // Pose
+    for (int i=0; i < dataOut.GetPoseLandmarkNum(); i++) {
+        dataOut.pose[i][1] *= NormRatio;
+    }
+
+    // Hands
+    for (int i=0; i < dataOut.GetHandLandmarkNum(); i++) {
+        dataOut.LeftHand[i][1] *= NormRatio;
+        dataOut.RightHand[i][1] *= NormRatio;
+    }
+
+    // Facemesh
+    for (int i=0; i < dataOut.GetFacemeshLandmarkNum(); i++) {
+        dataOut.facemesh[i][1] *= NormRatio;
+    }
+
+    return dataOut;
+
+}
+
+void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) 
+{
 
     int imageWidth = mImageWidth;
     int imageHeight = mImageHeight;
@@ -264,9 +297,9 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) {
     // Normalize pose
     int numJoints = static_cast<int>(pose3d.size());
     for (int i = 0; i < numJoints; i++) {
-        pose3d[i][0] /= imageWidth;
-        pose3d[i][1] /= imageHeight;
-        pose3d[i][2] /= imageWidth;
+        for (int j = 0; j < 3; j++) {
+            pose3d[i][j] /= imageWidth;
+        }
     }
 
     /* Update depth of Holistic data */

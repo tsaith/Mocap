@@ -6,6 +6,8 @@ namespace mhf {
 
 #define M_PI 3.14159265359 
 
+
+
 	Vector2d GetMockKeypoints() {
 
 		Vector2d keypoints{
@@ -32,6 +34,21 @@ namespace mhf {
 
 		return keypoints;
 
+	}
+
+	Vector2d GetMockKeypointsNorm(int ImageWidth) {
+
+		Vector2d keypoints = GetMockKeypoints();
+
+		size_t numJoints = keypoints.size();
+		size_t numDims = keypoints[0].size();
+		for (size_t i = 0; i < numJoints; i++) {
+			for (size_t j = 0; j < numDims; j++) {
+				keypoints[i][j] /= float(ImageWidth);
+			}
+		}
+
+		return keypoints;
 	}
 
 	Vector2d InitVec2d(int Rows, int Cols) {
@@ -157,24 +174,6 @@ namespace mhf {
 
 	}
 
-	Vector2d NormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
-
-		Vector2d keypoints = Keypoints;
-
-		size_t numJoints = Keypoints.size();
-		for (int i = 0; i < numJoints; i++) {
-
-			keypoints[i][0] = 2.0f * keypoints[i][0] / FrameWidth - 1.0f;
-			keypoints[i][1] = 2.0f * keypoints[i][1] / FrameWidth - 1.0f * FrameHeight / FrameWidth;
-			keypoints[i][2] = keypoints[i][2] / FrameWidth;
-			//keypoints[i][2] = 2.0f * keypoints[i][2] / FrameWidth - 1.0f;
-
-		}
-
-		return keypoints;
-
-	}
-
 	Vector2d UnnormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight) {
 
 		Vector2d keypoints = Keypoints;
@@ -184,8 +183,7 @@ namespace mhf {
 
 			keypoints[i][0] = (float)((keypoints[i][0] + 1.0) * 0.5 * FrameWidth);
 			keypoints[i][1] = (float)((keypoints[i][1] + 1.0 * FrameHeight / FrameWidth) * 0.5 * FrameWidth);
-			keypoints[i][2] = (float)(keypoints[i][2] * 0.5 * FrameWidth);
-			//keypoints[i][2] = (float)((keypoints[i][2] + 1.0) * 0.5 * FrameWidth);
+			keypoints[i][2] = (float)(keypoints[i][2] * FrameWidth);
 
 		}
 

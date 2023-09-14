@@ -38,7 +38,8 @@ private:
 
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
-    void UpdateHolistic(Holistic& Data);
+    void UpdateHolisticMp(Holistic& Data);
+    Holistic ReNormalizeHolistic(Holistic& Data); 
     void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 
     int mImageWidth;
@@ -54,6 +55,7 @@ private:
     const int mNumBones = 68;
     vector<FTransform> mSkelTransforms;
 
+    Holistic mHolisticMp;
     Holistic mHolistic;
 
     MHFormer mMHFormer;

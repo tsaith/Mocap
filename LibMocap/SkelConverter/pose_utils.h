@@ -33,7 +33,7 @@ using namespace std;
 	// Pose related functions
 	vector<vector<float>> CreateVectorPoseMp(float* Ptr, int NumJoints, int Dims);
 
-	vector<vector<float>> ToPixelSpace(vector<vector<float>>& PoseIn, int Width, int Height);
+	vector<vector<float>> ToPixelSpace(vector<vector<float>>& PoseIn, int Width);
 	vector<vector<float>> InitPose2d();
 	void ConvertPoseMpToPose2d(vector<vector<float>>& PoseMp, vector<vector<float>>& Pose2d);
 

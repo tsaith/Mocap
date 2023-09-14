@@ -67,7 +67,8 @@ public:
     void ToCustomizedHolistic();
     void UpdatePosePrev();
 
-    Holistic Process(Holistic &data);
+    void Process(Holistic &data);
+    //Holistic Process(Holistic &data);
 
     void Calibrate(Holistic &data);
     void SetIsCalibrated(bool Status);

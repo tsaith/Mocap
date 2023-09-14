@@ -10,17 +10,18 @@
 
 #include <opencv2/opencv.hpp>
 
-using namespace std;
-using namespace cv;
 
 namespace mhf {
+
+    using namespace std;
+    using namespace cv;
 
 	typedef vector<vector<float>> Vector2d;
 	typedef vector<Vector2d> Vector3d;
 	typedef vector<Vector3d> Vector4d;
 
-
 	Vector2d GetMockKeypoints();
+	Vector2d GetMockKeypointsNorm(int ImageWidth);
 	Vector2d InitVec2d(int Rows, int Cols);
 	Vector3d InitVec3d(int Nt, int Rows, int Cols);
 	Vector4d InitVec4d(int BatchSize, int Nt, int Rows, int Cols);
@@ -29,7 +30,6 @@ namespace mhf {
 
 	Vector2d NormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight);
 	Vector2d UnnormalizeKeypoints2d(Vector2d& Keypoints, int FrameWidth, int FrameHeight);
-	Vector2d NormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight);
 	Vector2d UnnormalizeKeypoints3d(Vector2d& Keypoints, int FrameWidth, int FrameHeight);
 
 	vector<float> InterpVec1d(vector<float>& InputVec, int OutputSize);

@@ -14,6 +14,15 @@ void MHFormer::Init(int FrameWidth, int FrameHeight) {
 	mFrameWidth = FrameWidth;
 	mFrameHeight = FrameHeight;
 
+    // Initialize the temporal data which is supposed to predict
+    // reasonable pose depth for the first frame but can't work!
+	Vector2d pose2dPixel = GetMockKeypoints();
+    Vector2d pose2d = NormalizeKeypoints2d(pose2dPixel, FrameWidth, FrameHeight);
+    for (int i = 0; i < mNumFramesUsed; i++) {
+        mTemporalData.push_back(pose2d);
+    }
+
+    // Input and output buffer for model inference
     mInputBuffer.assign(mInputBufferSize, 0.0f);
     mOutputBuffer.assign(mOutputBufferSize, 0.0f);
 

@@ -34,7 +34,7 @@ public:
     void SetEngineName(string name);
     
     float GetDepth(void);
-    Holistic GetHolisticMP(void);
+    //Holistic GetHolisticMP(void);
     Holistic GetHolistic(void);
     Skeleton GetSkeleton(void);
     Skeleton GetSkeletonCali(void);
@@ -97,7 +97,7 @@ private:
     string mEngineName = "unreal"; // Name of game engine;
     int mError;
     float mDepth;
-    Holistic mHolisticMP;   // Mediapipe holistic raw data
+    //Holistic mHolisticMP;   // Mediapipe holistic raw data
     Holistic mHolistic;     // Corrected holistic raw data
     Skeleton mSkeleton;     // Skeleton
     //Gesture mGesture;       // Gesture data

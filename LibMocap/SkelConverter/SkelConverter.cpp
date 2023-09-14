@@ -22,19 +22,21 @@ void SkelConverter::Init(int ImageWidth, int ImageHeight) {
 
 void SkelConverter::PostProcess() {
 
-        mHolistic = mCorrection->Process(mHolisticMP);
+        mCorrection->Process(mHolistic);
+        //mHolistic = mCorrection->Process(mHolisticMP);
         mDepth = mCorrection->GetDepth();
         mIsShortDistance = mCorrection->IsShortDistance();
 
         // Skeleton
         mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
-        mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
+        mSkeletonFactory.Produce(mHolistic , &mSkeleton);
+        //mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
 
         // Data for calibration 
-        CreateDataForCalibration();
+        //CreateDataForCalibration();
 
         // Facemesh
-        float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
+        ///float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
 
         /*
         // Left gestures
@@ -58,9 +60,11 @@ void SkelConverter::PostProcess() {
 void SkelConverter::Process(Holistic& Data ) {
 
     // Holistic
-    mHolisticMP = Data;
+    mHolistic = Data;
+    //mHolisticMP = Data;
 
-    mHolistic = mCorrection->Process(mHolisticMP);
+    mCorrection->Process(mHolistic);
+    //mHolistic = mCorrection->Process(mHolisticMP);
     mDepth = mCorrection->GetDepth();
     mIsShortDistance = mCorrection->IsShortDistance();
 
@@ -68,13 +72,14 @@ void SkelConverter::Process(Holistic& Data ) {
     mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
     mSkeletonFactory.LoadImageSize(mImageWidth , mImageHeight);
     mSkeletonFactory.SetWeightingFactor(mRotationValue);
-    mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
+    mSkeletonFactory.Produce(mHolistic , &mSkeleton);
+    //mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
 
     // Data for calibration 
-    CreateDataForCalibration();
+    //CreateDataForCalibration();
 
     // Facemesh
-    float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
+    //float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
 
     /*
     // Left gestures
@@ -105,14 +110,16 @@ void SkelConverter::SetEngineName(string name) {
 }
 
 void SkelConverter::Calibrate() {
-    mCorrection->Calibrate(mHolisticMP);
+    mCorrection->Calibrate(mHolistic);
+    //mCorrection->Calibrate(mHolisticMP);
 }
 
 void SkelConverter::Calibrate(float ShoulderWidthPhys) {
 
     SetShoulderWidthPhys(ShoulderWidthPhys);
 
-    mCorrection->Calibrate(mHolisticMP);
+    mCorrection->Calibrate(mHolistic);
+    //mCorrection->Calibrate(mHolisticMP);
 
     mDoCreateDataForCalibration = true;
 
@@ -146,9 +153,11 @@ float SkelConverter::GetDepth(void) {
     return mDepth;
 }
 
+/*
 Holistic SkelConverter::GetHolisticMP(void) {
     return mHolisticMP;
 }
+*/
 
 Holistic SkelConverter::GetHolistic(void) {
     return mHolistic;
@@ -270,9 +279,11 @@ float* SkelConverter::GetQuat(int i) {
 }
 
 const int SkelConverter::GetMpPoseNumBones() {
-    return mHolisticMP.POSE_LANDMARK_NUM;
+    return mHolistic.POSE_LANDMARK_NUM;
+    //return mHolisticMP.POSE_LANDMARK_NUM;
 }
 
 float* SkelConverter::GetMpPoseBone(int i) {
-    return mHolisticMP.pose[i];
+    return mHolistic.pose[i];
+    //return mHolisticMP.pose[i];
 }

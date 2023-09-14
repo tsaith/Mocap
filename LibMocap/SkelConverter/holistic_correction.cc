@@ -110,7 +110,8 @@ void HolisticCorrection::GuessOccludedPoints() {
 void HolisticCorrection::ToPixelSpace(float* PointOut, float* PointIn) {
 
     PointOut[0] = PointIn[0] * mImageWidth;
-    PointOut[1] = PointIn[1] * mImageHeight;
+    PointOut[1] = PointIn[1] * mImageWidth;
+    //PointOut[1] = PointIn[1] * mImageHeight;
     PointOut[2] = PointIn[2] * mImageWidth;
 
 }
@@ -118,7 +119,8 @@ void HolisticCorrection::ToPixelSpace(float* PointOut, float* PointIn) {
 void HolisticCorrection::ToNormalizedSpace(float* PointOut, float* PointIn) {
 
     PointOut[0] = PointIn[0] / mImageWidth;
-    PointOut[1] = PointIn[1] / mImageHeight;
+    PointOut[1] = PointIn[1] / mImageWidth;
+    //PointOut[1] = PointIn[1] / mImageHeight;
     PointOut[2] = PointIn[2] / mImageWidth;
 
 }
@@ -855,7 +857,7 @@ void HolisticCorrection::StabilizeBones() {
 
 }
 
-Holistic HolisticCorrection::Process(Holistic &Data) {
+void HolisticCorrection::Process(Holistic &Data) {
 
     // Save Holistic data
     mData = Data;
@@ -915,12 +917,12 @@ Holistic HolisticCorrection::Process(Holistic &Data) {
     UpdatePosePrev();
 
     // Covert to customized Holistic data
-    ToCustomizedHolistic();
+    //ToCustomizedHolistic();
 
     // User is close to camera or not
     bool mIsShortDistance = false;
 
-    return mData;
+    //return mData;
 
 }
 

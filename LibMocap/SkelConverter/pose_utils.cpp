@@ -102,7 +102,7 @@
 
     }
 
-    vector<vector<float>> ToPixelSpace(vector<vector<float>>& PoseIn, int Width, int Height) {
+    vector<vector<float>> ToPixelSpace(vector<vector<float>>& PoseIn, int Width) {
 
         vector<vector<float>> pose = PoseIn;
 
@@ -111,7 +111,8 @@
 
         for (int i = 0; i < numJoints; i++) {
             pose[i][0] *= Width;
-            pose[i][1] *= Height;
+            pose[i][1] *= Width;
+            //pose[i][1] *= Height;
             pose[i][2] *= Width;
         }
 
