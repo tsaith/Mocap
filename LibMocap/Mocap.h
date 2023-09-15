@@ -6,6 +6,7 @@
 
 #include "Core/Core.h"
 #include "Core/VectorUtils.h"
+#include "FacialExpression.h" 
 #include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
 #include "Holistic.hpp"
@@ -47,7 +48,7 @@ private:
     Mat mImage;
 
 
-    bool mIsFaceDetected = false;
+    FacialExpression mFacialExpression;
     const int mNumBlendshapes = 52;
     vector<float> mBlendshapes;
     FTransform mHeadTransform;

@@ -1,13 +1,12 @@
 #include "pch.h"
 
 #include "Mocap.h"
-#include "LibFacialExpression.h" 
 #include "libmediapipe.h"
  
 
-Mocap::Mocap() { 
+Mocap::Mocap() {  
 
-    mBlendshapes.assign(mNumBlendshapes, 0);
+    mBlendshapes.assign(mNumBlendshapes, 0); 
 
     FTransform boneTransform;
     mSkelTransforms.assign(mNumBones, boneTransform);
@@ -18,19 +17,21 @@ Mocap::Mocap() {
 
 Mocap::~Mocap() {
 
-    FacialExpressionFinalize();
+    //FacialExpressionFinalize();
+    mFacialExpression.Finalize();
     MediapipeFinalize();
 
 }
 
 void Mocap::Init(int ImageWidth, int ImageHeight) {
 
-    mImageWidth = ImageWidth;
+    mImageWidth = ImageWidth; 
     mImageHeight = ImageHeight;
 
     // Facial expression
-    FacialExpressionInit(ImageWidth, ImageHeight);
-
+    mFacialExpression.Init(ImageWidth, ImageHeight);
+    //FacialExpressionInit(ImageWidth, ImageHeight);
+ 
     // Mediapipe 
     MediapipeInit(); 
 
@@ -65,16 +66,25 @@ void Mocap::Detect(Mat& Image)
     // Facial expression
     mImage = Image.clone();
 
-    FacialExpressionDetect(Image);
-    mIsFaceDetected = FacialExpressionIsFaceDetected();
-
-    float* p;
-    p = FacialExpressionGetBlendshapes();
-    for (int i = 0; i < mNumBlendshapes; i++) {
-        mBlendshapes[i] = p[i];
-    }
-
+    mFacialExpression.Detect(Image);
+ 
     // Head transform
+    vector<float> headQuatVec = mFacialExpression.GetHeadQuat();
+    vector<float> headTranslationVec = mFacialExpression.GetHeadTranslation();
+    FQuat headRotation;
+    FVector headTranslation;
+
+    headRotation.X = headQuatVec[0];
+    headRotation.Y = headQuatVec[1];
+    headRotation.Z = headQuatVec[2];
+    headRotation.W = headQuatVec[3];
+
+    headTranslation.X = headTranslationVec[0];
+    headTranslation.Y = headTranslationVec[1];
+    headTranslation.Z = headTranslationVec[2];
+    mHeadTransform = MakeTransform(headRotation, headTranslation);
+
+    /*
     FQuat headRotation;
     FVector headTranslation;
 
@@ -89,6 +99,7 @@ void Mocap::Detect(Mat& Image)
     headTranslation.Y = p[1];
     headTranslation.Z = p[2];
     mHeadTransform = MakeTransform(headRotation, headTranslation);
+    */
 
     // Mediapipe
     MediapipeDetect(Image);
@@ -170,11 +181,12 @@ void Mocap::Diagnose()
 }
 
 bool Mocap::IsFaceDetected() {
-    return mIsFaceDetected;
+    return mFacialExpression.IsFaceDetected();
 }
 
 vector<float> Mocap::GetBlendshapes() {
-    return mBlendshapes;
+    return mFacialExpression.GetBlendshapes();
+    //return mBlendshapes;
 }
 
 FTransform Mocap::GetHeadTransform() {
