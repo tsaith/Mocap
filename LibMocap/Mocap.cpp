@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Mocap.h"
-#include "libmediapipe.h"
+#include "Mediapipe/libmediapipe.h"
  
 
 Mocap::Mocap() {  
@@ -17,8 +17,8 @@ Mocap::Mocap() {
 
 Mocap::~Mocap() {
 
-    //FacialExpressionFinalize();
     mFacialExpression.Finalize();
+    mHRNetPose.Finalize();
     MediapipeFinalize();
 
 }
@@ -28,20 +28,27 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mImageWidth = ImageWidth; 
     mImageHeight = ImageHeight;
 
+    string modelPath = "";
+
     // Facial expression
     mFacialExpression.Init(ImageWidth, ImageHeight);
-    //FacialExpressionInit(ImageWidth, ImageHeight);
  
+    // HRNetPose
+    mHRNetPose.Init(ImageWidth, ImageHeight);
+
+    modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/hrnet_coco_w32_256x192.onnx";
+    //modelPath = "TrainedModels/hrnet_coco_w32_256x192.onnx";
+    mHRNetPose.UseGpu(true, mGpuDeviceId);
+    mHRNetPose.LoadModel(modelPath);
+
     // Mediapipe 
     MediapipeInit(); 
 
-    string modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
-    //String modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
-    //String modelPath = "TrainedModels/mhformer.onnx";
-
     mMHFormer.Init(ImageWidth, ImageHeight);
-    //mMHFormer.UseGpu(false);
     mMHFormer.UseGpu(true);
+
+    //modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
+    modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/mhformer.onnx";
     mMHFormer.LoadModel(modelPath);
 
     // Set angle used to rotate pose around x-axis
@@ -55,7 +62,6 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
 }
 
-
 void Mocap::Detect(Mat& Image)
 {
     // Update counter
@@ -66,6 +72,7 @@ void Mocap::Detect(Mat& Image)
     // Facial expression
     mImage = Image.clone();
 
+    //thread facialExpressionWorker(&FacialExpression::Detect, ref(mFacialExpression), ref(Image));
     mFacialExpression.Detect(Image);
  
     // Head transform
@@ -84,22 +91,9 @@ void Mocap::Detect(Mat& Image)
     headTranslation.Z = headTranslationVec[2];
     mHeadTransform = MakeTransform(headRotation, headTranslation);
 
-    /*
-    FQuat headRotation;
-    FVector headTranslation;
-
-    p = FacialExpressionGetHeadQuat();
-    headRotation.X = p[0];
-    headRotation.Y = p[1];
-    headRotation.Z = p[2];
-    headRotation.W = p[3];
-
-    p = FacialExpressionGetHeadTranslation();
-    headTranslation.X = p[0];
-    headTranslation.Y = p[1];
-    headTranslation.Z = p[2];
-    mHeadTransform = MakeTransform(headRotation, headTranslation);
-    */
+    // HRNetPose
+    mHRNetPose.Detect(Image);
+    //mHRNetPose.Diagnose();
 
     // Mediapipe
     MediapipeDetect(Image);
@@ -133,6 +127,7 @@ void Mocap::Detect(Mat& Image)
 
     }
 
+    //facialExpressionWorker.join();
 
 }
 
@@ -186,7 +181,6 @@ bool Mocap::IsFaceDetected() {
 
 vector<float> Mocap::GetBlendshapes() {
     return mFacialExpression.GetBlendshapes();
-    //return mBlendshapes;
 }
 
 FTransform Mocap::GetHeadTransform() {
@@ -236,6 +230,34 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
     CopyArray2D(pPose, &(Data.pose[0][0]),
         Data.POSE_LANDMARK_NUM,
         Data.DIMENSIONS);
+
+    FVector2f pose = mHRNetPose.GetPoseNorm();
+
+    cout << "Data.pose[11][0]: " << Data.pose[11][0] << endl;
+    cout << "pose[5][0]: " << pose[5][0] << endl; 
+
+    for (int idim = 0; idim < 2; idim++) {
+
+        Data.pose[0][idim] = pose[0][idim];
+        Data.pose[2][idim] = pose[1][idim];
+        Data.pose[5][idim] = pose[2][idim];
+        Data.pose[7][idim] = pose[3][idim];
+        Data.pose[8][idim] = pose[4][idim];
+        Data.pose[11][idim] = pose[5][idim];
+        Data.pose[12][idim] = pose[6][idim];
+        Data.pose[13][idim] = pose[7][idim];
+        Data.pose[15][idim] = pose[9][idim];
+        Data.pose[14][idim] = pose[8][idim];
+        Data.pose[16][idim] = pose[10][idim];
+        Data.pose[23][idim] = pose[11][idim];
+        Data.pose[24][idim] = pose[12][idim];
+        Data.pose[25][idim] = pose[13][idim];
+        Data.pose[26][idim] = pose[14][idim];
+        Data.pose[27][idim] = pose[15][idim];
+        Data.pose[28][idim] = pose[16][idim];
+
+    }
+
 
     float* pLeftHand;
     MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);

@@ -54,7 +54,8 @@ namespace plotlib {
         vector<double> x = ConvertVectorFloatToDouble(DataX);
         vector<double> y = ConvertVectorFloatToDouble(DataY);
 
-        line_handle h = Ax->scatter(x, y);
+        double sz = 3;
+        line_handle h = Ax->scatter(x, y, sz);
 
         return h;
     }

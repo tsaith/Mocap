@@ -155,13 +155,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>C:\opt\opencv\build\x64\vc15\lib;C:\opt\Matplot++_1.2.0\lib;C:\opt\Matplot++_1.2.0\lib\Matplot++;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world3410.lib;matplot.lib;nodesoup.lib;FacialExpressionLibrary.lib;libmediapipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world3410.lib;matplot.lib;nodesoup.lib;LibFacialExpression.lib;LibHRNetPose.lib;libmediapipe.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d ".\LibMocap.h" "C:\opt\MocapLive\include"
-xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\opt\MocapLive\lib"
-xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\opt\MocapLive\lib"
-xcopy /y /d ".\LibMocap.h" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\include"
+      <Command>xcopy /y /d ".\LibMocap.h" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\include"
 xcopy /y /d "..\$(IntDir)LibMocap.dll" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"
 xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"</Command>
     </PostBuildEvent>

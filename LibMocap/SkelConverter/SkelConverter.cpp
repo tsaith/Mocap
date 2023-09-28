@@ -23,14 +23,12 @@ void SkelConverter::Init(int ImageWidth, int ImageHeight) {
 void SkelConverter::PostProcess() {
 
         mCorrection->Process(mHolistic);
-        //mHolistic = mCorrection->Process(mHolisticMP);
         mDepth = mCorrection->GetDepth();
         mIsShortDistance = mCorrection->IsShortDistance();
 
         // Skeleton
         mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
         mSkeletonFactory.Produce(mHolistic , &mSkeleton);
-        //mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
 
         // Data for calibration 
         //CreateDataForCalibration();
@@ -61,10 +59,8 @@ void SkelConverter::Process(Holistic& Data ) {
 
     // Holistic
     mHolistic = Data;
-    //mHolisticMP = Data;
 
-    mCorrection->Process(mHolistic);
-    //mHolistic = mCorrection->Process(mHolisticMP);
+    mHolistic = mCorrection->Process(mHolistic);
     mDepth = mCorrection->GetDepth();
     mIsShortDistance = mCorrection->IsShortDistance();
 
@@ -73,31 +69,6 @@ void SkelConverter::Process(Holistic& Data ) {
     mSkeletonFactory.LoadImageSize(mImageWidth , mImageHeight);
     mSkeletonFactory.SetWeightingFactor(mRotationValue);
     mSkeletonFactory.Produce(mHolistic , &mSkeleton);
-    //mSkeletonFactory.Produce(mHolisticMP , &mSkeleton);
-
-    // Data for calibration 
-    //CreateDataForCalibration();
-
-    // Facemesh
-    //float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
-
-    /*
-    // Left gestures
-    mLeftGestureDetector.Detect(mHolistic.LeftHand, mHolistic.HasLeftHand);
-
-    mGesture.LeftStaticGesture = mLeftGestureDetector.GetStaticGesture();
-    mGesture.LeftStaticGestureIdx = mLeftGestureDetector.GetStaticGestureIndex();
-    mGesture.LeftDynamicGesture = mLeftGestureDetector.GetDynamicGesture();
-    mGesture.LeftDynamicGestureIdx = mLeftGestureDetector.GetDynamicGestureIndex();
-
-    // Right gestures
-    mRightGestureDetector.Detect(mHolistic.RightHand, mHolistic.HasRightHand);
-
-    mGesture.RightStaticGesture =  mRightGestureDetector.GetStaticGesture();
-    mGesture.RightStaticGestureIdx =  mRightGestureDetector.GetStaticGestureIndex();
-    mGesture.RightDynamicGesture = mRightGestureDetector.GetDynamicGesture();
-    mGesture.RightDynamicGestureIdx = mRightGestureDetector.GetDynamicGestureIndex();
-    */
 
 }
 
@@ -111,7 +82,6 @@ void SkelConverter::SetEngineName(string name) {
 
 void SkelConverter::Calibrate() {
     mCorrection->Calibrate(mHolistic);
-    //mCorrection->Calibrate(mHolisticMP);
 }
 
 void SkelConverter::Calibrate(float ShoulderWidthPhys) {
@@ -119,7 +89,6 @@ void SkelConverter::Calibrate(float ShoulderWidthPhys) {
     SetShoulderWidthPhys(ShoulderWidthPhys);
 
     mCorrection->Calibrate(mHolistic);
-    //mCorrection->Calibrate(mHolisticMP);
 
     mDoCreateDataForCalibration = true;
 
@@ -152,12 +121,6 @@ void SkelConverter::ConvertPointNormToPhys(float* PointNorm, float* PointPhys) {
 float SkelConverter::GetDepth(void) {
     return mDepth;
 }
-
-/*
-Holistic SkelConverter::GetHolisticMP(void) {
-    return mHolisticMP;
-}
-*/
 
 Holistic SkelConverter::GetHolistic(void) {
     return mHolistic;
@@ -280,10 +243,8 @@ float* SkelConverter::GetQuat(int i) {
 
 const int SkelConverter::GetMpPoseNumBones() {
     return mHolistic.POSE_LANDMARK_NUM;
-    //return mHolisticMP.POSE_LANDMARK_NUM;
 }
 
 float* SkelConverter::GetMpPoseBone(int i) {
     return mHolistic.pose[i];
-    //return mHolisticMP.pose[i];
 }

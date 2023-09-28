@@ -2,11 +2,14 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
+#include <iostream> 
+#include <thread> 
+#include <mutex>
 
 #include "Core/Core.h"
 #include "Core/VectorUtils.h"
-#include "FacialExpression.h" 
+#include "FacialExpression/FacialExpression.h" 
+#include "HRNetPose/HRNetPose.h" 
 #include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
 #include "Holistic.hpp"
@@ -18,6 +21,7 @@
 
 using namespace std;
 using namespace core;
+using namespace hrnet_pose;
 using namespace pose_utils;
 using namespace diag;
 
@@ -43,6 +47,8 @@ private:
     Holistic ReNormalizeHolistic(Holistic& Data); 
     void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 
+    int mGpuDeviceId = 0;
+
     int mImageWidth;
     int mImageHeight;
     Mat mImage;
@@ -52,12 +58,14 @@ private:
     const int mNumBlendshapes = 52;
     vector<float> mBlendshapes;
     FTransform mHeadTransform;
-
+    
     const int mNumBones = 68;
     vector<FTransform> mSkelTransforms;
 
     Holistic mHolisticMp;
     Holistic mHolistic;
+
+    HRNetPose mHRNetPose;
 
     MHFormer mMHFormer;
     float mMHFAngleAroundX = -10.0;

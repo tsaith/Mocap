@@ -606,10 +606,18 @@ void HolisticCorrection::CorrectLeftHand() {
     int iWrist = 15;
     float zPoseWrist = mData.pose[iWrist][2];
 
+    float zHandWrist = mData.LeftHand[0][2];
+    float shift = zPoseWrist - zHandWrist ;
+
+    //cout << "zPoseWrist: " << zPoseWrist << endl;
+    //cout << "zHandWrist: " << zHandWrist << endl;
+    //cout << "zHandIndexMcpOri: " << mData.LeftHand[5][2] << endl;
+
     for (int i=0; i < mData.HAND_LANDMARK_NUM; i++) {
-        mData.LeftHand[i][2] += zPoseWrist;
+        mData.LeftHand[i][2] += shift;
     }
 
+    //cout << "zHandIndexMcp: " << mData.LeftHand[5][2] << endl;
 }
 
 void HolisticCorrection::CorrectRightHand() {
@@ -617,8 +625,11 @@ void HolisticCorrection::CorrectRightHand() {
     int iWrist = 16;
     float zPoseWrist = mData.pose[iWrist][2];
 
+    float zHandWrist = mData.RightHand[0][2];
+    float shift = zPoseWrist - zHandWrist ;
+
     for (int i=0; i < mData.HAND_LANDMARK_NUM; i++) {
-        mData.RightHand[i][2] += zPoseWrist;
+        mData.RightHand[i][2] += shift;
     }
 
 }
@@ -857,9 +868,9 @@ void HolisticCorrection::StabilizeBones() {
 
 }
 
-void HolisticCorrection::Process(Holistic &Data) {
+Holistic HolisticCorrection::Process(Holistic &Data) {
 
-    // Save Holistic data
+    // Copy Holistic data
     mData = Data;
 
     // Preprocess
@@ -922,7 +933,7 @@ void HolisticCorrection::Process(Holistic &Data) {
     // User is close to camera or not
     bool mIsShortDistance = false;
 
-    //return mData;
+    return mData;
 
 }
 

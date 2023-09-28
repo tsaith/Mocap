@@ -255,7 +255,10 @@ namespace diag {
         }
 
         hold(Ax, true);
-        scatter(Ax, pX, pY);
+
+        double sz = 1;
+        auto h = scatter(Ax, pX, pY, sz);
+        h->marker_face(true);
 
         float xMin, xMax, yMin, yMax;
         if (ViewFlag == 0) {
@@ -389,7 +392,10 @@ namespace diag {
         }
 
         hold(Ax, true);
-        scatter(Ax, pX, pY);
+
+        double sz = 1;
+        auto h = scatter(Ax, pX, pY, sz);
+        h->marker_face(true);
 
         float xMin, xMax, yMin, yMax;
         if (ViewFlag == 0) {

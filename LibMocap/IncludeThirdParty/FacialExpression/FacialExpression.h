@@ -28,7 +28,7 @@ public:
     ~FacialExpression();
 
     void Init(int FrameWidth, int FrameHeight);
-    void Finalize();
+    void Finalize(); 
     void Detect(cv::Mat& Image);
     string GetEnvVar(const string& VarName);
     bool IsFaceDetected();
