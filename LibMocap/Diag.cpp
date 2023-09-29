@@ -91,6 +91,36 @@ namespace diag {
         return mSkelImage;
     }
 
+    vector<int> Diag::GetPoseIndexes()
+    {
+
+        vector<int> indexes
+        {
+            0, 2, 5, 7, 8,
+            11, 12, 13, 14, 15, 16,
+            23, 24
+        };
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetPoseConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {0, 2}, {2,7},
+            {0, 5}, {5, 8},
+            {11, 12}, {12, 24}, {24, 23}, {23, 11},
+            {11, 13}, {13, 15},
+            {12, 14}, {14, 16},
+        };
+
+        return connect;
+    }
+
+
+
     vector<int> Diag::GetMpPoseIndexes()
     {
 
@@ -119,6 +149,35 @@ namespace diag {
 
         return connect;
     }
+
+
+    vector<int> Diag::GetSkelIndexes()
+    {
+        vector<int> indexes
+        {
+            0, 1, 2, 3, 4, 5,
+            6, 7, 8, 10,
+            11, 12, 13, 15,
+            16, 21
+        };
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetSkelConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {0, 1}, {1, 2}, {2,3}, {3, 4}, {4, 5},
+            {3, 6}, {6, 7}, {7, 8}, {8, 10},
+            {3, 11}, {11, 12}, {12, 13}, {13, 15},
+            {0, 16}, {0, 21}
+        };
+
+        return connect;
+    }
+
 
     vector<int> Diag::GetSkelPoseIndexes()
     {
@@ -225,7 +284,7 @@ namespace diag {
         vector<double> lineX {0.f, 0.f};
         vector<double> lineY {0.f, 0.f};
         int lineThickness = 3;
-        for (auto& connect : GetMpPoseConnect()) {
+        for (auto& connect : GetPoseConnect()) {
 
             indexStart = connect[0];
             indexEnd = connect[1];
@@ -247,11 +306,13 @@ namespace diag {
         vector<double> pY;
         float x = 0.0f;
         float y = 0.0f;
-        for (auto& bone : Landmarks) {
+        for (auto i : GetPoseIndexes()) {
 
+            auto bone = Landmarks[i];
             GetBone2D(x, y, bone, ViewFlag);
             pX.push_back(x);
             pY.push_back(y);
+
         }
 
         hold(Ax, true);
@@ -362,7 +423,7 @@ namespace diag {
         vector<double> lineX {0.f, 0.f};
         vector<double> lineY {0.f, 0.f};
         int lineThickness = 3;
-        for (auto& connect : GetSkelPoseConnect()) {
+        for (auto& connect : GetSkelConnect()) {
 
             indexStart = connect[0];
             indexEnd = connect[1];
@@ -384,9 +445,8 @@ namespace diag {
         vector<double> pY;
         float x = 0.0f;
         float y = 0.0f;
-        for (auto& bone : Bones) {
-
-            GetBone2D(x, y, bone, ViewFlag);
+        for (auto i : GetSkelIndexes()) {
+            GetBone2D(x, y, Bones[i], ViewFlag);
             pX.push_back(x);
             pY.push_back(y);
         }

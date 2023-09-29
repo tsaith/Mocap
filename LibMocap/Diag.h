@@ -37,8 +37,12 @@ namespace diag {
 
     private:
 
+        vector<int> GetPoseIndexes(); 
+        FVector2i GetPoseConnect(); 
         vector<int> GetMpPoseIndexes(); 
         FVector2i GetMpPoseConnect(); 
+        vector<int> GetSkelIndexes(); 
+        FVector2i GetSkelConnect();
         vector<int> GetSkelPoseIndexes(); 
         FVector2i GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,

@@ -170,9 +170,6 @@ void Mocap::Diagnose()
     // Process
     mDiag.Process();
 
-    
-    //Mat diagImage = mDiag.GetDiagImage();
-    //cv::imshow("Diag", diagImage);
 }
 
 bool Mocap::IsFaceDetected() {
@@ -258,7 +255,14 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
 
     }
 
+    // Set the depth of head as zero
+    Data.pose[0][2] = 0.0f;
+    Data.pose[2][2] = 0.0f;
+    Data.pose[5][2] = 0.0f;
+    Data.pose[7][2] = 0.0f;
+    Data.pose[8][2] = 0.0f;
 
+    // Left hand 
     float* pLeftHand;
     MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);
 
@@ -266,6 +270,7 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
         Data.HAND_LANDMARK_NUM,
         Data.DIMENSIONS);
 
+    // Right hand 
     float* pRightHand;
     MediapipeGetRightHand(Data.HasRightHand, pRightHand);
 
