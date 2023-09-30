@@ -2,9 +2,10 @@
 
 #include "Mocap.h"
 #include "Mediapipe/libmediapipe.h"
+#include "Mediapipe/LibMpHand.h"
  
 
-Mocap::Mocap() {  
+Mocap::Mocap() {   
 
     mBlendshapes.assign(mNumBlendshapes, 0); 
 
@@ -41,8 +42,9 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mHRNetPose.UseGpu(true, mGpuDeviceId);
     mHRNetPose.LoadModel(modelPath);
 
-    // Mediapipe 
-    MediapipeInit(); 
+    // Mediapipe  
+    MpHandInit(); 
+    //MediapipeInit(); 
 
     mMHFormer.Init(ImageWidth, ImageHeight);
     mMHFormer.UseGpu(true);
@@ -96,7 +98,8 @@ void Mocap::Detect(Mat& Image)
     //mHRNetPose.Diagnose();
 
     // Mediapipe
-    MediapipeDetect(Image);
+    MpHandDetect(Image);
+    //MediapipeDetect(Image);
     UpdateHolisticMp(mHolisticMp);
     mHolistic = ReNormalizeHolistic(mHolisticMp); 
 
@@ -214,6 +217,7 @@ void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
 void Mocap::UpdateHolisticMp(Holistic& Data) {
 
+    /*
     float* pFacemesh;
     MediapipeGetFacemesh(Data.HasFacemesh, pFacemesh);
 
@@ -227,11 +231,9 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
     CopyArray2D(pPose, &(Data.pose[0][0]),
         Data.POSE_LANDMARK_NUM,
         Data.DIMENSIONS);
+    */
 
     FVector2f pose = mHRNetPose.GetPoseNorm();
-
-    cout << "Data.pose[11][0]: " << Data.pose[11][0] << endl;
-    cout << "pose[5][0]: " << pose[5][0] << endl; 
 
     for (int idim = 0; idim < 2; idim++) {
 
@@ -264,7 +266,8 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
 
     // Left hand 
     float* pLeftHand;
-    MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);
+    MpHandGetLeftHand(Data.HasLeftHand, pLeftHand);
+    //MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);
 
     CopyArray2D(pLeftHand, &(Data.LeftHand[0][0]),
         Data.HAND_LANDMARK_NUM,
@@ -272,7 +275,11 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
 
     // Right hand 
     float* pRightHand;
-    MediapipeGetRightHand(Data.HasRightHand, pRightHand);
+    MpHandGetRightHand(Data.HasRightHand, pRightHand);
+    //MediapipeGetRightHand(Data.HasRightHand, pRightHand); 
+
+    cout << "HasLeftHand: " << Data.HasLeftHand << endl;
+    cout << "HasRightHand: " << Data.HasRightHand << endl;
 
     CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
         Data.HAND_LANDMARK_NUM,
