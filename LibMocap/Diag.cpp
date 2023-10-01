@@ -14,8 +14,8 @@ namespace diag {
 
         mPoseLandmarks = InitVector2f(mNumPoseLandmarks, 4);
 
-        mSkelPoseIndexes = GetSkelPoseIndexes();
-        mSkelPoseConnet = GetSkelPoseConnect();
+        //mSkelPoseIndexes = GetSkelPoseIndexes();
+        //mSkelPoseConnet = GetSkelPoseConnect();
 
     }
 
@@ -44,6 +44,13 @@ namespace diag {
         mPoseLandmarks = PoseLandmarks;
     }
 
+    void Diag::SetHandLandmarks(FVector2f& LeftHandLandmarks, FVector2f& RightHandLandmarks)
+    {
+        mLeftHandLandmarks = LeftHandLandmarks;
+        mRightHandLandmarks = RightHandLandmarks;
+    }
+
+
     void Diag::SetSkeleton(
         FVector2f& Quats,
         FVector2f& Bones)
@@ -63,7 +70,14 @@ namespace diag {
         // Plot pose
         FVector2f posePixel = ToPixelSpace(mPoseLandmarks,
             mImageWidth, mImageHeight);
-        PlotPoseLandmarks(mPoseImage, posePixel);
+
+        FVector2f leftHandPixel = ToPixelSpace(mLeftHandLandmarks,
+            mImageWidth, mImageHeight);
+
+        FVector2f rightHandPixel = ToPixelSpace(mRightHandLandmarks,
+            mImageWidth, mImageHeight);
+
+        PlotLandmarks(mPoseImage, posePixel, leftHandPixel, rightHandPixel);
         cv::imshow("PoseImage", mPoseImage);
 
         // Plot skeleton
@@ -119,7 +133,31 @@ namespace diag {
         return connect;
     }
 
+    vector<int> Diag::GetHandIndexes()
+    {
 
+        vector<int> indexes;
+        for (int i = 0; i < mNumHandLandmarks; i++) {
+            indexes.push_back(i);
+        }
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetHandConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {1, 2}, {2, 3}, {3, 4},
+            {5, 6}, {6, 7}, {7, 8},
+            {9, 10}, {10, 11}, {11, 12},
+            {13, 14}, {14, 15}, {15, 16},
+            {17, 18}, {18, 19}, {19, 20}
+        };
+
+        return connect;
+    }
 
     vector<int> Diag::GetMpPoseIndexes()
     {
@@ -179,6 +217,56 @@ namespace diag {
     }
 
 
+    vector<int> Diag::GetSkelLeftHandIndexes()
+    {
+        vector<int> indexes;
+        for (int i = 26; i < 46; i++) {
+            indexes.push_back(i);
+        }
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetSkelLeftHandConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {26, 27},  {27, 28},  {28, 29},
+            {30, 31},  {31, 32},  {32, 33},
+            {34, 35},  {35, 36},  {36, 37},
+            {38, 39},  {39, 40},  {40, 41},
+        };
+
+        return connect;
+    }
+
+    vector<int> Diag::GetSkelRightHandIndexes()
+    {
+        vector<int> indexes;
+        for (int i = 46; i < 66; i++) {
+            indexes.push_back(i);
+        }
+
+        return indexes;
+    }
+
+    FVector2i Diag::GetSkelRightHandConnect()
+    {
+
+        vector<vector<int>> connect
+        {
+            {46, 47},  {47, 48},  {48, 49},
+            {50, 51},  {51, 52},  {52, 53},
+            {54, 55},  {55, 56},  {56, 57},
+            {58, 59},  {59, 60},  {60, 61},
+        };
+
+        return connect;
+    }
+
+
+
     vector<int> Diag::GetSkelPoseIndexes()
     {
         vector<int> indexes
@@ -234,23 +322,25 @@ namespace diag {
 
     }
 
-    void Diag::PlotPoseLandmarks(Mat& Image, FVector2f& Landmarks) {
+    void Diag::PlotLandmarks(Mat& Image, FVector2f& Pose,
+        FVector2f& LeftHand, FVector2f& RightHand) 
+    {
 
         auto figH = gcf(true);
         figH->size(mDiagImageWidth, mDiagImageHeight);
 
-        // Cross-section
+        // Cross-sectionPosse
         auto ax0 = subplot(figH, 2, 2, 0);
         hold(ax0, false);
-        PlotPoseLandmarksCore(ax0, Landmarks, 0);
+        PlotLandmarksCore(ax0, Pose, LeftHand, RightHand, 0);
 
         auto ax1 = subplot(figH, 2, 2, 1);
         hold(ax1, false);
-        PlotPoseLandmarksCore(ax1, Landmarks, 1);
+        PlotLandmarksCore(ax1, Pose, LeftHand, RightHand, 1);
 
         auto ax2 = subplot(figH, 2, 2, 2);
         hold(ax2, false);
-        PlotPoseLandmarksCore(ax2, Landmarks, 2);
+        PlotLandmarksCore(ax2, Pose, LeftHand, RightHand, 2);
 
         ConvertFigureToMat(figH, Image);
 
@@ -258,8 +348,8 @@ namespace diag {
         cla();
     }
 
-    void Diag::PlotPoseLandmarksCore(axes_handle& Ax,
-        FVector2f& Landmarks, int ViewFlag)
+    void Diag::PlotLandmarksCore(axes_handle& Ax,
+        FVector2f& Pose, FVector2f& LeftHand, FVector2f& RightHand,int ViewFlag)
     {
         /*
         ViewFlag: Flag of view angle
@@ -284,13 +374,20 @@ namespace diag {
         vector<double> lineX {0.f, 0.f};
         vector<double> lineY {0.f, 0.f};
         int lineThickness = 3;
+
+        vector<double> pX;
+        vector<double> pY;
+        float x = 0.0f;
+        float y = 0.0f;
+
+        // Plot Pose lines 
         for (auto& connect : GetPoseConnect()) {
 
             indexStart = connect[0];
             indexEnd = connect[1];
  
-            GetBone2D(x1, y1, Landmarks[indexStart], ViewFlag);
-            GetBone2D(x2, y2, Landmarks[indexEnd], ViewFlag);
+            GetBone2D(x1, y1, Pose[indexStart], ViewFlag);
+            GetBone2D(x2, y2, Pose[indexEnd], ViewFlag);
 
             lineX[0] = x1;
             lineY[0] = y1;
@@ -301,26 +398,88 @@ namespace diag {
             hold(Ax, true);
         }
 
-        // Plot keypoints
-        vector<double> pX;
-        vector<double> pY;
-        float x = 0.0f;
-        float y = 0.0f;
+        // Plot Pose landmarks
         for (auto i : GetPoseIndexes()) {
 
-            auto bone = Landmarks[i];
+            auto bone = Pose[i];
             GetBone2D(x, y, bone, ViewFlag);
             pX.push_back(x);
             pY.push_back(y);
 
         }
+        hold(Ax, true);
+        auto h = scatter(Ax, pX, pY, 1.0);
+        h->marker_face(true);
+
+        // Plot left hand lines 
+        hold(Ax, true);
+        for (auto& connect : GetHandConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, LeftHand[indexStart], ViewFlag);
+            GetBone2D(x2, y2, LeftHand[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineY[0] = y1;
+            lineX[1] = x2;
+            lineY[1] = y2;
+
+            plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
 
         hold(Ax, true);
 
-        double sz = 1;
-        auto h = scatter(Ax, pX, pY, sz);
+        // Plot left hand landmarks
+        for (auto i : GetHandIndexes()) {
+
+            auto bone = LeftHand[i];
+            GetBone2D(x, y, bone, ViewFlag);
+            pX.push_back(x);
+            pY.push_back(y);
+
+        }
+        hold(Ax, true);
+        h = scatter(Ax, pX, pY, 1.0);
         h->marker_face(true);
 
+        // Plot right hand lines 
+        hold(Ax, true);
+        for (auto& connect : GetHandConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, RightHand[indexStart], ViewFlag);
+            GetBone2D(x2, y2, RightHand[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineY[0] = y1;
+            lineX[1] = x2;
+            lineY[1] = y2;
+
+            plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
+
+        hold(Ax, true);
+
+        // Plot right hand landmarks
+        for (auto i : GetHandIndexes()) {
+
+            auto bone = LeftHand[i];
+            GetBone2D(x, y, bone, ViewFlag);
+            pX.push_back(x);
+            pY.push_back(y);
+
+        }
+        hold(Ax, true);
+        h = scatter(Ax, pX, pY, 1.0);
+        h->marker_face(true);
+
+        // Set plot axes 
         float xMin, xMax, yMin, yMax;
         if (ViewFlag == 0) {
 
@@ -416,13 +575,13 @@ namespace diag {
         float xLength = 1.0f*imageWidth * (1.0 + 2.0 * xMarginRatio);
         float yLength = 1.0f*imageHeight * (1.0 + 2.0 * yMarginRatio);
 
-        // Plot connection lines
+        // Plot pose lines
         int indexStart, indexEnd;
         float x1, y1, x2, y2;
 
         vector<double> lineX {0.f, 0.f};
         vector<double> lineY {0.f, 0.f};
-        int lineThickness = 3;
+        int lineThickness = 5;
         for (auto& connect : GetSkelConnect()) {
 
             indexStart = connect[0];
@@ -440,7 +599,7 @@ namespace diag {
             hold(Ax, true);
         }
 
-        // Plot keypoints
+        // Plot pose keypoints
         vector<double> pX;
         vector<double> pY;
         float x = 0.0f;
@@ -453,10 +612,52 @@ namespace diag {
 
         hold(Ax, true);
 
-        double sz = 1;
+        double sz = 3;
         auto h = scatter(Ax, pX, pY, sz);
         h->marker_face(true);
 
+        /*
+        // Plot left hand lines
+        hold(Ax, true);
+        for (auto& connect : GetSkelLeftHandConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, Bones[indexStart], ViewFlag);
+            GetBone2D(x2, y2, Bones[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineY[0] = y1;
+            lineX[1] = x2;
+            lineY[1] = y2;
+
+            plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
+
+        // Plot right hand lines 
+        hold(Ax, true);
+        for (auto& connect : GetSkelRightHandConnect()) {
+
+            indexStart = connect[0];
+            indexEnd = connect[1];
+ 
+            GetBone2D(x1, y1, Bones[indexStart], ViewFlag);
+            GetBone2D(x2, y2, Bones[indexEnd], ViewFlag);
+
+            lineX[0] = x1;
+            lineY[0] = y1;
+            lineX[1] = x2;
+            lineY[1] = y2;
+
+            plot(Ax, lineX, lineY);
+            hold(Ax, true);
+        }
+
+        */
+
+        // Plot axes 
         float xMin, xMax, yMin, yMax;
         if (ViewFlag == 0) {
 

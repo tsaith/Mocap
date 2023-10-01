@@ -25,6 +25,7 @@ namespace diag {
         void SetInputImage(cv::Mat& Image);
         void SetFps(float Fps);
         void SetPoseLandmarks(FVector2f& PoseLandmarks);
+        void SetHandLandmarks(FVector2f& LeftHnadLandmarks, FVector2f& RightHnadLandmarks);
 	    void SetSkeleton(
             FVector2f& Quats,
             FVector2f& Bones);
@@ -39,17 +40,24 @@ namespace diag {
 
         vector<int> GetPoseIndexes(); 
         FVector2i GetPoseConnect(); 
+        vector<int> GetHandIndexes(); 
+        FVector2i GetHandConnect(); 
         vector<int> GetMpPoseIndexes(); 
         FVector2i GetMpPoseConnect(); 
         vector<int> GetSkelIndexes(); 
         FVector2i GetSkelConnect();
+        vector<int> GetSkelLeftHandIndexes(); 
+        FVector2i GetSkelLeftHandConnect();
+        vector<int> GetSkelRightHandIndexes(); 
+        FVector2i GetSkelRightHandConnect();
         vector<int> GetSkelPoseIndexes(); 
         FVector2i GetSkelPoseConnect();
         void GetBone2D(float& Out1, float& Out2,
              vector<float> Bone, int IntFlag);
-        void PlotPoseLandmarks(Mat& Image, FVector2f& Landmarks);
-        void PlotPoseLandmarksCore(axes_handle& Ax,
-            FVector2f& Landmarks, int ViewFlag);
+        void PlotLandmarks(Mat& Image, FVector2f& Pose,
+            FVector2f& LeftHand, FVector2f& RightHand);
+        void PlotLandmarksCore(axes_handle& Ax, FVector2f& Pose,
+            FVector2f& LeftHand, FVector2f& RightHand, int ViewFlag);
         void PlotSkelBones(Mat& Image, FVector2f& Bones);
         void PlotSkelBonesCore(axes_handle& Ax,
             FVector2f& Bones, int ViewFlag);
@@ -63,6 +71,10 @@ namespace diag {
 
         int mNumPoseLandmarks = 33;
         FVector2f mPoseLandmarks;
+
+        int mNumHandLandmarks = 21;
+        FVector2f mLeftHandLandmarks;
+        FVector2f mRightHandLandmarks;
 
         int mNumSkelKeypoints = 68;
         FVector2f mSkelQuats;

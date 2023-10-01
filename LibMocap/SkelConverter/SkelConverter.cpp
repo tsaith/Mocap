@@ -30,29 +30,6 @@ void SkelConverter::PostProcess() {
         mSkeletonFactory.Preprocess(mHolistic, mIsShortDistance);
         mSkeletonFactory.Produce(mHolistic , &mSkeleton);
 
-        // Data for calibration 
-        //CreateDataForCalibration();
-
-        // Facemesh
-        ///float HeadAngle = mSkeleton.GetHeadDeviationAngle() * Radian2Angle;
-
-        /*
-        // Left gestures
-        mLeftGestureDetector.Detect(mHolistic.LeftHand, mHolistic.HasLeftHand);
-
-        mGesture.LeftStaticGesture = mLeftGestureDetector.GetStaticGesture();
-        mGesture.LeftStaticGestureIdx = mLeftGestureDetector.GetStaticGestureIndex();
-        mGesture.LeftDynamicGesture = mLeftGestureDetector.GetDynamicGesture();
-        mGesture.LeftDynamicGestureIdx = mLeftGestureDetector.GetDynamicGestureIndex();
-
-        mRightGestureDetector.Detect(mHolistic.RightHand, mHolistic.HasRightHand);
-        mRightGestureDetector.Detect(mHolistic.RightHand);
-
-        mGesture.RightStaticGesture =  mRightGestureDetector.GetStaticGesture();
-        mGesture.RightStaticGestureIdx =  mRightGestureDetector.GetStaticGestureIndex();
-        mGesture.RightDynamicGesture = mRightGestureDetector.GetDynamicGesture();
-        mGesture.RightDynamicGestureIdx = mRightGestureDetector.GetDynamicGestureIndex();
-        */
 }
 
 void SkelConverter::Process(Holistic& Data ) {

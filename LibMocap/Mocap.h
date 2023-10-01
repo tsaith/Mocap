@@ -41,9 +41,11 @@ public:
 
 private:
 
+    void FaceDetect(Mat& Image);
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
-    void UpdateHolisticMp(Holistic& Data);
+    void UpdateHolisticHands(Holistic& Data);
+    void UpdateHolisticPose(Holistic& Data);
     Holistic ReNormalizeHolistic(Holistic& Data); 
     void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 

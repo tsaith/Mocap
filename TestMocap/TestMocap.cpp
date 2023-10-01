@@ -128,7 +128,6 @@ int main()
         fps = timer.GetFPS();
 
         isFaceDetected = MocapIsFaceDetected();
-        cout << "isFaceDetected: " << isFaceDetected << endl;
 
         float* p; 
         p = MocapGetBlendshapes();
@@ -139,10 +138,6 @@ int main()
         }
 
         p = MocapGetHeadTransform();
-        cout << "Head qx: " << p[0] << endl;
-        cout << "Head qy: " << p[1] << endl;
-        cout << "Head qz: " << p[2] << endl;
-        cout << "Head w: " << p[3] << endl;
   
         for (i = 0; i < numSkelJoints; i++)
         {
@@ -159,9 +154,6 @@ int main()
         }
 
         i = 15;
-        cout << "RightHand x: " << skelBones[i][0] << endl;
-        cout << "RightHand y: " << skelBones[i][1]  << endl;
-        cout << "RightHand z: " << skelBones[i][2]  << endl;
 
         // Diagostics
         diag.SetInputImage(frame);

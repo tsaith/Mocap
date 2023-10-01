@@ -44,7 +44,6 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
     // Mediapipe  
     MpHandInit(); 
-    //MediapipeInit(); 
 
     mMHFormer.Init(ImageWidth, ImageHeight);
     mMHFormer.UseGpu(true);
@@ -71,11 +70,15 @@ void Mocap::Detect(Mat& Image)
     if (mCounter > mCounterMax) mCounter = 0;
 
 
-    // Facial expression
     mImage = Image.clone();
 
-    //thread facialExpressionWorker(&FacialExpression::Detect, ref(mFacialExpression), ref(Image));
-    mFacialExpression.Detect(Image);
+    // Face Detection
+    thread faceDetectWorker(&Mocap::FaceDetect, this, ref(Image));
+    //FaceDetect(Image);
+
+    /*
+    thread facialExpressionWorker(&FacialExpression::Detect, ref(mFacialExpression), ref(Image));
+    //mFacialExpression.Detect(Image);
  
     // Head transform
     vector<float> headQuatVec = mFacialExpression.GetHeadQuat();
@@ -92,19 +95,30 @@ void Mocap::Detect(Mat& Image)
     headTranslation.Y = headTranslationVec[1];
     headTranslation.Z = headTranslationVec[2];
     mHeadTransform = MakeTransform(headRotation, headTranslation);
+    */
+
+    // Hand detection (Use thread can speed up significantly)
+    thread handDetectWorker(MpHandDetect, ref(Image));
+    //MpHandDetect(Image);
+    UpdateHolisticHands(mHolisticMp);
 
     // HRNetPose
+    //thread poseDetectWorker(&HRNetPose::Detect, ref(mHRNetPose), ref(Image));
     mHRNetPose.Detect(Image);
     //mHRNetPose.Diagnose();
-
-    // Mediapipe
-    MpHandDetect(Image);
-    //MediapipeDetect(Image);
-    UpdateHolisticMp(mHolisticMp);
-    mHolistic = ReNormalizeHolistic(mHolisticMp); 
+    UpdateHolisticPose(mHolisticMp);
 
     // Refine depth with MHFormer  
-    RefinePoseDepthWithMHFormer(mHolistic, mCounter);
+    RefinePoseDepthWithMHFormer(mHolisticMp, mCounter);
+
+
+    // Sychronization
+    faceDetectWorker.join();
+    handDetectWorker.join(); 
+    //poseDetectWorker.join(); 
+
+    // Renormalize data
+    mHolistic = ReNormalizeHolistic(mHolisticMp); 
 
     // Skeleton converter
     mSkelConverter.Process(mHolistic);
@@ -127,10 +141,9 @@ void Mocap::Detect(Mat& Image)
         transform.Translation.Z = pBone[2];
 
         mSkelTransforms[i] = transform;
-
+ 
     }
 
-    //facialExpressionWorker.join();
 
 }
 
@@ -147,6 +160,17 @@ void Mocap::Diagnose()
     float* pPose = &mHolistic.pose[0][0];
     ArrayToVector(pPose, poseLandmarks, NumPoseLandmarks, 4);
     mDiag.SetPoseLandmarks(poseLandmarks);
+
+    // Hand landmarks
+    int NumHandLandmarks = mHolistic.GetHandLandmarkNum();
+    FVector2f leftHandLandmarks = InitVector2f(NumHandLandmarks, 4);
+    FVector2f rightHandLandmarks = InitVector2f(NumHandLandmarks, 4);
+
+    float* pLeftHand = &mHolistic.LeftHand[0][0];
+    float* pRightHand = &mHolistic.RightHand[0][0];
+    ArrayToVector(pLeftHand, leftHandLandmarks, NumHandLandmarks, 4);
+    ArrayToVector(pRightHand, rightHandLandmarks, NumHandLandmarks, 4);
+    mDiag.SetHandLandmarks(leftHandLandmarks, rightHandLandmarks);
 
     // Skeleton
     FVector2f skelQuats = InitVector2f(mNumBones, 4);
@@ -198,7 +222,32 @@ FTransform Mocap::GetSkelTransform(int Index)
 }
 
 // Private methods
-FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation) {
+void Mocap::FaceDetect(Mat& Image)
+{
+
+    mFacialExpression.Detect(Image);
+ 
+    // Head transform
+    vector<float> headQuatVec = mFacialExpression.GetHeadQuat();
+    vector<float> headTranslationVec = mFacialExpression.GetHeadTranslation();
+    FQuat headRotation;
+    FVector headTranslation;
+
+    headRotation.X = headQuatVec[0];
+    headRotation.Y = headQuatVec[1];
+    headRotation.Z = headQuatVec[2];
+    headRotation.W = headQuatVec[3];
+
+    headTranslation.X = headTranslationVec[0];
+    headTranslation.Y = headTranslationVec[1];
+    headTranslation.Z = headTranslationVec[2];
+    mHeadTransform = MakeTransform(headRotation, headTranslation);
+
+}
+
+
+FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation)
+{
 
     FTransform transform;
 
@@ -215,24 +264,32 @@ void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
 }
 
-void Mocap::UpdateHolisticMp(Holistic& Data) {
+void Mocap::UpdateHolisticHands(Holistic& Data) {
 
-    /*
-    float* pFacemesh;
-    MediapipeGetFacemesh(Data.HasFacemesh, pFacemesh);
+    // Left hand 
+    float* pLeftHand;
+    MpHandGetLeftHand(Data.HasLeftHand, pLeftHand);
 
-    CopyArray2D(pFacemesh, &(Data.facemesh[0][0]),
-        Data.FACEMESH_LANDMARK_NUM,
+    CopyArray2D(pLeftHand, &(Data.LeftHand[0][0]),
+        Data.HAND_LANDMARK_NUM, 
         Data.DIMENSIONS);
 
-    float* pPose;
-    MediapipeGetPose(Data.HasPose, pPose);
+    // Right hand 
+    float* pRightHand;
+    MpHandGetRightHand(Data.HasRightHand, pRightHand);
 
-    CopyArray2D(pPose, &(Data.pose[0][0]),
-        Data.POSE_LANDMARK_NUM,
+
+    CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
+        Data.HAND_LANDMARK_NUM,
         Data.DIMENSIONS);
-    */
 
+}
+
+
+void Mocap::UpdateHolisticPose(Holistic& Data) {
+
+
+    // Update x and y of pose 
     FVector2f pose = mHRNetPose.GetPoseNorm();
 
     for (int idim = 0; idim < 2; idim++) {
@@ -264,27 +321,6 @@ void Mocap::UpdateHolisticMp(Holistic& Data) {
     Data.pose[7][2] = 0.0f;
     Data.pose[8][2] = 0.0f;
 
-    // Left hand 
-    float* pLeftHand;
-    MpHandGetLeftHand(Data.HasLeftHand, pLeftHand);
-    //MediapipeGetLeftHand(Data.HasLeftHand, pLeftHand);
-
-    CopyArray2D(pLeftHand, &(Data.LeftHand[0][0]),
-        Data.HAND_LANDMARK_NUM,
-        Data.DIMENSIONS);
-
-    // Right hand 
-    float* pRightHand;
-    MpHandGetRightHand(Data.HasRightHand, pRightHand);
-    //MediapipeGetRightHand(Data.HasRightHand, pRightHand); 
-
-    cout << "HasLeftHand: " << Data.HasLeftHand << endl;
-    cout << "HasRightHand: " << Data.HasRightHand << endl;
-
-    CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
-        Data.HAND_LANDMARK_NUM,
-        Data.DIMENSIONS);
-
 }
 
 Holistic Mocap::ReNormalizeHolistic(Holistic& Data) 
@@ -309,10 +345,12 @@ Holistic Mocap::ReNormalizeHolistic(Holistic& Data)
         dataOut.RightHand[i][1] *= NormRatio;
     }
 
+    /*
     // Facemesh
     for (int i=0; i < dataOut.GetFacemeshLandmarkNum(); i++) {
         dataOut.facemesh[i][1] *= NormRatio;
     }
+    */
 
     return dataOut;
 
