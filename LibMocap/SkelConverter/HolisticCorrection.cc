@@ -792,8 +792,8 @@ void HolisticCorrection::ApplyFilterOnBones() {
     double timestamp = mFilterTimer.GetElapsedTime();
 
     // Apply filter on the depth of pose 
-    for (int dim=0; dim < 3 ; dim++) {
-        for (int i=0; i < mData.GetPoseLandmarkNum(); i++) {
+    for (int i=0; i < mData.GetPoseLandmarkNum(); i++) {
+        for (int dim=0; dim < 3 ; dim++) {
 
             mData.pose[i][dim] = mPoseOneEuro[i][dim].Filter(mData.pose[i][dim], timestamp);
 

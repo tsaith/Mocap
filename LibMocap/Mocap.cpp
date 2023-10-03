@@ -1,7 +1,6 @@
 #include "pch.h"
 
 #include "Mocap.h"
-#include "Mediapipe/libmediapipe.h"
 #include "Mediapipe/LibMpHand.h"
  
 
@@ -20,7 +19,6 @@ Mocap::~Mocap() {
 
     mFacialExpression.Finalize();
     mHRNetPose.Finalize();
-    MediapipeFinalize();
 
 }
 

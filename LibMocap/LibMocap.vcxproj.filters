@@ -33,9 +33,6 @@
     <ClInclude Include="Holistic.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Math\MathLib.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="SkelConverter\SkelConverter.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -51,7 +48,7 @@
     <ClInclude Include="SkelConverter\QuatSmoother.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\SignalAnalyzer.h">
+    <ClInclude Include="Utils\Skel\SignalAnalyzer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Utils\SkeletonPlotter.h">
@@ -75,13 +72,13 @@
     <ClInclude Include="Core\Math\Kalman1d.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\OneEuroFilter.hpp">
+    <ClInclude Include="Core\Math\OneEuroFilter.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\QuatStabilizer.hpp">
+    <ClInclude Include="Utils\Skel\QuatStabilizer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\BoneStabilizer.hpp">
+    <ClInclude Include="Utils\Skel\BoneStabilizer.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="SkelConverter\Calibration.hpp">
@@ -126,16 +123,19 @@
     <ClInclude Include="SkelConverter\Skeleton.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\StablePoint.hpp">
+    <ClInclude Include="Utils\Skel\StablePoint.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SkelConverter\StableValue.hpp">
+    <ClInclude Include="Utils\Skel\StableValue.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Core\VectorUtils.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Timer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\MathLib.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -150,9 +150,6 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Mocap.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Math\MathLib.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="SkelConverter\SkelConverter.cpp">
@@ -170,7 +167,7 @@
     <ClCompile Include="SkelConverter\QuatSmoother.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SkelConverter\SignalAnalyzer.cc">
+    <ClCompile Include="Utils\Skel\SignalAnalyzer.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Utils\SkeletonPlotter.cc">
@@ -204,6 +201,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Core\VectorUtils.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Math\MathLib.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,12 +4,12 @@
 #include <string>
 
 #include "Core/Math/MathLib.h"
+#include "Utils/Skel/BoneStabilizer.hpp"
+#include "Utils/Skel/QuatStabilizer.hpp"
+#include "Utils/DebugUtils.h"
 #include "holistic.hpp"
 #include "skeleton.hpp"
 #include "QuatSmoother.h"
-#include "BoneStabilizer.hpp"
-#include "QuatStabilizer.hpp"
-#include "Utils/DebugUtils.h"
 
 using namespace std;
 using namespace zen_math;

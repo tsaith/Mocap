@@ -5,9 +5,9 @@
 
 #include "Core/Math/MathLib.h"
 #include "Core/Math/Kalman1d.hpp"
+#include "Core/Math/OneEuroFilter.hpp"
+#include "Utils/Skel/BoneStabilizer.hpp"
 #include "Utils/Timer.hpp"
-#include "BoneStabilizer.hpp"
-#include "OneEuroFilter.hpp"
 #include "Holistic.hpp"
 #include "Calibration.hpp"
 #include "HeadStabilizer.h"

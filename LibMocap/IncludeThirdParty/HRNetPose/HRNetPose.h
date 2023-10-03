@@ -1,9 +1,15 @@
 #pragma once
 
+
 #include "opencv2/opencv.hpp"
 
 #include <onnxruntime_cxx_api.h>
 #include <dml_provider_factory.h>
+
+#include "Core/Math/OneEuroFilter.hpp" 
+#include "Utils/Skel/BoneStabilizer.hpp"
+#include "Utils/Timer.hpp"
+
 
 namespace hrnet_pose {
 
@@ -55,7 +61,7 @@ namespace hrnet_pose {
         int mInputBufferSize = 3 * mInferWidth * mInferHeight;
         vector<float> mInputBuffer;
 
-        const int mNumKeypoints = 17;
+        static const int mNumKeypoints = 17;
         std::vector<int64_t> mOutputShape = { 1, mNumKeypoints, 64, 48 };
         //const std::array<int64_t, 4> mOutputShape = { 1, 17, 64, 48 };
         int mOutputBufferSize = mNumKeypoints * 64 * 48;
@@ -65,6 +71,20 @@ namespace hrnet_pose {
         // Pose (x, y, possibility)
         vector<vector<float>> mPose;
         vector<vector<float>> mPoseNorm;
+
+        // Parameters of One Euro filter
+        float mOneEuroFrequency = 18.0;
+        float mOneEuroMincutoff = 1.0;
+        float mOneEuroBeta = 10.0;
+        float mOneEuroDcutoff = 1.0;
+
+        // One Euro filter
+        one_euro::OneEuroFilter mPoseOneEuro[mNumKeypoints][2];
+
+        Timer mFilterTimer;
+
+        // Bone stabilizer
+        BoneStabilizer mPoseStabilizer[mNumKeypoints];
 
     };
 
