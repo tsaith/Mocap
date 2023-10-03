@@ -10,9 +10,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMocap", "TestMocap\Test
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibMocap", "LibMocap\LibMocap.vcxproj", "{2A4299A6-A379-41D7-BD02-53FF8AD8C5E9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MocapBase", "MocapBase\MocapBase.vcxitems", "{BF610A2B-16B0-431A-9C8E-2B2C7E662A7C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		MocapShared\MocapShared.vcxitems*{b92aec38-6351-4000-ad7d-7f76e62e5b60}*SharedItemsImports = 4
+		MocapBase\MocapBase.vcxitems*{2a4299a6-a379-41d7-bd02-53ff8ad8c5e9}*SharedItemsImports = 4
+		MocapBase\MocapBase.vcxitems*{b92aec38-6351-4000-ad7d-7f76e62e5b60}*SharedItemsImports = 4
+		MocapBase\MocapBase.vcxitems*{bf610a2b-16b0-431a-9c8e-2b2c7e662a7c}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

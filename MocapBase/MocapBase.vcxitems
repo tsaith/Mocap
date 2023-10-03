@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{bf610a2b-16b0-431a-9c8e-2b2c7e662a7c}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\Core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\Math\Kalman1d.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\Math\KalmanFilter.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\Math\MathLib.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\Math\OneEuroFilter.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\TypeDef.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Core\VectorUtils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skel\BoneStabilizer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skel\QuatStabilizer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skel\SignalAnalyzer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skel\StablePoint.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skel\StableValue.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Camera.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\DebugUtils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\TextPlotter.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\Timer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\TimeUtils.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils\VideoPlayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Core\Core.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Core\Math\MathLib.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Core\VectorUtils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Skel\SignalAnalyzer.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils\DebugUtils.cc" />
+  </ItemGroup>
+</Project>

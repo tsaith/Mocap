@@ -4,9 +4,9 @@
 #include <string>
 
 #include "Core/Math/MathLib.h"
-#include "Utils/Skel/BoneStabilizer.hpp"
-#include "Utils/Skel/QuatStabilizer.hpp"
 #include "Utils/DebugUtils.h"
+#include "Skel/BoneStabilizer.hpp"
+#include "Skel/QuatStabilizer.hpp"
 #include "holistic.hpp"
 #include "skeleton.hpp"
 #include "QuatSmoother.h"

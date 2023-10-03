@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/Skel/SignalAnalyzer.h"
+#include "Skel/SignalAnalyzer.h"
 
 #include <deque>
 #include <iostream>

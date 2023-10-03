@@ -7,8 +7,8 @@
 #include <dml_provider_factory.h>
 
 #include "Core/Math/OneEuroFilter.hpp" 
-#include "Utils/Skel/BoneStabilizer.hpp"
 #include "Utils/Timer.hpp"
+#include "Skel/BoneStabilizer.hpp"
 
 
 namespace hrnet_pose {
