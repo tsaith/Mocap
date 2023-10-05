@@ -82,6 +82,11 @@ vector<vector<float>> MHFormer::Predict(vector<vector<float>>& Pose2d) {
 
     // Update temporal data
     mTemporalData.push_back(pose2d);
+
+    while (mTemporalData.size() < mNumFramesUsed) {
+        mTemporalData.push_back(pose2d);
+    }
+
     if (mTemporalData.size() > mNumFramesUsed) {
         mTemporalData.erase(mTemporalData.begin());
     }

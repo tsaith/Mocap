@@ -67,10 +67,16 @@ namespace diag {
         mDiagImage = mInputImage.clone();
 
 
-        // Plot pose
+        // Plot pose on image
         FVector2f posePixel = ToPixelSpace(mPoseLandmarks,
             mImageWidth, mImageHeight);
 
+        FVector2i poseConnect = GetPoseConnect();
+        cv_plot::PlotPose2D(mDiagImage, posePixel, poseConnect);
+
+        cv::imshow("Diag", mDiagImage);
+
+        // Plot pose with diffent view
         FVector2f leftHandPixel = ToPixelSpace(mLeftHandLandmarks,
             mImageWidth, mImageHeight);
 

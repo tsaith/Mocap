@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "Core/Core.h"
+#include "Plot/CvPlot.h"
 #include "Plot/PlotLib.h"
 #include "Utils/TextPlotter.hpp" 
 

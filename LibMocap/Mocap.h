@@ -9,6 +9,7 @@
 #include "Core/Core.h"
 #include "Core/VectorUtils.h"
 #include "FacialExpression/FacialExpression.h" 
+#include "PoseDetector.h"
 #include "HRNetPose/HRNetPose.h" 
 #include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
@@ -45,10 +46,11 @@ private:
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
     void UpdateHolisticHands(Holistic& Data);
-    void UpdateHolisticPose(Holistic& Data);
+    void UpdateHolisticPose(Holistic& Data, FVector2f Pose);
     Holistic ReNormalizeHolistic(Holistic& Data); 
-    void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
+    //void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 
+    bool mUseGpu = true;
     int mGpuDeviceId = 0;
 
     int mImageWidth;
@@ -64,13 +66,17 @@ private:
     const int mNumBones = 68;
     vector<FTransform> mSkelTransforms;
 
-    Holistic mHolisticMp;
     Holistic mHolistic;
+    Holistic mHolisticReNorm;
 
+    FVector2f mPose;
+
+    PoseDetector mPoseDetector;
+    /*
     HRNetPose mHRNetPose;
-
     MHFormer mMHFormer;
     float mMHFAngleAroundX = -10.0;
+    */
 
     SkelConverter mSkelConverter;
 

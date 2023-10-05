@@ -148,7 +148,7 @@
       <AdditionalIncludeDirectories>C:\Users\andrew\projects\Mocap\MocapBase;C:\Users\andrew\projects\Mocap\LibMocap;C:\Users\andrew\projects\Mocap\LibMocap\IncludeThirdParty;C:\opt\opencv\build\include;C:\opt\Matplot++_1.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -176,6 +176,7 @@ xcopy /y /d "..\$(IntDir)LibMpHand.lib" "C:\Users\andrew\projects\AvatarCam\Plug
     <ClInclude Include="MHFormer\mhformer_utils.h" />
     <ClInclude Include="Mocap.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PoseDetector.h" />
     <ClInclude Include="PoseUtils.h" />
     <ClInclude Include="SkelConverter\Calibration.hpp" />
     <ClInclude Include="SkelConverter\Gesture.hpp" />
@@ -201,6 +202,7 @@ xcopy /y /d "..\$(IntDir)LibMpHand.lib" "C:\Users\andrew\projects\AvatarCam\Plug
     <ClCompile Include="MHFormer\mhformer_utils.cpp" />
     <ClCompile Include="Mocap.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="PoseDetector.cpp" />
     <ClCompile Include="PoseUtils.cpp" />
     <ClCompile Include="SkelConverter\HandStabilizer.cc" />
     <ClCompile Include="SkelConverter\HeadStabilizer.cc" />

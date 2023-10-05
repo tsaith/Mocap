@@ -108,12 +108,49 @@ namespace pose_utils {
         vector<vector<float>> pose = PoseIn;
 
         int numJoints = static_cast<int>(pose.size());
-        int dims = 3;
+        int dims = static_cast<int>(pose[0].size());
 
-        for (int i = 0; i < numJoints; i++) {
-            pose[i][0] *= Width;
-            pose[i][1] *= Height;
-            pose[i][2] *= Width;
+        if (dims == 3) {
+
+            for (int i = 0; i < numJoints; i++) {
+                pose[i][0] *= Width;
+                pose[i][1] *= Height;
+                pose[i][2] *= Width;
+            }
+        }
+        else {
+
+            for (int i = 0; i < numJoints; i++) {
+                pose[i][0] *= Width;
+                pose[i][1] *= Height;
+            }
+        }
+
+        return pose;
+
+    }
+
+    vector<vector<float>> ToNormSpace(vector<vector<float>>& PoseIn, int Width, int Height) {
+
+        vector<vector<float>> pose = PoseIn;
+
+        int numJoints = static_cast<int>(pose.size());
+        int dims = static_cast<int>(pose[0].size());
+
+        if (dims == 3) {
+
+            for (int i = 0; i < numJoints; i++) {
+                pose[i][0] /= Width;
+                pose[i][1] /= Height;
+                pose[i][2] /= Width;
+            }
+        }
+        else {
+
+            for (int i = 0; i < numJoints; i++) {
+                pose[i][0] /= Width;
+                pose[i][1] /= Height;
+            }
         }
 
         return pose;

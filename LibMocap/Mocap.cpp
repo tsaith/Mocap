@@ -18,7 +18,6 @@ Mocap::Mocap() {
 Mocap::~Mocap() {
 
     mFacialExpression.Finalize();
-    mHRNetPose.Finalize();
 
 }
 
@@ -31,7 +30,16 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
     // Facial expression
     mFacialExpression.Init(ImageWidth, ImageHeight);
- 
+
+    // Mediapipe  
+    MpHandInit(); 
+
+    // Pose detector
+    mPoseDetector.Init(ImageWidth, ImageHeight);
+    mPoseDetector.UseGpu(mUseGpu, mGpuDeviceId);
+    mPoseDetector.LoadModel("TrainedModels");
+
+    /*
     // HRNetPose
     mHRNetPose.Init(ImageWidth, ImageHeight);
 
@@ -40,8 +48,6 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mHRNetPose.UseGpu(true, mGpuDeviceId);
     mHRNetPose.LoadModel(modelPath);
 
-    // Mediapipe  
-    MpHandInit(); 
 
     mMHFormer.Init(ImageWidth, ImageHeight);
     mMHFormer.UseGpu(true);
@@ -52,6 +58,7 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
 
     // Set angle used to rotate pose around x-axis
     mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
+    */
 
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);
@@ -74,41 +81,17 @@ void Mocap::Detect(Mat& Image)
     thread faceDetectWorker(&Mocap::FaceDetect, this, ref(Image));
     //FaceDetect(Image);
 
-    /*
-    thread facialExpressionWorker(&FacialExpression::Detect, ref(mFacialExpression), ref(Image));
-    //mFacialExpression.Detect(Image);
- 
-    // Head transform
-    vector<float> headQuatVec = mFacialExpression.GetHeadQuat();
-    vector<float> headTranslationVec = mFacialExpression.GetHeadTranslation();
-    FQuat headRotation;
-    FVector headTranslation;
-
-    headRotation.X = headQuatVec[0];
-    headRotation.Y = headQuatVec[1];
-    headRotation.Z = headQuatVec[2];
-    headRotation.W = headQuatVec[3];
-
-    headTranslation.X = headTranslationVec[0];
-    headTranslation.Y = headTranslationVec[1];
-    headTranslation.Z = headTranslationVec[2];
-    mHeadTransform = MakeTransform(headRotation, headTranslation);
-    */
-
     // Hand detection (Use thread can speed up significantly)
     thread handDetectWorker(MpHandDetect, ref(Image));
     //MpHandDetect(Image);
-    UpdateHolisticHands(mHolisticMp);
+    UpdateHolisticHands(mHolistic);
 
-    // HRNetPose
-    //thread poseDetectWorker(&HRNetPose::Detect, ref(mHRNetPose), ref(Image));
-    mHRNetPose.Detect(Image);
-    //mHRNetPose.Diagnose();
-    UpdateHolisticPose(mHolisticMp);
+    // Pose detection
+    mPoseDetector.Detect(Image);
+    mPoseDetector.UpdateHolisticPose(mHolistic);
 
     // Refine depth with MHFormer  
-    RefinePoseDepthWithMHFormer(mHolisticMp, mCounter);
-
+    //RefinePoseDepthWithMHFormer(mHolistic, mCounter);
 
     // Sychronization
     faceDetectWorker.join();
@@ -116,10 +99,10 @@ void Mocap::Detect(Mat& Image)
     //poseDetectWorker.join(); 
 
     // Renormalize data
-    mHolistic = ReNormalizeHolistic(mHolisticMp); 
+    mHolisticReNorm = ReNormalizeHolistic(mHolistic); 
 
     // Skeleton converter
-    mSkelConverter.Process(mHolistic);
+    mSkelConverter.Process(mHolisticReNorm);
     
     FTransform transform;
     float* pQuat;
@@ -153,6 +136,7 @@ void Mocap::Diagnose()
 
     // Pose landmarks
     int NumPoseLandmarks = mHolistic.GetPoseLandmarkNum();
+    //int NumPoseLandmarks = mHolistic.GetPoseLandmarkNum();
     FVector2f poseLandmarks = InitVector2f(NumPoseLandmarks, 4);
 
     float* pPose = &mHolistic.pose[0][0];
@@ -284,11 +268,11 @@ void Mocap::UpdateHolisticHands(Holistic& Data) {
 }
 
 
-void Mocap::UpdateHolisticPose(Holistic& Data) {
+void Mocap::UpdateHolisticPose(Holistic& Data, FVector2f Pose) {
 
 
     // Update x and y of pose 
-    FVector2f pose = mHRNetPose.GetPoseNorm();
+    FVector2f pose = Pose;
 
     for (int idim = 0; idim < 2; idim++) {
 
@@ -343,17 +327,11 @@ Holistic Mocap::ReNormalizeHolistic(Holistic& Data)
         dataOut.RightHand[i][1] *= NormRatio;
     }
 
-    /*
-    // Facemesh
-    for (int i=0; i < dataOut.GetFacemeshLandmarkNum(); i++) {
-        dataOut.facemesh[i][1] *= NormRatio;
-    }
-    */
-
     return dataOut;
 
 }
 
+/*
 void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) 
 {
 
@@ -384,7 +362,6 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter)
         }
     }
 
-    /* Update depth of Holistic data */
     int warmUpSteps = 5; // This could avoid Unreal crashes.
     if (Counter > warmUpSteps) {
 
@@ -427,4 +404,5 @@ void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter)
     }
 
 }
+*/
 

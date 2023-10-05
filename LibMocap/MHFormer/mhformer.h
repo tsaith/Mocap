@@ -29,14 +29,11 @@ public:
 
 private:
 
-    //int mFrameWidth = 640;
-    //int mFrameHeight = 480;
-    int mFrameWidth = 1280;
-    int mFrameHeight = 720;
+    int mFrameWidth = 640;
+    int mFrameHeight = 480;
 
     // Use GPU device 
     bool mUseGpu = true;
-    //bool mUseGpu = false;
     int mDeviceId = 0;
 
     //Ort::Env mEnv;
