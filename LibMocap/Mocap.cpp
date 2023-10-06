@@ -39,27 +39,6 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mPoseDetector.UseGpu(mUseGpu, mGpuDeviceId);
     mPoseDetector.LoadModel("TrainedModels");
 
-    /*
-    // HRNetPose
-    mHRNetPose.Init(ImageWidth, ImageHeight);
-
-    modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/hrnet_coco_w32_256x192.onnx";
-    //modelPath = "TrainedModels/hrnet_coco_w32_256x192.onnx";
-    mHRNetPose.UseGpu(true, mGpuDeviceId);
-    mHRNetPose.LoadModel(modelPath);
-
-
-    mMHFormer.Init(ImageWidth, ImageHeight);
-    mMHFormer.UseGpu(true);
-
-    //modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
-    modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/mhformer.onnx";
-    mMHFormer.LoadModel(modelPath);
-
-    // Set angle used to rotate pose around x-axis
-    mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
-    */
-
     // Skeleton converter
     mSkelConverter.Init(ImageWidth, ImageHeight);
 
@@ -89,9 +68,6 @@ void Mocap::Detect(Mat& Image)
     // Pose detection
     mPoseDetector.Detect(Image);
     mPoseDetector.UpdateHolisticPose(mHolistic);
-
-    // Refine depth with MHFormer  
-    //RefinePoseDepthWithMHFormer(mHolistic, mCounter);
 
     // Sychronization
     faceDetectWorker.join();
@@ -267,44 +243,6 @@ void Mocap::UpdateHolisticHands(Holistic& Data) {
 
 }
 
-
-void Mocap::UpdateHolisticPose(Holistic& Data, FVector2f Pose) {
-
-
-    // Update x and y of pose 
-    FVector2f pose = Pose;
-
-    for (int idim = 0; idim < 2; idim++) {
-
-        Data.pose[0][idim] = pose[0][idim];
-        Data.pose[2][idim] = pose[1][idim];
-        Data.pose[5][idim] = pose[2][idim];
-        Data.pose[7][idim] = pose[3][idim];
-        Data.pose[8][idim] = pose[4][idim];
-        Data.pose[11][idim] = pose[5][idim];
-        Data.pose[12][idim] = pose[6][idim];
-        Data.pose[13][idim] = pose[7][idim];
-        Data.pose[15][idim] = pose[9][idim];
-        Data.pose[14][idim] = pose[8][idim];
-        Data.pose[16][idim] = pose[10][idim];
-        Data.pose[23][idim] = pose[11][idim];
-        Data.pose[24][idim] = pose[12][idim];
-        Data.pose[25][idim] = pose[13][idim];
-        Data.pose[26][idim] = pose[14][idim];
-        Data.pose[27][idim] = pose[15][idim];
-        Data.pose[28][idim] = pose[16][idim];
-
-    }
-
-    // Set the depth of head as zero
-    Data.pose[0][2] = 0.0f;
-    Data.pose[2][2] = 0.0f;
-    Data.pose[5][2] = 0.0f;
-    Data.pose[7][2] = 0.0f;
-    Data.pose[8][2] = 0.0f;
-
-}
-
 Holistic Mocap::ReNormalizeHolistic(Holistic& Data) 
 {
     /*
@@ -330,79 +268,4 @@ Holistic Mocap::ReNormalizeHolistic(Holistic& Data)
     return dataOut;
 
 }
-
-/*
-void Mocap::RefinePoseDepthWithMHFormer(Holistic& Data, int Counter) 
-{
-
-    int imageWidth = mImageWidth;
-    int imageHeight = mImageHeight;
-
-    vector<vector<float>> poseMp, pose2d, pose3d;
-
-    pose2d = InitPose2d();
-
-    // Create a vector pose from Mediapipe 
-    poseMp = CreateVectorPoseMp(&Data.pose[0][0], Data.POSE_LANDMARK_NUM, Data.DIMENSIONS);
-
-    // Convert to pixel space
-    poseMp = pose_utils::ToPixelSpace(poseMp, imageWidth, imageHeight);
-
-    // Prepare 2d pose
-    ConvertPoseMpToPose2d(poseMp, pose2d);
-
-    // Predict the depth
-    pose3d = mMHFormer.Predict(pose2d);
-
-    // Normalize pose
-    int numJoints = static_cast<int>(pose3d.size());
-    for (int i = 0; i < numJoints; i++) {
-        for (int j = 0; j < 3; j++) {
-            pose3d[i][j] /= imageWidth;
-        }
-    }
-
-    int warmUpSteps = 5; // This could avoid Unreal crashes.
-    if (Counter > warmUpSteps) {
-
-        // Left shoulder
-        Data.pose[11][2] = pose3d[11][2];
-
-        // Right shoulder
-        Data.pose[12][2] = pose3d[14][2];
-
-        // Left elbow
-        Data.pose[13][2] = pose3d[12][2];
-
-        // Right elbow
-        Data.pose[14][2] = pose3d[15][2];
-
-        // Left wrist
-        Data.pose[15][2] = pose3d[13][2];
-
-        // Right wrist
-        Data.pose[16][2] = pose3d[16][2];
-
-        // Left hip
-        Data.pose[23][2] = pose3d[4][2];
-
-        // Right hip
-        Data.pose[24][2] = pose3d[1][2];
-
-        // Left knee
-        Data.pose[25][2] = pose3d[5][2];
-
-        // Right knee
-        Data.pose[26][2] = pose3d[2][2];
-
-        // Left ankle
-        Data.pose[27][2] = pose3d[6][2];
-
-        // Right ankle
-        Data.pose[28][2] = pose3d[3][2];
-
-    }
-
-}
-*/
 

@@ -46,9 +46,7 @@ private:
     FTransform MakeTransform(FQuat Rotation, FVector Translation);
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
     void UpdateHolisticHands(Holistic& Data);
-    void UpdateHolisticPose(Holistic& Data, FVector2f Pose);
     Holistic ReNormalizeHolistic(Holistic& Data); 
-    //void RefinePoseDepthWithMHFormer(Holistic& Data, int Counter);
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;
@@ -72,12 +70,6 @@ private:
     FVector2f mPose;
 
     PoseDetector mPoseDetector;
-    /*
-    HRNetPose mHRNetPose;
-    MHFormer mMHFormer;
-    float mMHFAngleAroundX = -10.0;
-    */
-
     SkelConverter mSkelConverter;
 
     // Diagnostics

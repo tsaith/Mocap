@@ -83,6 +83,25 @@ namespace pose_utils {
 
     }
 
+	template<typename T>
+    void VecNorm2D(T& result, vector<T>& vec)
+    {
+        result = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+    }
+
+    void CalculateLengthTwoPoints2D(float& Length, vector<float>& PointStart, vector<float>& PointEnd)
+    {
+        const int dims = 2;
+        vector<float> v;
+        v.assign(dims, 0.f);
+
+        for (int i = 0; i < dims; i++) {
+            v[i] = PointEnd[i] - PointStart[i];
+        }
+
+        VecNorm2D(Length, v);
+    }
+
 
     // Pose related functions
     vector<vector<float>> CreateVectorPoseMp(float* Ptr, int NumJoints, int Dims) {

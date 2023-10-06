@@ -148,7 +148,7 @@
       <AdditionalIncludeDirectories>C:\Users\andrew\projects\Mocap\MocapBase;C:\Users\andrew\projects\Mocap\LibMocap;C:\Users\andrew\projects\Mocap\LibMocap\IncludeThirdParty;C:\opt\opencv\build\include;C:\opt\Matplot++_1.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

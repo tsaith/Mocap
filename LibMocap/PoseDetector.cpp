@@ -65,14 +65,17 @@ void PoseDetector::Detect(Mat& Image)
     // Estimate pose 2D 
     mHRNetPose.Detect(mImage);
     mPose2D = mHRNetPose.GetPoseNorm();
-
-    // Correct pose
-    CorrectPose2D()
-
     MapPose2DToHolistic(mPose2D, mHolistic);
 
-    // Estimate pose depth 
-    EstimatePoseDepthWithMHFormer(mHolistic);
+    // Correct pose
+    CorrectPose2D(mHolistic);
+
+    // Calculate pose depth 
+    CalculatePoseDepthWithMHFormer(mHolistic);
+
+    // Force hip's depth as zero
+    //mHolistic.pose[23][2] = 0.f;
+    //mHolistic.pose[24][2] = 0.f;
  
 }
 
@@ -105,9 +108,170 @@ void PoseDetector::UpdateHolisticPose(Holistic& Data)
 
 // Private methods
 
-void CorrectPose2D()
+void PoseDetector::CorrectPose2D(Holistic& Data)
 {
 
+    vector<int> imageSize{ mImageWidth, mImageHeight };
+
+    vector<float> leftShoulder{ 0.f, 0.f };
+    vector<float> rightShoulder{ 0.f, 0.f };
+    vector<float> leftHip{ 0.f, 0.f };
+    vector<float> rightHip{ 0.f, 0.f };
+    vector<float> leftElbow{ 0.f, 0.f };
+    vector<float> rightElbow{ 0.f, 0.f };
+    vector<float> leftWrist{ 0.f, 0.f };
+    vector<float> rightWrist{ 0.f, 0.f };
+
+    vector<float> leftKnee{ 0.f, 0.f };
+    vector<float> rightKnee{ 0.f, 0.f };
+    vector<float> leftAnkle{ 0.f, 0.f };
+    vector<float> rightAnkle{ 0.f, 0.f };
+
+
+    leftShoulder = { Data.pose[11][0], Data.pose[11][1] };
+    rightShoulder = { Data.pose[12][0], Data.pose[12][1] };
+    leftHip = { Data.pose[23][0], Data.pose[23][1] };
+    rightHip = { Data.pose[24][0], Data.pose[24][1] };
+    leftElbow = { Data.pose[13][0], Data.pose[13][1] };
+    rightElbow = { Data.pose[14][0], Data.pose[14][1] };
+    leftWrist = { Data.pose[15][0], Data.pose[15][1] };
+    rightWrist = { Data.pose[16][0], Data.pose[16][1] };
+
+    leftKnee = { Data.pose[25][0], Data.pose[25][1] };
+    rightKnee = { Data.pose[26][0], Data.pose[26][1] };
+    leftAnkle = { Data.pose[27][0], Data.pose[27][1] };
+    rightAnkle = { Data.pose[28][0], Data.pose[28][1] };
+
+    // Convert to pixel space
+    for (int i = 0; i < 2; i++) {
+
+        leftShoulder[i] *= imageSize[i];
+        rightShoulder[i] *= imageSize[i];
+        leftHip[i] *= imageSize[i];
+        rightHip[i] *= imageSize[i];
+        leftElbow[i] *= imageSize[i];
+        rightElbow[i] *= imageSize[i];
+        leftWrist[i] *= imageSize[i];
+        rightWrist[i] *= imageSize[i];
+
+        leftKnee[i] *= imageSize[i];
+        rightKnee[i] *= imageSize[i];
+        leftAnkle[i] *= imageSize[i];
+        rightAnkle[i] *= imageSize[i];
+
+    }
+ 
+    float minRatioShoulderLength = 0.2;
+    float shoulderLengthMin = minRatioShoulderLength * mImageWidth;
+
+    float maxRatioShoulderLength = 0.8;
+    float shoulderLengthMax = maxRatioShoulderLength * mImageWidth;
+
+    float minRatioOfWidth = 0.2;
+    float maxRatioOfWidth = 0.8;
+    float minRatioOfHeight = 0.3;
+    float maxRatioOfHeight = 0.7;
+
+    float leftBound = minRatioOfWidth * mImageWidth;
+    float rightBound = maxRatioOfWidth * mImageWidth;
+    float topBound = minRatioOfHeight * mImageHeight;
+    float bottomBound = maxRatioOfHeight * mImageHeight;
+
+    float shoulderLength;
+    CalculateLengthTwoPoints2D(shoulderLength, leftShoulder, rightShoulder);
+
+    if (shoulderLength < shoulderLengthMin) {
+        shoulderLength = shoulderLengthMin;
+    }
+    if (shoulderLength > shoulderLengthMax) {
+        shoulderLength = shoulderLengthMax;
+    }
+
+    //cout << "shoulderLength: " << shoulderLength << endl;
+
+    float lengthLeftShoulderHip = 1.0f * shoulderLength;
+    if (leftHip[1] > bottomBound) {
+        leftHip[1] = leftShoulder[1] + lengthLeftShoulderHip;
+    }
+
+    float lengthRightShoulderHip = 1.0f * shoulderLength;
+    if (rightHip[1] > bottomBound) {
+        rightHip[1] = rightShoulder[1] + lengthRightShoulderHip;
+    }
+
+    /*
+    cout << "leftHip[0]: " << leftHip[0] << endl;
+    cout << "leftHip[1]: " << leftHip[1] << endl;
+    cout << "rightHip[0]: " << rightHip[0] << endl;
+    cout << "rightHip[1]: " << rightHip[1] << endl;
+    */
+
+    // Predict lower body
+    leftKnee[0] = leftHip[0];
+    leftKnee[1] = leftHip[1] + shoulderLength;
+
+    rightKnee[0] = rightHip[0];
+    rightKnee[1] = rightHip[1] + shoulderLength;
+
+    leftAnkle[0] = leftHip[0];
+    leftAnkle[1] = leftHip[1] + 2.0f*shoulderLength;
+
+    rightAnkle[0] = rightHip[0];
+    rightAnkle[1] = rightHip[1] + 2.0f*shoulderLength;
+
+    /*
+    cout << "leftKnee[1]: " << leftKnee[1] << endl;
+    cout << "rightKnee[1]: " << rightKnee[1] << endl;
+    cout << "leftAnkle[1]: " << leftAnkle[1] << endl;
+    cout << "rightAnkle[1]: " << rightAnkle[1] << endl;
+    */
+
+
+    // Convert to normalized space
+    for (int i = 0; i < 2; i++) {
+
+        leftShoulder[i] /= imageSize[i];
+        rightShoulder[i] /= imageSize[i];
+        leftHip[i] /= imageSize[i];
+        rightHip[i] /= imageSize[i];
+        leftElbow[i] /= imageSize[i];
+        rightElbow[i] /= imageSize[i];
+        leftWrist[i] /= imageSize[i];
+        rightWrist[i] /= imageSize[i];
+
+        leftKnee[i] /= imageSize[i];
+        rightKnee[i] /= imageSize[i];
+        leftAnkle[i] /= imageSize[i];
+        rightAnkle[i] /= imageSize[i];
+
+    }
+ 
+
+    // ---- Update holistic data ----
+
+    // Hips
+    Data.pose[23][0] = leftHip[0];
+    Data.pose[23][1] = leftHip[1];
+    Data.pose[24][0] = rightHip[0];
+    Data.pose[24][1] = rightHip[1];
+
+    // Wrist
+    Data.pose[15][0] = leftWrist[0];
+    Data.pose[15][1] = leftWrist[1];
+    Data.pose[16][0] = rightWrist[0];
+    Data.pose[16][1] = rightWrist[1];
+
+    // Knees
+    Data.pose[25][0] = leftKnee[0];
+    Data.pose[25][1] = leftKnee[1];
+    Data.pose[26][0] = rightKnee[0];
+    Data.pose[26][1] = rightKnee[1];
+
+    // Ankles
+    Data.pose[27][0] = leftAnkle[0];
+    Data.pose[27][1] = leftAnkle[1];
+    Data.pose[28][0] = rightAnkle[0];
+    Data.pose[28][1] = rightAnkle[1];
 
 }
 
@@ -148,7 +312,7 @@ void PoseDetector::MapPose2DToHolistic(FVector2f& Pose2D, Holistic& Data) {
 
 }
 
-void PoseDetector::EstimatePoseDepthWithMHFormer(Holistic& Data) 
+void PoseDetector::CalculatePoseDepthWithMHFormer(Holistic& Data) 
 {
 
     int imageWidth = mImageWidth;
@@ -171,52 +335,43 @@ void PoseDetector::EstimatePoseDepthWithMHFormer(Holistic& Data)
     pose3d = mMHFormer.Predict(pose2d);
 
     // Normalize pose
-    int numJoints = static_cast<int>(pose3d.size());
-    for (int i = 0; i < numJoints; i++) {
-        for (int j = 0; j < 3; j++) {
-            pose3d[i][j] /= imageWidth;
-        }
-    }
+    pose3d = pose_utils::ToNormSpace(pose3d, imageWidth, imageHeight);
 
-    //int warmUpSteps = 5; // This could avoid Unreal crashes.
-    //if (Counter > warmUpSteps) {
+    // Left shoulder
+    Data.pose[11][2] = pose3d[11][2];
 
-        // Left shoulder
-        Data.pose[11][2] = pose3d[11][2];
+    // Right shoulder
+    Data.pose[12][2] = pose3d[14][2];
 
-        // Right shoulder
-        Data.pose[12][2] = pose3d[14][2];
+    // Left elbow
+    Data.pose[13][2] = pose3d[12][2];
 
-        // Left elbow
-        Data.pose[13][2] = pose3d[12][2];
+    // Right elbow
+    Data.pose[14][2] = pose3d[15][2];
 
-        // Right elbow
-        Data.pose[14][2] = pose3d[15][2];
+    // Left wrist
+    Data.pose[15][2] = pose3d[13][2];
 
-        // Left wrist
-        Data.pose[15][2] = pose3d[13][2];
+    // Right wrist
+    Data.pose[16][2] = pose3d[16][2];
 
-        // Right wrist
-        Data.pose[16][2] = pose3d[16][2];
+    // Left hip
+    Data.pose[23][2] = pose3d[4][2];
 
-        // Left hip
-        Data.pose[23][2] = pose3d[4][2];
+    // Right hip
+    Data.pose[24][2] = pose3d[1][2];
 
-        // Right hip
-        Data.pose[24][2] = pose3d[1][2];
+    // Left knee
+    Data.pose[25][2] = pose3d[5][2];
 
-        // Left knee
-        Data.pose[25][2] = pose3d[5][2];
+    // Right knee
+    Data.pose[26][2] = pose3d[2][2];
 
-        // Right knee
-        Data.pose[26][2] = pose3d[2][2];
+    // Left ankle
+    Data.pose[27][2] = pose3d[6][2];
 
-        // Left ankle
-        Data.pose[27][2] = pose3d[6][2];
-
-        // Right ankle
-        Data.pose[28][2] = pose3d[3][2];
-
-    //}
+    // Right ankle
+    Data.pose[28][2] = pose3d[3][2];
 
 }
+

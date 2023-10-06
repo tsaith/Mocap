@@ -1,9 +1,13 @@
 #pragma once
 
+#include "Core/Core.h"
+
+/*
 #include <stdio.h>
 #include <vector>
 #include <string>
 #include <iostream>
+*/
 
 using namespace std;
 
@@ -30,6 +34,11 @@ namespace pose_utils {
 
 	template<typename T>
 	void VecToArr(vector<T>& V, T* A, int Dims);
+
+	template<typename T>
+    void VecNorm2D(T& result, vector<T>& vec);
+
+    void CalculateLengthTwoPoints2D(float& Length, vector<float>& PointStart, vector<float>& PointEnd);
 
 	// Pose related functions
 	vector<vector<float>> CreateVectorPoseMp(float* Ptr, int NumJoints, int Dims);

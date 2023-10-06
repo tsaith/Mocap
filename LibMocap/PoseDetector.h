@@ -26,11 +26,12 @@ public:
     void Detect(Mat& Image);
     void UpdateHolisticPose(Holistic& Data);
 
+
 private:
 
-    void CorrectPose2D();
+    void CorrectPose2D(Holistic& Data);
     void MapPose2DToHolistic(FVector2f& Pose2D, Holistic& Data);
-    void EstimatePoseDepthWithMHFormer(Holistic& Data);
+    void CalculatePoseDepthWithMHFormer(Holistic& Data);
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;

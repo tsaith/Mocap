@@ -14,9 +14,6 @@ namespace diag {
 
         mPoseLandmarks = InitVector2f(mNumPoseLandmarks, 4);
 
-        //mSkelPoseIndexes = GetSkelPoseIndexes();
-        //mSkelPoseConnet = GetSkelPoseConnect();
-
     }
 
     Diag::~Diag()
@@ -118,7 +115,10 @@ namespace diag {
         {
             0, 2, 5, 7, 8,
             11, 12, 13, 14, 15, 16,
-            23, 24
+            23, 24,
+            //25, 26,
+            //27, 28
+
         };
 
         return indexes;
@@ -134,6 +134,9 @@ namespace diag {
             {11, 12}, {12, 24}, {24, 23}, {23, 11},
             {11, 13}, {13, 15},
             {12, 14}, {14, 16},
+            //{23, 25}, {25, 27},
+            //{24, 26}, {26, 28},
+
         };
 
         return connect;
