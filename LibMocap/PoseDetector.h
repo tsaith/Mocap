@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Core.h"
+#include "Core/Math/MathLib.h"
 #include "Core/VectorUtils.h"
 #include "Holistic.hpp"
 #include "HRNetPose/HRNetPose.h" 
@@ -23,6 +24,7 @@ public:
     void Init(int ImageWidth, int ImageHeight);
     void UseGpu(bool bFlag, int GpuDeviceId);
     void LoadModel(string ModelDir);
+    void SetHandInfo(bool HasLeftHand, bool HasRightHand);
     void Detect(Mat& Image);
     void UpdateHolisticPose(Holistic& Data);
 
@@ -32,6 +34,8 @@ private:
     void CorrectPose2D(Holistic& Data);
     void MapPose2DToHolistic(FVector2f& Pose2D, Holistic& Data);
     void CalculatePoseDepthWithMHFormer(Holistic& Data);
+    vector<float> CalculateWrist2D(vector<float>& Shoulder, vector<float>& Elbow,
+        float LengthElbowWrist);
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;
@@ -43,6 +47,9 @@ private:
 
     FVector2f mPose2D;
     FVector2f mPose3D;
+
+    bool mHasLeftHand;
+    bool mHasRightHand;
 
     Holistic mHolistic;
     HRNetPose mHRNetPose;

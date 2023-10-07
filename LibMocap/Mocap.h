@@ -61,6 +61,9 @@ private:
     vector<float> mBlendshapes;
     FTransform mHeadTransform;
     
+    bool mHasLeftHand;
+    bool mHasRightHand;
+
     const int mNumBones = 68;
     vector<FTransform> mSkelTransforms;
 

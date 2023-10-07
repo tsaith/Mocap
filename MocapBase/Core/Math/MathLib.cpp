@@ -12,6 +12,55 @@ namespace zen_math {
         return degree / 180.0 * M_PI;
     }
 
+
+    float CalculateVecNorm(std::vector<float>& Vec)
+    {
+        int dims = Vec.size();
+
+        float out = 0.f;
+        for (int i = 0; i < dims; i++) {
+            out += Vec[i] * Vec[i];
+        }
+        out = sqrt(out);
+
+        return out;
+    }
+
+    vector<float> CalculateVecTwoPoints(vector<float>& Point1, vector<float>& Point2)
+    {
+        int dims = Point1.size();
+
+        vector<float> vec;
+        for (int i = 0; i < dims; i++) {
+            vec.push_back(Point2[i] - Point1[i]);
+        }
+
+        return vec;
+    }
+
+    float CalculateLengthTwoPoints(std::vector<float>& Point1, std::vector<float>& Point2)
+    {
+        vector<float> vec = CalculateVecTwoPoints(Point1, Point2);
+        return CalculateVecNorm(vec);
+    }
+
+
+    vector<float> CalculateUnitVecTwoPoints(vector<float>& Point1, std::vector<float>& Point2)
+    {
+        vector<float> vec = CalculateVecTwoPoints(Point1, Point2);
+        float length = CalculateVecNorm(vec);
+
+        vector<float> unitVec;
+        int dims = vec.size();
+        for (int i = 0; i < dims; i++) {
+            unitVec.push_back(vec[i] / length);
+        }
+
+        return unitVec;
+    }
+
+
+    // ---------------------------------------------
     void VecSet(float* vec, float x, float y, float z) {
 
         vec[0] = x;

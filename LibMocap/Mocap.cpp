@@ -11,8 +11,6 @@ Mocap::Mocap() {
     FTransform boneTransform;
     mSkelTransforms.assign(mNumBones, boneTransform);
 
-
-
 }
 
 Mocap::~Mocap() {
@@ -66,6 +64,7 @@ void Mocap::Detect(Mat& Image)
     UpdateHolisticHands(mHolistic);
 
     // Pose detection
+    mPoseDetector.SetHandInfo(mHasLeftHand, mHasRightHand);
     mPoseDetector.Detect(Image);
     mPoseDetector.UpdateHolisticPose(mHolistic);
 
@@ -224,19 +223,20 @@ void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
 void Mocap::UpdateHolisticHands(Holistic& Data) {
 
-    // Left hand 
+    // Left hand
     float* pLeftHand;
-    MpHandGetLeftHand(Data.HasLeftHand, pLeftHand);
-
+    MpHandGetLeftHand(mHasLeftHand, pLeftHand);
+    
+    Data.HasLeftHand = mHasLeftHand;
     CopyArray2D(pLeftHand, &(Data.LeftHand[0][0]),
         Data.HAND_LANDMARK_NUM, 
         Data.DIMENSIONS);
 
     // Right hand 
     float* pRightHand;
-    MpHandGetRightHand(Data.HasRightHand, pRightHand);
+    MpHandGetRightHand(mHasRightHand, pRightHand);
 
-
+    Data.HasRightHand = mHasRightHand;
     CopyArray2D(pRightHand, &(Data.RightHand[0][0]),
         Data.HAND_LANDMARK_NUM,
         Data.DIMENSIONS);

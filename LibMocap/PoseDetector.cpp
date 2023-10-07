@@ -58,6 +58,12 @@ void PoseDetector::LoadModel(string ModelDir)
 
 }
 
+void PoseDetector::SetHandInfo(bool HasLeftHand, bool HasRightHand)
+{
+    mHasLeftHand = HasLeftHand;
+    mHasRightHand = HasRightHand;
+}
+
 void PoseDetector::Detect(Mat& Image)
 {
     mImage = Image.clone();
@@ -73,10 +79,6 @@ void PoseDetector::Detect(Mat& Image)
     // Calculate pose depth 
     CalculatePoseDepthWithMHFormer(mHolistic);
 
-    // Force hip's depth as zero
-    //mHolistic.pose[23][2] = 0.f;
-    //mHolistic.pose[24][2] = 0.f;
- 
 }
 
 void PoseDetector::UpdateHolisticPose(Holistic& Data) 
@@ -169,8 +171,8 @@ void PoseDetector::CorrectPose2D(Holistic& Data)
 
     float minRatioOfWidth = 0.2;
     float maxRatioOfWidth = 0.8;
-    float minRatioOfHeight = 0.3;
-    float maxRatioOfHeight = 0.7;
+    float minRatioOfHeight = 0.2;
+    float maxRatioOfHeight = 0.8;
 
     float leftBound = minRatioOfWidth * mImageWidth;
     float rightBound = maxRatioOfWidth * mImageWidth;
@@ -187,8 +189,7 @@ void PoseDetector::CorrectPose2D(Holistic& Data)
         shoulderLength = shoulderLengthMax;
     }
 
-    //cout << "shoulderLength: " << shoulderLength << endl;
-
+    // Hips
     float lengthLeftShoulderHip = 1.0f * shoulderLength;
     if (leftHip[1] > bottomBound) {
         leftHip[1] = leftShoulder[1] + lengthLeftShoulderHip;
@@ -199,12 +200,16 @@ void PoseDetector::CorrectPose2D(Holistic& Data)
         rightHip[1] = rightShoulder[1] + lengthRightShoulderHip;
     }
 
-    /*
-    cout << "leftHip[0]: " << leftHip[0] << endl;
-    cout << "leftHip[1]: " << leftHip[1] << endl;
-    cout << "rightHip[0]: " << rightHip[0] << endl;
-    cout << "rightHip[1]: " << rightHip[1] << endl;
-    */
+    // Hands
+    float lengthLeftElbowWrist = 1.0f * shoulderLength;
+    if (!mHasLeftHand) {
+        leftWrist = CalculateWrist2D(leftShoulder, leftElbow, lengthLeftElbowWrist);
+    }
+
+    float lengthRightElbowWrist = lengthLeftElbowWrist;
+    if (!mHasRightHand) {
+        rightWrist = CalculateWrist2D(rightShoulder, rightElbow, lengthRightElbowWrist);
+    }
 
     // Predict lower body
     leftKnee[0] = leftHip[0];
@@ -218,14 +223,6 @@ void PoseDetector::CorrectPose2D(Holistic& Data)
 
     rightAnkle[0] = rightHip[0];
     rightAnkle[1] = rightHip[1] + 2.0f*shoulderLength;
-
-    /*
-    cout << "leftKnee[1]: " << leftKnee[1] << endl;
-    cout << "rightKnee[1]: " << rightKnee[1] << endl;
-    cout << "leftAnkle[1]: " << leftAnkle[1] << endl;
-    cout << "rightAnkle[1]: " << rightAnkle[1] << endl;
-    */
-
 
     // Convert to normalized space
     for (int i = 0; i < 2; i++) {
@@ -248,7 +245,6 @@ void PoseDetector::CorrectPose2D(Holistic& Data)
  
 
     // ---- Update holistic data ----
-
     // Hips
     Data.pose[23][0] = leftHip[0];
     Data.pose[23][1] = leftHip[1];
@@ -375,3 +371,19 @@ void PoseDetector::CalculatePoseDepthWithMHFormer(Holistic& Data)
 
 }
 
+vector<float> PoseDetector::CalculateWrist2D(
+    vector<float>& Shoulder, vector<float>& Elbow, float LengthElbowWrist)
+{
+
+    vector<float> unitVec = CalculateUnitVecTwoPoints(Shoulder, Elbow);
+
+    vector<float> wrist;
+
+    int dims = unitVec.size();
+    for (int i = 0; i < dims; i++) {
+        wrist.push_back(Elbow[i] + unitVec[i]*LengthElbowWrist);
+    }
+
+    return wrist;
+
+}

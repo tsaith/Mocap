@@ -91,6 +91,9 @@ namespace cv_plot {
     void PlotPose2D(cv::Mat& Image, 
         vector<vector<float>>& Pose, vector<vector<int>>& PoseConnect) {
 
+        int ImageWidth = Image.cols;
+        int ImageHeight = Image.rows;
+
         // Plot connection lines
         int indexStart, indexEnd;
         float x1, y1, x2, y2;
@@ -111,6 +114,9 @@ namespace cv_plot {
             p1 = cv::Point(x1, y1);
             p2 = cv::Point(x2, y2);
 
+            p1 = MakeValidPoint(p1, ImageWidth, ImageHeight);
+            p2 = MakeValidPoint(p2, ImageWidth, ImageHeight);
+
             line(Image, p1, p2, lineColor, lineThickness, cv::LINE_8);
         }
 
@@ -120,6 +126,8 @@ namespace cv_plot {
 
             point.x = bone[0];
             point.y = bone[1];
+
+            point = MakeValidPoint(point, ImageWidth, ImageHeight);
 
             cv::circle(Image, point, 3, cv::Scalar(0, 255, 255), -1);
 
@@ -173,5 +181,26 @@ namespace cv_plot {
 
         return imageOut;
     }
+
+    cv::Point MakeValidPoint(cv::Point& PointIn, int ImageWidth, int ImageHeight)
+    {
+
+        int x = PointIn.x;
+        int y = PointIn.y;
+
+        int leftBound = 0;
+        int rightBound = ImageWidth - 1;
+        int topBound = 0;
+        int bottomBound = ImageHeight - 1;
+
+        if (x < leftBound) x = 0;
+        if (x > rightBound) x = rightBound;
+        if (y < topBound) y = 0;
+        if (y > bottomBound) y = bottomBound;
+
+        return cv::Point(x, y);
+
+    }
+
 
 }

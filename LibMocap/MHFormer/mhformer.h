@@ -67,7 +67,7 @@ private:
     mhf::Vector2d mPose3dPixelUnnorm;
     
     // Rotational angle around x-axis
-    float mAngleAroundX = -50.0;
+    float mAngleAroundX = 0.0;
 
 };
 

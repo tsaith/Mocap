@@ -24,4 +24,6 @@ namespace cv_plot {
 
 	cv::Mat CombineImages2x2(cv::Mat& Img1, cv::Mat& Img2, cv::Mat& Img3, cv::Mat& Img4, cv::Size SizeOut);
 
+	cv::Point MakeValidPoint(cv::Point & PointIn, int ImageWidth, int ImageHeight);
+
 }

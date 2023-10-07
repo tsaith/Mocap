@@ -17,12 +17,18 @@ static const double M_PI = 3.14159265358979323846;
 
 namespace zen_math {
 
-
-#include <Eigen/Dense>
+    using namespace std;
 
     float RadianToDegree(float radian);
     float DegreeToRadian(float degree);
 
+    // -------------------------------------------------------
+    float CalculateVecNorm(std::vector<float>& Vec);
+    vector<float> CalculateVecTwoPoints(vector<float>& Point1, vector<float>& Point2);
+    float CalculateLengthTwoPoints(vector<float>& Point1, vector<float>& Point2);
+    vector<float> CalculateUnitVecTwoPoints(vector<float>& Point1, std::vector<float>& Point2);
+
+    // -------------------------------------------------------
     void VecSet(float* vec, float x, float y, float z);
     void VecCopy(float* dest, float* src);
     void VecCopy(float* dest, float* src, int dims);

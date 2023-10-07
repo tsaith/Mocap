@@ -143,12 +143,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_HAS_STD_BYTE=0;NOMINMAX;LIBMOCAP_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\Users\andrew\projects\Mocap\MocapBase;C:\Users\andrew\projects\Mocap\LibMocap;C:\Users\andrew\projects\Mocap\LibMocap\IncludeThirdParty;C:\opt\opencv\build\include;C:\opt\Matplot++_1.2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4244;4305</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

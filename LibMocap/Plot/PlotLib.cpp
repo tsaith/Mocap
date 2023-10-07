@@ -110,4 +110,33 @@ namespace plotlib {
         return imageOut;
     }
 
+    //template<class T>
+	//vector<T> MakeValidPoint2D(vector<T>& PointIn, int ImageWidth, int ImageHeight)
+	vector<double> MakeValidPoint2D(vector<double>& PointIn, int ImageWidth, int ImageHeight)
+    {
+
+        //T x, y;
+        double x, y;
+        x = PointIn[0];
+        y = PointIn[1];
+
+        int leftBound = 0;
+        int rightBound = ImageWidth - 1;
+        int topBound = 0;
+        int bottomBound = ImageHeight - 1;
+
+        if (x < leftBound) x = 0;
+        if (x > rightBound) x = rightBound;
+        if (y < topBound) y = 0;
+        if (y > bottomBound) y = bottomBound;
+
+        //vector<T> p;
+        vector<double> p;
+        p.push_back(x);
+        p.push_back(y);
+
+        return p;
+
+    }
+
 }

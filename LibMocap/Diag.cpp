@@ -116,8 +116,8 @@ namespace diag {
             0, 2, 5, 7, 8,
             11, 12, 13, 14, 15, 16,
             23, 24,
-            //25, 26,
-            //27, 28
+            25, 26,
+            27, 28
 
         };
 
@@ -134,8 +134,8 @@ namespace diag {
             {11, 12}, {12, 24}, {24, 23}, {23, 11},
             {11, 13}, {13, 15},
             {12, 14}, {14, 16},
-            //{23, 25}, {25, 27},
-            //{24, 26}, {26, 28},
+            {23, 25}, {25, 27},
+            {24, 26}, {26, 28},
 
         };
 
@@ -398,6 +398,19 @@ namespace diag {
             GetBone2D(x1, y1, Pose[indexStart], ViewFlag);
             GetBone2D(x2, y2, Pose[indexEnd], ViewFlag);
 
+            /*
+            vector<double> p1{x1, y1};
+            vector<double> p2{x2, y2};
+
+            p1 = MakeValidPoint2D(p1, imageWidth, imageHeight);
+            p2 = MakeValidPoint2D(p2, imageWidth, imageHeight);
+
+            x1 = p1[0];
+            y1 = p1[1];
+            x2 = p2[0];
+            y2 = p2[1];
+            */
+
             lineX[0] = x1;
             lineY[0] = y1;
             lineX[1] = x2;
@@ -412,6 +425,14 @@ namespace diag {
 
             auto bone = Pose[i];
             GetBone2D(x, y, bone, ViewFlag);
+
+            /*
+            vector<double> p{x, y};
+            p = MakeValidPoint2D(p, imageWidth, imageHeight);
+            x = p[0];
+            y = p[1];
+            */
+
             pX.push_back(x);
             pY.push_back(y);
 
@@ -430,6 +451,19 @@ namespace diag {
             GetBone2D(x1, y1, LeftHand[indexStart], ViewFlag);
             GetBone2D(x2, y2, LeftHand[indexEnd], ViewFlag);
 
+            /*
+            vector<double> p1{x1, y1};
+            vector<double> p2{x2, y2};
+
+            p1 = MakeValidPoint2D(p1, imageWidth, imageHeight);
+            p2 = MakeValidPoint2D(p2, imageWidth, imageHeight);
+
+            x1 = p1[0];
+            y1 = p1[1];
+            x2 = p2[0];
+            y2 = p2[1];
+            */
+
             lineX[0] = x1;
             lineY[0] = y1;
             lineX[1] = x2;
@@ -446,6 +480,14 @@ namespace diag {
 
             auto bone = LeftHand[i];
             GetBone2D(x, y, bone, ViewFlag);
+
+            /*
+            vector<double> p{x, y};
+            p = MakeValidPoint2D(p, imageWidth, imageHeight);
+            x = p[0];
+            y = p[1];
+            */
+
             pX.push_back(x);
             pY.push_back(y);
 
@@ -464,6 +506,19 @@ namespace diag {
             GetBone2D(x1, y1, RightHand[indexStart], ViewFlag);
             GetBone2D(x2, y2, RightHand[indexEnd], ViewFlag);
 
+            /*
+            vector<double> p1{x1, y1};
+            vector<double> p2{x2, y2};
+
+            p1 = MakeValidPoint2D(p1, imageWidth, imageHeight);
+            p2 = MakeValidPoint2D(p2, imageWidth, imageHeight);
+
+            x1 = p1[0];
+            y1 = p1[1];
+            x2 = p2[0];
+            y2 = p2[1];
+            */
+
             lineX[0] = x1;
             lineY[0] = y1;
             lineX[1] = x2;
@@ -480,6 +535,14 @@ namespace diag {
 
             auto bone = LeftHand[i];
             GetBone2D(x, y, bone, ViewFlag);
+
+            /*
+            vector<double> p{x, y};
+            p = MakeValidPoint2D(p, imageWidth, imageHeight);
+            x = p[0];
+            y = p[1];
+            */
+
             pX.push_back(x);
             pY.push_back(y);
 
