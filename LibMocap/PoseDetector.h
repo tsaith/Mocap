@@ -36,6 +36,7 @@ private:
     void CalculatePoseDepthWithMHFormer(Holistic& Data);
     vector<float> CalculateWrist2D(vector<float>& Shoulder, vector<float>& Elbow,
         float LengthElbowWrist);
+    void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;
@@ -48,6 +49,7 @@ private:
     FVector2f mPose2D;
     FVector2f mPose3D;
 
+    bool mHasPose;
     bool mHasLeftHand;
     bool mHasRightHand;
 

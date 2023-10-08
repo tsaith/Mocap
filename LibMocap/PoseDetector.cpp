@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "PoseDetector.h"
- 
+#include "Mediapipe/LibMediapipe.h"
 
 PoseDetector::PoseDetector() {   
 
@@ -14,6 +14,7 @@ PoseDetector::PoseDetector() {
 
 PoseDetector::~PoseDetector() {
 
+    MpPoseFinalize(); 
     mHRNetPose.Finalize();
 
 }
@@ -23,6 +24,7 @@ void PoseDetector::Init(int ImageWidth, int ImageHeight) {
     mImageWidth = ImageWidth; 
     mImageHeight = ImageHeight;
 
+    MpPoseInit(); 
 
 }
 
@@ -68,13 +70,28 @@ void PoseDetector::Detect(Mat& Image)
 {
     mImage = Image.clone();
 
+
+    // Pose detection
+    MpPoseDetect(Image);
+
+    float* pPose;
+    MpPoseGetPose(mHasPose, pPose);
+    
+    mHolistic.HasPose = mHasPose;
+    CopyArray2D(pPose, &(mHolistic.pose[0][0]),
+        mHolistic.POSE_LANDMARK_NUM, 
+        mHolistic.DIMENSIONS);
+
+    /*
     // Estimate pose 2D 
     mHRNetPose.Detect(mImage);
     mPose2D = mHRNetPose.GetPoseNorm();
     MapPose2DToHolistic(mPose2D, mHolistic);
+    */
+
 
     // Correct pose
-    CorrectPose2D(mHolistic);
+    //CorrectPose2D(mHolistic);
 
     // Calculate pose depth 
     CalculatePoseDepthWithMHFormer(mHolistic);
@@ -387,3 +404,11 @@ vector<float> PoseDetector::CalculateWrist2D(
     return wrist;
 
 }
+
+void PoseDetector::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
+
+    int num = Rows * Cols;
+    memcpy(Dest, Src, sizeof(float)*num);
+
+}
+

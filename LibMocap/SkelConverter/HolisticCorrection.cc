@@ -609,9 +609,11 @@ void HolisticCorrection::CorrectLeftHand() {
     float zHandWrist = mData.LeftHand[0][2];
     float shift = zPoseWrist - zHandWrist ;
 
-    //cout << "zPoseWrist: " << zPoseWrist << endl;
-    //cout << "zHandWrist: " << zHandWrist << endl;
-    //cout << "zHandIndexMcpOri: " << mData.LeftHand[5][2] << endl;
+    /*
+    cout << "zPoseWrist: " << zPoseWrist << endl;
+    cout << "zHandWrist: " << zHandWrist << endl;
+    cout << "zHandIndexMcpOri: " << mData.LeftHand[5][2] << endl;
+    */
 
     for (int i=0; i < mData.HAND_LANDMARK_NUM; i++) {
         mData.LeftHand[i][2] += shift;

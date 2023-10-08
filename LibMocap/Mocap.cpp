@@ -1,7 +1,8 @@
 #include "pch.h"
 
 #include "Mocap.h"
-#include "Mediapipe/LibMpHand.h"
+#include "Mediapipe/LibMediapipe.h"
+//#include "Mediapipe/LibMpHand.h"  
  
 
 Mocap::Mocap() {   
@@ -17,6 +18,9 @@ Mocap::~Mocap() {
 
     mFacialExpression.Finalize();
 
+    //MpPoseFinalize(); 
+    MpHandFinalize(); 
+
 }
 
 void Mocap::Init(int ImageWidth, int ImageHeight) {
@@ -30,6 +34,7 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mFacialExpression.Init(ImageWidth, ImageHeight);
 
     // Mediapipe  
+    //MpPoseInit(); 
     MpHandInit(); 
 
     // Pose detector
@@ -72,6 +77,9 @@ void Mocap::Detect(Mat& Image)
     faceDetectWorker.join();
     handDetectWorker.join(); 
     //poseDetectWorker.join(); 
+
+    // Correct pose and hands
+    CorrectHolistic(mHolistic); 
 
     // Renormalize data
     mHolisticReNorm = ReNormalizeHolistic(mHolistic); 
@@ -213,7 +221,7 @@ FTransform Mocap::MakeTransform(FQuat Rotation, FVector Translation)
 
     return transform;
 }
-
+ 
 void Mocap::CopyArray2D(float* Src, float* Dest, int Rows, int Cols) {
 
     int num = Rows * Cols;
@@ -269,3 +277,31 @@ Holistic Mocap::ReNormalizeHolistic(Holistic& Data)
 
 }
 
+void Mocap::CorrectHolistic(Holistic& Data) {
+
+    int iWrist;
+    float zPoseWrist;
+    float zHandWrist;
+    float shift;
+
+    // Left hand
+    iWrist = 15;
+    zPoseWrist = Data.pose[iWrist][2];
+    zHandWrist = Data.LeftHand[0][2];
+    shift = zPoseWrist - zHandWrist;
+
+    for (int i = 0; i < Data.HAND_LANDMARK_NUM; i++) {
+        Data.LeftHand[i][2] += shift;
+    }
+
+    // Right hand
+    iWrist = 16;
+    zPoseWrist = Data.pose[iWrist][2];
+    zHandWrist = Data.RightHand[0][2];
+    shift = zPoseWrist - zHandWrist;
+
+    for (int i = 0; i < Data.HAND_LANDMARK_NUM; i++) {
+        Data.RightHand[i][2] += shift;
+    }
+
+}

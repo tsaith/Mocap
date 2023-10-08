@@ -47,6 +47,7 @@ private:
     void CopyArray2D(float* Src, float* Dest, int Rows, int Cols);
     void UpdateHolisticHands(Holistic& Data);
     Holistic ReNormalizeHolistic(Holistic& Data); 
+    void CorrectHolistic(Holistic& Data);
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;
