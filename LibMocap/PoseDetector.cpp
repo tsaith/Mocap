@@ -9,13 +9,13 @@ PoseDetector::PoseDetector() {
     mImageHeight = 0;
 
     // Set angle used to rotate pose around x-axis
-    mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
+    //mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
 }
 
 PoseDetector::~PoseDetector() {
 
     MpPoseFinalize(); 
-    mHRNetPose.Finalize();
+    //mHRNetPose.Finalize();
 
 }
 
@@ -43,6 +43,7 @@ void PoseDetector::LoadModel(string ModelDir)
 
     string modelPath = "";
 
+    /*
     // HRNetPose
     mHRNetPose.Init(mImageWidth, mImageHeight);
     mHRNetPose.UseGpu(mUseGpu, mGpuDeviceId);
@@ -50,13 +51,16 @@ void PoseDetector::LoadModel(string ModelDir)
     modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/hrnet_coco_w32_256x192.onnx";
     //modelPath = "TrainedModels/hrnet_coco_w32_256x192.onnx";
     mHRNetPose.LoadModel(modelPath);
+    */
 
+    /*
     mMHFormer.Init(mImageWidth, mImageHeight);
     mMHFormer.UseGpu(mUseGpu);
 
     //modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
     modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/mhformer.onnx";
     mMHFormer.LoadModel(modelPath);
+    */
 
 }
 
@@ -93,7 +97,7 @@ void PoseDetector::Detect(Mat& Image)
     MapPose2DToHolistic(mPose2D, mHolistic); 
     */
 
-
+  
     // Correct pose
     //CorrectPose2D(mHolistic);
 
@@ -354,7 +358,7 @@ void PoseDetector::CalculatePoseDepthWithMHFormer(Holistic& Data)
     ConvertPoseMpToPose2d(poseMp, pose2d);
 
     // Predict the depth
-    pose3d = mMHFormer.Predict(pose2d);
+    //pose3d = mMHFormer.Predict(pose2d);
 
     // Normalize pose
     pose3d = pose_utils::ToNormSpace(pose3d, imageWidth, imageHeight);
@@ -401,7 +405,7 @@ vector<float> PoseDetector::CalculateWrist2D(
     vector<float>& Shoulder, vector<float>& Elbow, float LengthElbowWrist)
 {
 
-    vector<float> unitVec = CalculateUnitVecTwoPoints(Shoulder, Elbow);
+    vector<float> unitVec = zen_math::CalculateUnitVecTwoPoints(Shoulder, Elbow);
 
     vector<float> wrist;
 

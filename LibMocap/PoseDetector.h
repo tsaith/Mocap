@@ -4,8 +4,8 @@
 #include "Core/Math/MathLib.h"
 #include "Core/VectorUtils.h"
 #include "Holistic.hpp"
-#include "HRNetPose/HRNetPose.h" 
-#include "MHFormer/mhformer.h"
+//#include "HRNetPose/HRNetPose.h" 
+//#include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
 
 #include "opencv2/opencv.hpp"
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace core;
 using namespace cv;
-using namespace hrnet_pose;
+//using namespace hrnet_pose;
 using namespace pose_utils;
 
 class PoseDetector { 
@@ -54,8 +54,8 @@ private:
     bool mHasRightHand;
 
     Holistic mHolistic;
-    HRNetPose mHRNetPose;
-    MHFormer mMHFormer;
+    //HRNetPose mHRNetPose;
+    //MHFormer mMHFormer;
     float mMHFAngleAroundX = -10.0;
     const int mMHFWaitSteps = 5;
 
