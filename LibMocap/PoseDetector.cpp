@@ -45,10 +45,10 @@ void PoseDetector::LoadModel(string ModelDir)
 
     // HRNetPose
     mHRNetPose.Init(mImageWidth, mImageHeight);
+    mHRNetPose.UseGpu(mUseGpu, mGpuDeviceId);
 
     modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/hrnet_coco_w32_256x192.onnx";
     //modelPath = "TrainedModels/hrnet_coco_w32_256x192.onnx";
-    mHRNetPose.UseGpu(mUseGpu, mGpuDeviceId);
     mHRNetPose.LoadModel(modelPath);
 
     mMHFormer.Init(mImageWidth, mImageHeight);
@@ -68,8 +68,12 @@ void PoseDetector::SetHandInfo(bool HasLeftHand, bool HasRightHand)
 
 void PoseDetector::Detect(Mat& Image)
 {
-    mImage = Image.clone();
 
+    // Update counter
+    if (mCounter > mCounterMax) mCounter = 0;
+    mCounter++;
+
+    mImage = Image.clone();
 
     // Pose detection
     MpPoseDetect(Image);
@@ -86,15 +90,18 @@ void PoseDetector::Detect(Mat& Image)
     // Estimate pose 2D 
     mHRNetPose.Detect(mImage);
     mPose2D = mHRNetPose.GetPoseNorm();
-    MapPose2DToHolistic(mPose2D, mHolistic);
+    MapPose2DToHolistic(mPose2D, mHolistic); 
     */
 
 
     // Correct pose
     //CorrectPose2D(mHolistic);
 
-    // Calculate pose depth 
-    CalculatePoseDepthWithMHFormer(mHolistic);
+    // Refine pose depth 
+    if (mCounter > mMHFWaitSteps) {
+        CalculatePoseDepthWithMHFormer(mHolistic);
+    }
+
 
 }
 

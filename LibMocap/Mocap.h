@@ -48,6 +48,7 @@ private:
     void UpdateHolisticHands(Holistic& Data);
     Holistic ReNormalizeHolistic(Holistic& Data); 
     void CorrectHolistic(Holistic& Data);
+    void CaculateSkelTransforms();
 
     bool mUseGpu = true;
     int mGpuDeviceId = 0;
@@ -62,6 +63,7 @@ private:
     vector<float> mBlendshapes;
     FTransform mHeadTransform;
     
+    bool mHasPose;
     bool mHasLeftHand;
     bool mHasRightHand;
 

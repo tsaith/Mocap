@@ -67,7 +67,7 @@ void Mocap::Detect(Mat& Image)
     thread handDetectWorker(MpHandDetect, ref(Image));
     //MpHandDetect(Image);
     UpdateHolisticHands(mHolistic);
-
+  
     // Pose detection
     mPoseDetector.SetHandInfo(mHasLeftHand, mHasRightHand);
     mPoseDetector.Detect(Image);
@@ -76,7 +76,6 @@ void Mocap::Detect(Mat& Image)
     // Sychronization
     faceDetectWorker.join();
     handDetectWorker.join(); 
-    //poseDetectWorker.join(); 
 
     // Correct pose and hands
     CorrectHolistic(mHolistic); 
@@ -86,28 +85,9 @@ void Mocap::Detect(Mat& Image)
 
     // Skeleton converter
     mSkelConverter.Process(mHolisticReNorm);
-    
-    FTransform transform;
-    float* pQuat;
-    float* pBone;
-    for (int i = 0; i < mNumBones; i++) {
-
-        pQuat = mSkelConverter.GetQuat(i);
-        pBone = mSkelConverter.GetBone(i);
-
-        transform.Rotation.X = pQuat[1];
-        transform.Rotation.Y = pQuat[2];
-        transform.Rotation.Z = pQuat[3];
-        transform.Rotation.W = pQuat[0];
-
-        transform.Translation.X = pBone[0];
-        transform.Translation.Y = pBone[1];
-        transform.Translation.Z = pBone[2];
-
-        mSkelTransforms[i] = transform;
  
-    }
-
+    // Calculate skeleton transform
+    CaculateSkelTransforms();
 
 }
 
@@ -303,5 +283,33 @@ void Mocap::CorrectHolistic(Holistic& Data) {
     for (int i = 0; i < Data.HAND_LANDMARK_NUM; i++) {
         Data.RightHand[i][2] += shift;
     }
+
+}
+
+void Mocap::CaculateSkelTransforms() 
+{
+
+    // Calculate skeleton transform
+    FTransform transform;
+    float* pQuat;
+    float* pBone;
+    for (int i = 0; i < mNumBones; i++) {
+
+        pQuat = mSkelConverter.GetQuat(i);
+        pBone = mSkelConverter.GetBone(i);
+
+        transform.Rotation.X = pQuat[1];
+        transform.Rotation.Y = pQuat[2];
+        transform.Rotation.Z = pQuat[3];
+        transform.Rotation.W = pQuat[0];
+
+        transform.Translation.X = pBone[0];
+        transform.Translation.Y = pBone[1];
+        transform.Translation.Z = pBone[2];
+
+        mSkelTransforms[i] = transform;
+ 
+    }
+
 
 }
