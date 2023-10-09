@@ -98,9 +98,11 @@ void PoseDetector::Detect(Mat& Image)
     //CorrectPose2D(mHolistic);
 
     // Refine pose depth 
+    /*
     if (mCounter > mMHFWaitSteps) {
         CalculatePoseDepthWithMHFormer(mHolistic);
     }
+    */
 
 
 }

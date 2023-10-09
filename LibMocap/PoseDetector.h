@@ -59,7 +59,6 @@ private:
     float mMHFAngleAroundX = -10.0;
     const int mMHFWaitSteps = 5;
 
-
     int mCounterMax = 100000000;
     int mCounter = 0;
 
