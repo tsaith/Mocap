@@ -12,6 +12,7 @@
 #include "Calibration.hpp"
 #include "HeadStabilizer.h"
 #include "HandStabilizer.h"
+#include "BoneSmoother.h"
 #include "Utils/DebugUtils.h"
 
 using namespace zen_math;
@@ -148,26 +149,24 @@ private:
     float mDepth = 0; // The depth from camera to trunk.
     float mDepthPrev = 0;
 
+    // One Euro filter
     /*
-    // Kalman filter
-    Kalman1d mPoseKalman[POSE_LANDMARK_NUM][3];
-    Kalman1d mLeftHandKalman[HAND_LANDMARK_NUM][3];
-    Kalman1d mRightHandKalman[HAND_LANDMARK_NUM][3];
-    Kalman1d mFacemeshKalman[FACEMESH_LANDMARK_NUM][3];
-    Kalman1d mDepthKalman;
+    one_euro::OneEuroFilter mPoseOneEuro[POSE_LANDMARK_NUM][3];
+    one_euro::OneEuroFilter mLeftHandOneEuro[HAND_LANDMARK_NUM][3];
+    one_euro::OneEuroFilter mRightHandOneEuro[HAND_LANDMARK_NUM][3];
+    one_euro::OneEuroFilter mFacemeshOneEuro[FACEMESH_LANDMARK_NUM][3];
     */
+
+    // Apply filter on bones 
+    BoneSmoother mPoseSmoothers[POSE_LANDMARK_NUM];
+    BoneSmoother mLeftHandSmoothers[HAND_LANDMARK_NUM];
+    BoneSmoother mRightHandSmoothers[HAND_LANDMARK_NUM];
 
     // Bone stabilizer
     BoneStabilizer mPoseStabilizer[POSE_LANDMARK_NUM];
     BoneStabilizer mLeftFingersStabilizer[HAND_LANDMARK_NUM];
     BoneStabilizer mRightFingersStabilizer[HAND_LANDMARK_NUM];
-    BoneStabilizer mFacemeshStabilizer[FACEMESH_LANDMARK_NUM];
-
-    // One Euro filter
-    one_euro::OneEuroFilter mPoseOneEuro[POSE_LANDMARK_NUM][3];
-    one_euro::OneEuroFilter mLeftHandOneEuro[HAND_LANDMARK_NUM][3];
-    one_euro::OneEuroFilter mRightHandOneEuro[HAND_LANDMARK_NUM][3];
-    one_euro::OneEuroFilter mFacemeshOneEuro[FACEMESH_LANDMARK_NUM][3];
+    //BoneStabilizer mFacemeshStabilizer[FACEMESH_LANDMARK_NUM];
 
     float mFaceDirection[3];
     float mTrunkDirection[3];
@@ -191,13 +190,12 @@ private:
     float mOneEuroDcutoff = 1.0;
 
     // Parameters of bone stabilizer
-    bool mBoneStabilizerIsOn = true;
-    float mBoneStabilizerPoseDistanceC = 2.0e-2;
-    float mBoneStabilizerHandDistanceC = 5.0e-3;
-    float mBoneStabilizerFacemeshDistanceC = 5.0e-3;
+    bool mBoneStabilizerIsOn = true; 
+    float mBoneStabilizerPoseDistanceC = 2.0e-2; 
+    float mBoneStabilizerHandDistanceC = 5.0e-3; // For fingers
     //float mBoneStabilizerPoseDistanceC = 2.0e-3;
     //float mBoneStabilizerHandDistanceC = 2.0e-3;
-    //float mBoneStabilizerFacemeshDistanceC = 2.0e-3;
+
 
 
     Timer mFilterTimer;

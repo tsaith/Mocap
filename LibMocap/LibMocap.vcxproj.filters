@@ -87,6 +87,9 @@
     <ClInclude Include="PoseDetector.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="SkelConverter\BoneSmoother.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -141,6 +144,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="PoseDetector.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="SkelConverter\BoneSmoother.cc">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

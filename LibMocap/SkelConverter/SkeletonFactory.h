@@ -58,14 +58,17 @@ private:
     Skeleton* mSkelP;
     Skeleton mPose;
 
-    QuatSmoother mPelvisQuatSmoother;
-    QuatSmoother mSpine01QuatSmoother;
-    QuatSmoother mSpine02QuatSmoother;
-    QuatSmoother mSpine03QuatSmoother;
-    QuatSmoother mNeck01QuatSmoother;
-    QuatSmoother mHeadQuatSmoother;
+    // Quat smoothers 
+    static const int mNumFingers = 5;
+    static const int mNumFingerJoints = 4;
 
-    // Bone Stabilizer
+    QuatSmoother mLeftHandQuatSmoother;
+    QuatSmoother mRightHandQuatSmoother;
+    QuatSmoother mLeftFingerSmoothers[mNumFingers][mNumFingerJoints-1];
+    QuatSmoother mRightFingerSmoothers[mNumFingers][mNumFingerJoints-1];
+
+    // Bone stabilizers
+    /*
     BoneStabilizer mPelvisStabilizer;
     BoneStabilizer mSpine01Stabilizer;
     BoneStabilizer mSpine02Stabilizer;
@@ -93,9 +96,10 @@ private:
     BoneStabilizer mFootRStabilizer;
     BoneStabilizer mBallLStabilizer;
     BoneStabilizer mBallRStabilizer;
+    */
 
     // Quat Stabilizer
-    QuatStabilizer mHeadQuatStabilizer;
+    //QuatStabilizer mHeadQuatStabilizer;
 
 
     // User is close to camera or not

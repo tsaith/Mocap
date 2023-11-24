@@ -183,6 +183,7 @@ xcopy /y /d "..\$(IntDir)LibMpHand.lib" "C:\Users\andrew\projects\AvatarCam\Plug
     <ClInclude Include="pch.h" />
     <ClInclude Include="PoseDetector.h" />
     <ClInclude Include="PoseUtils.h" />
+    <ClInclude Include="SkelConverter\BoneSmoother.h" />
     <ClInclude Include="SkelConverter\Calibration.hpp" />
     <ClInclude Include="SkelConverter\Gesture.hpp" />
     <ClInclude Include="SkelConverter\GestureDetector.hpp" />
@@ -209,6 +210,7 @@ xcopy /y /d "..\$(IntDir)LibMpHand.lib" "C:\Users\andrew\projects\AvatarCam\Plug
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="PoseDetector.cpp" />
     <ClCompile Include="PoseUtils.cpp" />
+    <ClCompile Include="SkelConverter\BoneSmoother.cc" />
     <ClCompile Include="SkelConverter\HandStabilizer.cc" />
     <ClCompile Include="SkelConverter\HeadStabilizer.cc" />
     <ClCompile Include="SkelConverter\HolisticCorrection.cc" />

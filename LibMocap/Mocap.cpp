@@ -2,7 +2,6 @@
 
 #include "Mocap.h"
 #include "Mediapipe/LibMediapipe.h"
-//#include "Mediapipe/LibMpHand.h"  
  
 
 Mocap::Mocap() {   
@@ -18,7 +17,7 @@ Mocap::~Mocap() {
 
     mFacialExpression.Finalize();
 
-    //MpPoseFinalize(); 
+    MpPoseFinalize(); 
     MpHandFinalize(); 
 
 }
@@ -34,7 +33,7 @@ void Mocap::Init(int ImageWidth, int ImageHeight) {
     mFacialExpression.Init(ImageWidth, ImageHeight);
 
     // Mediapipe  
-    //MpPoseInit(); 
+    MpPoseInit(); 
     MpHandInit(); 
 
     // Pose detector

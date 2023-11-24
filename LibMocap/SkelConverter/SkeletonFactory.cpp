@@ -496,6 +496,10 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
 
         EstimateQuat(mSkelP->GetIHandL(), dvec1Init, dvec2Init);
 
+        // Smooth the quaternion
+        mLeftHandQuatSmoother.Update(mSkelP->GetQuatHandL());
+        mLeftHandQuatSmoother.GetUpdatedQuat(mSkelP->GetQuatHandL());
+
     }
 
     // Right upperarm
@@ -517,6 +521,10 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
         VecSet(dvec2Init, 0.0, -1.0, 0.0);
 
         EstimateQuat(mSkelP->GetIHandR(), dvec1Init, dvec2Init);
+
+        // Smooth the quaternion
+        mRightHandQuatSmoother.Update(mSkelP->GetQuatHandR());
+        mRightHandQuatSmoother.GetUpdatedQuat(mSkelP->GetQuatHandR());
 
     }
 
@@ -562,9 +570,13 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
             for (j = 0; j < numFingerJoints-1; j++) { // Finget joint
     
                 k = iStart + i*numFingerJoints + j;
-                EstimateQuatWithoutRow(k, dvec1Init);
-                //EstimateQuat(k, dvec1Init, dvec2Init);
+                //EstimateQuatWithoutRow(k, dvec1Init);
+                EstimateQuat(k, dvec1Init, dvec2Init);
     
+                // Smooth the quaternion
+                // Its doesn't work well
+                //mLeftFingerSmoothers[i][j].Update(mSkelP->GetQuat(k));
+                //mLeftFingerSmoothers[i][j].GetUpdatedQuat(mSkelP->GetQuat(k));
             }
         }
     }    
@@ -580,8 +592,8 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
             for (j = 0; j < numFingerJoints-1; j++) { // Finget joint
     
                 k = iStart + i*numFingerJoints + j;
-                EstimateQuatWithoutRow(k, dvec1Init);
-                //EstimateQuat(k, dvec1Init, dvec2Init);
+                //EstimateQuatWithoutRow(k, dvec1Init);
+                EstimateQuat(k, dvec1Init, dvec2Init);
     
             }
         }

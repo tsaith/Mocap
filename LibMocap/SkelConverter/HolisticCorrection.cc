@@ -21,6 +21,7 @@ bool HolisticCorrection::Init(int ImageWidth, int ImageHeight) {
         // Filter Timer starts
         mFilterTimer.Tic();
 
+        /*
         // One Euro filter
         double frequency = mOneEuroFrequency;
         double mincutoff = mOneEuroMincutoff;
@@ -45,35 +46,6 @@ bool HolisticCorrection::Init(int ImageWidth, int ImageHeight) {
                 mFacemeshOneEuro[i][j].Init(frequency, mincutoff, beta, dcutoff);
             } 
         } 
-
-        /*
-        // Kalman filter
-        float Pvar = 0.1;
-	    float Qvar = 0.1; // Process uncertainty
-	    float Rvar = 0.5; // Measurement uncertainty
-        float dt = 0.1;
-        Eigen::VectorXd state = Eigen::VectorXd::Zero(2);
-
-        for (int dim=0; dim < 3; dim++) {
-            for (int i=0; i < mData.POSE_LANDMARK_NUM; i++) {
-                mPoseKalman[i][dim].Init(state, dt, Pvar, Qvar, Rvar);
-            }
-        } 
-
-        for (int dim=0; dim < 3; dim++) {
-            for (int i=0; i < mData.GetHandLandmarkNum(); i++) {
-                mLeftHandKalman[i][dim].Init(state, dt, Pvar, Qvar, Rvar);
-                mRightHandKalman[i][dim].Init(state, dt, Pvar, Qvar, Rvar);
-            }
-        }
-
-        for (int dim=0; dim < 3; dim++) {
-            for (int i=0; i < mData.GetFacemeshLandmarkNum(); i++) {
-                mFacemeshKalman[i][dim].Init(state, dt, Pvar, Qvar, Rvar);
-            }
-        }
-
-        mDepthKalman.Init(state, dt, Pvar, Qvar, Rvar);
         */
 
         return true;
@@ -611,17 +583,10 @@ void HolisticCorrection::CorrectLeftHand() {
     float zHandWrist = mData.LeftHand[0][2];
     float shift = zPoseWrist - zHandWrist ;
 
-    /*
-    cout << "zPoseWrist: " << zPoseWrist << endl;
-    cout << "zHandWrist: " << zHandWrist << endl;
-    cout << "zHandIndexMcpOri: " << mData.LeftHand[5][2] << endl;
-    */
-
     for (int i=0; i < mData.HAND_LANDMARK_NUM; i++) {
         mData.LeftHand[i][2] += shift;
     }
 
-    //cout << "zHandIndexMcp: " << mData.LeftHand[5][2] << endl;
 }
 
 void HolisticCorrection::CorrectRightHand() {
@@ -774,17 +739,10 @@ void HolisticCorrection::UpdatePosePrev() {
 
 }
 
-void HolisticCorrection::Preprocess() {
+void HolisticCorrection::Preprocess() { 
 
-    if (mOneEuroIsOn) {
-        ApplyFilterOnBones();
-    }
-
-    // Stablize all bones
-    if (mBoneStabilizerIsOn) {
-        StabilizeBones();
-    }
-
+    ApplyFilterOnBones();
+    StabilizeBones();
 
 }
 
@@ -797,21 +755,41 @@ void HolisticCorrection::ApplyFilterOnBones() {
 
     // Apply filter on the depth of pose 
     for (int i=0; i < mData.GetPoseLandmarkNum(); i++) {
-        for (int dim=0; dim < 3 ; dim++) {
-
-            mData.pose[i][dim] = mPoseOneEuro[i][dim].Filter(mData.pose[i][dim], timestamp);
-
-        }
+        mPoseSmoothers[i].Update(mData.pose[i]);
     }
 
     // Apply filter on hands
+    for (int i=0; i < mData.GetHandLandmarkNum(); i++) {
+
+        mLeftHandSmoothers[i].Update(mData.LeftHand[i]);
+        mLeftHandSmoothers[i].GetUpdatedBone(mData.LeftHand[i]);
+
+        mRightHandSmoothers[i].Update(mData.RightHand[i]);
+        mRightHandSmoothers[i].GetUpdatedBone(mData.RightHand[i]);
+
+    }
+
+    /*
+    for (int i=0; i < mData.GetHandLandmarkNum(); i++) {
+        for (int j = 0; j < 3; j++) {
+
+            mData.LeftHand[i][j] = mLeftHandOneEuro[i][j].Filter(mData.LeftHand[i][j], timestamp);
+            mData.RightHand[i][j] = mRightHandOneEuro[i][j].Filter(mData.RightHand[i][j], timestamp);
+
+        }
+    }
+    */
+
+    /*
     for (int i=0; i < mData.GetHandLandmarkNum(); i++) {
 
         mData.LeftHand[i][2] = mLeftHandOneEuro[i][2].Filter(mData.LeftHand[i][2], timestamp);
         mData.RightHand[i][2] = mRightHandOneEuro[i][2].Filter(mData.RightHand[i][2], timestamp);
 
     }
+    */
 
+    /*
     // Only apply filter on two points of facemesh 
     // which will be used to estimate the head point
     int indexes[2] = {10, 152};
@@ -822,6 +800,7 @@ void HolisticCorrection::ApplyFilterOnBones() {
 
         }
     }
+    */
 
 }
 
