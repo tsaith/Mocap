@@ -5,7 +5,7 @@
 #include "Core/VectorUtils.h"
 #include "Holistic.hpp"
 //#include "HRNetPose/HRNetPose.h" 
-//#include "MHFormer/mhformer.h"
+#include "MHFormer/mhformer.h"
 #include "PoseUtils.h"
 
 #include "opencv2/opencv.hpp"
@@ -51,11 +51,11 @@ private:
 
     bool mHasPose;
     bool mHasLeftHand;
-    bool mHasRightHand;
+    bool mHasRightHand; 
 
     Holistic mHolistic;
     //HRNetPose mHRNetPose;
-    //MHFormer mMHFormer;
+    MHFormer mMHFormer;
     float mMHFAngleAroundX = -10.0;
     const int mMHFWaitSteps = 5;
 

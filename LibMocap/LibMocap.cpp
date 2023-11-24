@@ -10,7 +10,7 @@ float mSkelTransformArray[10];
 void MocapInit(int FrameWidth, int FrameHeight) {
 
     pInst = new Mocap;
-    pInst->Init(FrameWidth, FrameHeight);
+    pInst->Init(FrameWidth, FrameHeight); 
 
 } 
 

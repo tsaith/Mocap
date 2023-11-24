@@ -46,6 +46,7 @@ bool HolisticCorrection::Init(int ImageWidth, int ImageHeight) {
             } 
         } 
 
+        /*
         // Kalman filter
         float Pvar = 0.1;
 	    float Qvar = 0.1; // Process uncertainty
@@ -73,6 +74,7 @@ bool HolisticCorrection::Init(int ImageWidth, int ImageHeight) {
         }
 
         mDepthKalman.Init(state, dt, Pvar, Qvar, Rvar);
+        */
 
         return true;
     }
@@ -827,7 +829,7 @@ void HolisticCorrection::StabilizeBones() {
 
     float poseDistanceC = mBoneStabilizerPoseDistanceC;
     float handDistanceC = mBoneStabilizerHandDistanceC;
-    float facemeshDistanceC = mBoneStabilizerFacemeshDistanceC;
+    //float facemeshDistanceC = mBoneStabilizerFacemeshDistanceC;
 
     // Pose
     for (int i=0; i < mData.GetPoseLandmarkNum(); i++) {
@@ -857,16 +859,6 @@ void HolisticCorrection::StabilizeBones() {
     VecCopy(wristPose, mData.pose[16], 3);
     mRightHandStabilizer.Process(mData.RightHand, wristPose);
     mData.SetIsRightHandStable(mRightHandStabilizer.IsStable());
-
-    // Only apply bone stabilizer on two points of facemesh 
-    // which will be used to estimate the head point
-    int indexes[2] = {10, 152};
-    int iFacemesh;
-    for (int i=0; i < 2; i++) {
-        iFacemesh = indexes[i];
-        mRightFingersStabilizer[iFacemesh].SetDistanceC(facemeshDistanceC);
-        mRightFingersStabilizer[iFacemesh].Update(mData.facemesh[iFacemesh]);
-    }
 
 }
 
@@ -1018,6 +1010,6 @@ void HolisticCorrection::SetBoneStabilizerParams(bool IsOn, float PoseDistanceC,
     mBoneStabilizerIsOn = IsOn; 
     mBoneStabilizerPoseDistanceC = PoseDistanceC;
     mBoneStabilizerHandDistanceC = HandDistanceC;
-    mBoneStabilizerFacemeshDistanceC = FacemeshDistanceC;
+    //mBoneStabilizerFacemeshDistanceC = FacemeshDistanceC;
 
 }

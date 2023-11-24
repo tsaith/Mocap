@@ -148,12 +148,14 @@ private:
     float mDepth = 0; // The depth from camera to trunk.
     float mDepthPrev = 0;
 
+    /*
     // Kalman filter
     Kalman1d mPoseKalman[POSE_LANDMARK_NUM][3];
     Kalman1d mLeftHandKalman[HAND_LANDMARK_NUM][3];
     Kalman1d mRightHandKalman[HAND_LANDMARK_NUM][3];
     Kalman1d mFacemeshKalman[FACEMESH_LANDMARK_NUM][3];
     Kalman1d mDepthKalman;
+    */
 
     // Bone stabilizer
     BoneStabilizer mPoseStabilizer[POSE_LANDMARK_NUM];
@@ -190,9 +192,12 @@ private:
 
     // Parameters of bone stabilizer
     bool mBoneStabilizerIsOn = true;
-    float mBoneStabilizerPoseDistanceC = 2.0e-3;
-    float mBoneStabilizerHandDistanceC = 2.0e-3;
-    float mBoneStabilizerFacemeshDistanceC = 2.0e-3;
+    float mBoneStabilizerPoseDistanceC = 2.0e-2;
+    float mBoneStabilizerHandDistanceC = 5.0e-3;
+    float mBoneStabilizerFacemeshDistanceC = 5.0e-3;
+    //float mBoneStabilizerPoseDistanceC = 2.0e-3;
+    //float mBoneStabilizerHandDistanceC = 2.0e-3;
+    //float mBoneStabilizerFacemeshDistanceC = 2.0e-3;
 
 
     Timer mFilterTimer;

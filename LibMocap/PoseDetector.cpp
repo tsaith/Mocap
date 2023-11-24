@@ -9,7 +9,7 @@ PoseDetector::PoseDetector() {
     mImageHeight = 0;
 
     // Set angle used to rotate pose around x-axis
-    //mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
+    mMHFormer.SetAngleAroundX(mMHFAngleAroundX);
 }
 
 PoseDetector::~PoseDetector() {
@@ -53,14 +53,12 @@ void PoseDetector::LoadModel(string ModelDir)
     mHRNetPose.LoadModel(modelPath);
     */
 
-    /*
     mMHFormer.Init(mImageWidth, mImageHeight);
     mMHFormer.UseGpu(mUseGpu);
 
     //modelPath = "C:\\Users\\andrew\\projects\\Mocap\\x64\\Release\\TrainedModels\\mhformer.onnx";
     modelPath = "C:/Users/andrew/projects/Mocap/x64/Release/TrainedModels/mhformer.onnx";
     mMHFormer.LoadModel(modelPath);
-    */
 
 }
 
@@ -85,28 +83,25 @@ void PoseDetector::Detect(Mat& Image)
     float* pPose;
     MpPoseGetPose(mHasPose, pPose);
     
-    mHolistic.HasPose = mHasPose;
+    mHolistic.HasPose = mHasPose; 
     CopyArray2D(pPose, &(mHolistic.pose[0][0]),
         mHolistic.POSE_LANDMARK_NUM, 
         mHolistic.DIMENSIONS);
 
-    /*
     // Estimate pose 2D 
-    mHRNetPose.Detect(mImage);
-    mPose2D = mHRNetPose.GetPoseNorm();
-    MapPose2DToHolistic(mPose2D, mHolistic); 
-    */
+    //mHRNetPose.Detect(mImage);
+    //mPose2D = mHRNetPose.GetPoseNorm();
+    //MapPose2DToHolistic(mPose2D, mHolistic); 
 
   
-    // Correct pose
+    // Correct pose when body exceeds view field of camera
+    // This may have bugs.
     //CorrectPose2D(mHolistic);
 
     // Refine pose depth 
-    /*
     if (mCounter > mMHFWaitSteps) {
         CalculatePoseDepthWithMHFormer(mHolistic);
     }
-    */
 
 
 }
@@ -358,7 +353,7 @@ void PoseDetector::CalculatePoseDepthWithMHFormer(Holistic& Data)
     ConvertPoseMpToPose2d(poseMp, pose2d);
 
     // Predict the depth
-    //pose3d = mMHFormer.Predict(pose2d);
+    pose3d = mMHFormer.Predict(pose2d); 
 
     // Normalize pose
     pose3d = pose_utils::ToNormSpace(pose3d, imageWidth, imageHeight);
