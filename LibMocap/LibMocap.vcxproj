@@ -166,11 +166,7 @@ xcopy /y /d "..\$(IntDir)LibMocap.lib" "C:\Users\andrew\projects\AvatarCam\Plugi
 
 xcopy /y /d ".\IncludeThirdParty\Mediapipe\LibMediapipe.h" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\include"
 xcopy /y /d "..\$(IntDir)LibMediapipe.dll" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"
-xcopy /y /d "..\$(IntDir)LibMediapipe.lib" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"
-
-xcopy /y /d ".\IncludeThirdParty\Mediapipe\LibMpHand.h" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\include"
-xcopy /y /d "..\$(IntDir)LibMpHand.dll" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"
-xcopy /y /d "..\$(IntDir)LibMpHand.lib" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"</Command>
+xcopy /y /d "..\$(IntDir)LibMediapipe.lib" "C:\Users\andrew\projects\AvatarCam\Plugins\MocapLive\Binaries\ThirdParty\MocapLive\lib\Win64"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

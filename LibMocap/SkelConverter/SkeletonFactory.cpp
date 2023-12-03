@@ -431,6 +431,9 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
     mSkelP->EstimateFootLDirection();
     mSkelP->EstimateFootRDirection();
 
+    mSkelP->EstimatePalmLDirection();
+    mSkelP->EstimatePalmRDirection();
+
     mSkelP->EstimateFingersLDirection();
     mSkelP->EstimateFingersRDirection();
 
@@ -557,7 +560,9 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
     const int numFingers = 5;
     const int numFingerJoints = 4;
     int i, j, k;
-    int iStart;
+    int iStart; 
+
+
 
     // Left fingers
     if (mSkelP->HasLeftHand()) {
@@ -579,8 +584,9 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
                 //mLeftFingerSmoothers[i][j].GetUpdatedQuat(mSkelP->GetQuat(k));
             }
         }
-    }    
-    
+    }
+
+
     // Right fingers
     if (mSkelP->HasRightHand()) {
 
@@ -599,10 +605,19 @@ void SkeletonFactory::EstimateMpQuats(Holistic &data) {
         }
     }
 
+    /*
+    float indexDvec1[3];
+    float indexDvec2[3];
 
-    // Auxiliary directions
-    mSkelP->EstimatePalmLDirection();
-    mSkelP->EstimatePalmRDirection();
+    int boneIndex = mSkelP->GetIIndex03L();
+    VecCopy(indexDvec1, mSkelP->GetDvec1(boneIndex));
+    VecCopy(indexDvec2, mSkelP->GetDvec2(boneIndex));
+
+    cout << "Index03 Dvec1: " << indexDvec1[0] << ", " << indexDvec1[1] << ", " << indexDvec1[2] << endl;
+    cout << "Index03 Dvec2: " << indexDvec2[0] << ", " << indexDvec2[1] << ", " << indexDvec2[2] << endl;
+    */
+
+    
 
 }
 

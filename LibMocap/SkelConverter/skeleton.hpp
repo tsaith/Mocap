@@ -848,6 +848,13 @@ public:
         
 
         float* pHand = GetHandL();
+
+        // Forward dvec 
+        float forwardDvec[3];
+        float* index01 = GetIndex01L();
+        float* ring01 = GetRing01L();
+        VecSubstractNorm(forwardDvec, index01, ring01);
+
         for (i = 0; i < 5; i++) { // Finger
             for (j = 0; j < numJoints-1; j++) { // Finger joint
 
@@ -859,26 +866,13 @@ public:
                 VecSubstractNorm(vecUpper, GetBone(index+1), GetBone(index));
                 VecCopy(dvec1, vecUpper);
 
+
                 // Dvec2
-                if (j == 0) {
-                    VecSubstract(vecLower, pHand, GetBone(index));
-                } else {
-                    VecSubstract(vecLower, GetBone(index-1), GetBone(index));
-                }
-
-                isAntiParallel = IsAntiParallel(vecLower, vecUpper, mSmallAngle);
-                if (isAntiParallel) {
-                    VecSubstract(vecLower, pHand, GetBone(index));
-                }
-
-                VecCrossNorm(dvec2, vecLower, vecUpper);
-
-                VecSubstract(vecIndex01Pinky01, GetIndex01L(), GetPinky01L());
-                VecDot(dotValue, dvec2, vecIndex01Pinky01);
-
-                if (dotValue < 0) {
-                    VecInverse(dvec2, dvec2);
-                }
+                float targetHandDvec[3];
+                VecSubstract(targetHandDvec, GetBone(index), pHand);
+                float* palmDvec = GetLeftPalmDirection();
+                VecCrossNorm(dvec2, targetHandDvec, palmDvec);
+                VecMultiply(dvec2, dvec2, -1.0);
 
             }
         }
@@ -900,6 +894,13 @@ public:
         float dotValue;
 
         float* pHand = GetHandR();
+
+        // Forward dvec 
+        float forwardDvec[3];
+        float* index01 = GetIndex01R();
+        float* ring01 = GetRing01R();
+        VecSubstractNorm(forwardDvec, index01, ring01);
+
         for (i = 0; i < 5; i++) { // Finger
             for (j = 0; j < numJoints-1; j++) { // Finget joint
 
@@ -912,25 +913,12 @@ public:
                 VecCopy(dvec1, vecUpper);
 
                 // Dvec2
-                if (j == 0) {
-                    VecSubstract(vecLower, pHand, GetBone(index));
-                } else {
-                    VecSubstract(vecLower, GetBone(index-1), GetBone(index));
-                }
+                float targetHandDvec[3];
+                VecSubstract(targetHandDvec, GetBone(index), pHand);
+                float* palmDvec = GetRightPalmDirection();
+                VecCrossNorm(dvec2, targetHandDvec, palmDvec);
+                //VecMultiply(dvec2, dvec2, -1.0);
 
-                isAntiParallel = IsAntiParallel(vecLower, vecUpper, mSmallAngle);
-                if (isAntiParallel) {
-                    VecSubstract(vecLower, pHand, GetBone(index));
-                }
-
-                VecCrossNorm(dvec2, vecLower, vecUpper);
-
-                VecSubstract(vecIndex01Pinky01, GetIndex01R(), GetPinky01R());
-                VecDot(dotValue, dvec2, vecIndex01Pinky01);
-
-                if (dotValue < 0) {
-                    VecInverse(dvec2, dvec2);
-                }
             }
         }
 
